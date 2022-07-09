@@ -1,0 +1,30 @@
+.option {
+  font-size: 1.8rem;
+  margin: 2px;
+}
+
+.prompt {
+  font-size: 2.5rem;
+  margin-top: 20px;
+  margin-bottom: 0px;
+}
+
+.underline {
+  width: 20vw;
+  margin-top: 1px;
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+}
+
+.map-container-child {
+  height: 100%;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  right: 0;
+  left: 0;
+}

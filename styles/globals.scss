@@ -1,0 +1,45 @@
+@use 'theme' as theme;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background-color: theme.$background-color;
+  color: theme.$foreground-color
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  color: inherit;
+  font-weight: bold;
+
+  &:hover {
+    filter: brightness(90%);
+  }
+  &:active {
+    filter: brightness(80%);
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input {
+  color: inherit;
+  font-size: 2.5rem;
+  margin-top: 40px;
+  text-align: center;
+  background-color: transparent;
+  border: none;
+  font-weight: bold;
+  &:focus {
+    outline: none;
+  }
+
+  caret-color: transparent;
+}

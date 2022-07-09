@@ -1,0 +1,28 @@
+@use './theme.scss' as theme;
+
+.container {
+  text-align: center;
+}
+
+.nav-item {
+  display: inline-block;
+  margin: 0 4%;
+}
+
+.header {
+  @extend .nav-item;
+  font-size: 4rem;
+  text-align: center;
+  width: min-content;
+}
+
+.nav-button {
+  @extend .nav-item;
+  font-size: 2rem;
+}
+
+.seperator {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  width: 100%;
+}

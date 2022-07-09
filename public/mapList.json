@@ -1,0 +1,125 @@
+[
+  {
+    "name": "Uk and Ireland",
+    "path": "/maps/uk.png",
+    "longMax": "2.2",
+    "longMin": "-10.762",
+    "latMax": "59.157",
+    "latMin": "49.86",
+    "countryCodes": ["GB", "IE"],
+    "searchRadius": "1.0"
+  },
+  {
+    "name": "Norway",
+    "path": "/maps/norge.png",
+    "longMax": "31.3389",
+    "longMin": "4.34",
+    "latMax": "71.1898",
+    "latMin": "57.9378",
+    "countryCodes": ["NO"],
+    "searchRadius": "1.0"
+  },
+  {
+    "name": "Italy",
+    "path": "/maps/italy.png",
+    "longMax": "18.889",
+    "longMin": "5.6589",
+    "latMax": "47.123",
+    "latMin": "36.1537",
+    "countryCodes": ["IT"],
+    "searchRadius": "1.0"
+  },
+  {
+    "name": "The Lowlands",
+    "path": "/maps/lowlands.png",
+    "longMax": "7.42196",
+    "longMin": "1.09062",
+    "latMax": "53.56245",
+    "latMin": "49.42604",
+    "countryCodes": ["NL", "BE", "LU"],
+    "searchRadius": "1.0"
+  },
+  {
+    "name": "Germany",
+    "path": "/maps/germany.png",
+    "longMax": "16.23759",
+    "longMin": "5.05394",
+    "latMax": "54.93783",
+    "latMin": "47.30138",
+    "countryCodes": ["DE"],
+    "searchRadius": "0.9"
+  },
+  {
+    "name": "Iberia",
+    "path": "/maps/iberia.png",
+    "longMax": "4.39106",
+    "longMin": "-9.59654",
+    "latMax": "43.9828",
+    "latMin": "35.9588",
+    "countryCodes": ["ES", "PT", "AD", "GI"],
+    "searchRadius": "1.0"
+  },
+  {
+    "name": "Indian Subcontinent",
+    "path": "/maps/india.png",
+    "longMax": "97.9039",
+    "longMin": "67.1767",
+    "latMax": "35.7319",
+    "latMin": "5.2632",
+    "countryCodes": ["IN", "BD", "BT", "NP", "LK"],
+    "searchRadius": "1.0"
+  },
+  {
+    "name": "Egypt",
+    "path": "/maps/egypt.png",
+    "longMax": "37.2743",
+    "longMin": "24.6224",
+    "latMax": "32.1793",
+    "latMin": "21.7099",
+    "countryCodes": ["EG"],
+    "searchRadius": "1.0"
+  },
+  {
+    "name": "Japan",
+    "path": "/maps/japan.png",
+    "longMax": "150.853",
+    "longMin": "128.490",
+    "latMax": "46.3507",
+    "latMin": "30.1351",
+    "countryCodes": ["JP"],
+    "searchRadius": "1.0"
+  },
+  {
+    "name": "Australia",
+    "path": "/maps/australia.png",
+    "longMax": "154.532",
+    "longMin": "112.525",
+    "latMax": "-10.0650",
+    "latMin": "-44.0693",
+    "countryCodes": ["AU"],
+    "searchRadius": "1.0"
+  },
+  {
+    "name": "Europe",
+    "path": "/maps/europe.png",
+    "longMax": "43.2722",
+    "longMin": "-10.8614",
+    "latMax": "71.3575",
+    "latMin": "29.9009",
+    "countryCodes": ["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV",
+      "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "AL", "AD", "BY", "BA", "XK", "LI", "MK",
+      "MD", "MC", "ME", "NO", "RU", "SM", "RS", "CH", "TR", "UA", "GB", "VA","DZ", "TN", "MA", "LY", "EG", "GE", "SY",
+      "IL", "JO", "PS", "LB"],
+    "searchRadius": "0.5"
+  },
+  {
+    "name": "USA",
+    "path": "/maps/usa.png",
+    "longMax": "-65.17820",
+    "longMin": "-126.46133",
+    "latMax": "49.38370",
+    "latMin": "25.13495",
+    "countryCodes": ["US"],
+    "searchRadius": "1.0"
+  }
+]

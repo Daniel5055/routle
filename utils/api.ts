@@ -1,11 +1,9 @@
 import { MapData } from "./types/MapData"
 
-export const getRandomCities = async (mapData: MapData, seed: string ) => {
+export const getRandomCities = async (mapData: MapData) => {
   let path2 = 
-  `http://api.geonames.org/searchJSON?q=${seed}&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055`
+  `http://api.geonames.org/searchJSON?&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055`
   mapData.countryCodes.forEach((cc) => path2 += `&country=${cc}`)
-
-  console.log(path2)
 
   return fetch(path2);
 }

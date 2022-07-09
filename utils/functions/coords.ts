@@ -36,11 +36,11 @@ export const withinRange = (
   return calculateDistance(lat1, long1, lat2, long2) <= distance
 }
 
-export const convertToScreenCoords = (mapData: MapData, lat: number, long: number, width: number, height: number): CityPoint => {
+export const convertToRelScreenCoords = (mapData: MapData, lat: number, long: number) => {
   const flattened = flattenCoords(lat, long);
 
-  const x = (flattened.long - mapData.longMin) / (mapData.longMax - mapData.longMin) * width;
-  const y = (flattenLat(mapData.latMax) - flattened.lat) / (flattenLat(mapData.latMax) - flattenLat(mapData.latMin)) * height;
+  const x = (flattened.long - mapData.longMin) / (mapData.longMax - mapData.longMin);
+  const y = (flattenLat(mapData.latMax) - flattened.lat) / (flattenLat(mapData.latMax) - flattenLat(mapData.latMin));
 
   return { x: x, y: y};
 }

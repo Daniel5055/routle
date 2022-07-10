@@ -1,46 +1,55 @@
-import { MapData } from "../types/MapData"
-import { CityPoint } from "../types/CityPoint"
+import { MapData } from '../types/MapData';
+import { CityPoint } from '../types/CityPoint';
 
-const flattenCoords = (lat: number, long: number): 
-  {
-    lat: number,
-    long: number,
-  } => {
-    return {
-      long: long,
-      lat: Math.log(Math.tan(Math.PI/4 + lat * Math.PI / 360)),
-    }
-}
+const flattenCoords = (
+  lat: number,
+  long: number
+): {
+  lat: number;
+  long: number;
+} => {
+  return {
+    long: long,
+    lat: Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360)),
+  };
+};
 
 const flattenLat = (lat: number) => {
-  return Math.log(Math.tan(Math.PI/4 + lat * Math.PI / 360));
-}
+  return Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
+};
 
 export const calculateDistance = (
   lat1: number,
   long1: number,
   lat2: number,
-  long2: number,
+  long2: number
 ) => {
   // Good ol pythagoras
-  return Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(long1 - long2, 2))
-}
+  return Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(long1 - long2, 2));
+};
 
 export const withinRange = (
   lat1: number,
   long1: number,
   lat2: number,
   long2: number,
-  distance: number,
+  distance: number
 ) => {
-  return calculateDistance(lat1, long1, lat2, long2) <= distance
-}
+  return calculateDistance(lat1, long1, lat2, long2) <= distance;
+};
 
-export const convertToRelScreenCoords = (mapData: MapData, lat: number, long: number) => {
+export const convertToRelScreenCoords = (
+  mapData: MapData,
+  lat: number,
+  long: number
+) => {
   const flattened = flattenCoords(lat, long);
 
-  const x = (flattened.long - mapData.longMin) / (mapData.longMax - mapData.longMin);
-  const y = (flattenLat(mapData.latMax) - flattened.lat) / (flattenLat(mapData.latMax) - flattenLat(mapData.latMin));
+  const x =
+    (flattened.long - mapData.longMin) / (mapData.longMax - mapData.longMin);
+  const y =
+    (flattenLat(mapData.latMax) - flattened.lat) /
+    (flattenLat(mapData.latMax) - flattenLat(mapData.latMin));
 
-  return { x: x, y: y};
-}
+  return { x: x, y: y };
+};

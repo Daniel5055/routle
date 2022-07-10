@@ -1,7 +1,5 @@
 @use 'theme' as theme;
 
-
-
 /* Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
 
@@ -13,7 +11,7 @@ body {
 
   font-weight: bold;
   background-color: theme.$background-color;
-  color: theme.$foreground-color
+  color: theme.$foreground-color;
 }
 
 a {

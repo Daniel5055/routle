@@ -1,4 +1,3 @@
-
 export interface GeoResponse {
   totalResultsCount: number;
   geonames: CityResponse[];

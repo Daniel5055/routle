@@ -12,6 +12,10 @@ import { calculateDistance, convertToRelScreenCoords, withinRange } from '../../
 
 const Map: NextPage = ({ mapData, startCity, endCity }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
+  useEffect(() => {
+    getCities(mapData, "wake up!");
+  }, [mapData])
+
   const focusInput = useRef<HTMLInputElement>(null);
   setInterval(() => focusInput.current?.focus(), 5)
 

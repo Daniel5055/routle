@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs'
-import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
+import type { GetServerSideProps, GetStaticPaths, GetStaticProps, InferGetServerSidePropsType, InferGetStaticPropsType, NextPage } from 'next'
 import { useEffect, useRef, useState } from 'react'
 import Layout from '../../components/common/Layout'
 import { getCities, getRandomCities } from '../../utils/api'
@@ -10,7 +10,7 @@ import { CityPoint, PointType } from '../../utils/types/CityPoint'
 import { CityResponse, GeoResponse } from '../../utils/types/GeoResponse'
 import { calculateDistance, convertToRelScreenCoords, withinRange } from '../../utils/functions/coords'
 
-const Map: NextPage = ({ mapData, startCity, endCity }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Map: NextPage = ({ mapData, startCity, endCity }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
   useEffect(() => {
     getCities(mapData, "wake up!");
@@ -132,8 +132,10 @@ const Map: NextPage = ({ mapData, startCity, endCity }: InferGetStaticPropsType<
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // On enter press
     if (e.key === 'Enter') {
-      handleSearch(entry);
-      setEntry('');
+      if (entry.trim().length > 0) {
+        handleSearch(entry.trim());
+        setEntry('');
+      }
     }
   }
 
@@ -168,6 +170,7 @@ const Map: NextPage = ({ mapData, startCity, endCity }: InferGetStaticPropsType<
   )
 }
 
+/*
 export const getStaticPaths: GetStaticPaths = async () => {
   
   const paths = getMapPaths();
@@ -177,10 +180,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: false,
   }
 }
+*/
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const { map } = context.params!!
-  
 
   // Find the map data
   const data = readFileSync('public/mapList.json');
@@ -198,7 +201,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   
   const minDist = (mapData.latMax - mapData.latMin) / 6
   while (withinRange(startCity.lat, startCity.lng, endCity.lat, endCity.lng, minDist)) {
-    console.log("again")
     endCity = response.geonames[Math.floor(Math.random() * response.geonames.length)]
   }
 

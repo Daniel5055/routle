@@ -1,0 +1,44 @@
+@use 'theme' as theme;
+
+.container {
+  position: relative;
+  width: 20vw;
+}
+
+.child {
+  position: absolute;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.slider {
+  @extend .child;
+  appearance: none;
+  background: transparent;
+  outline: none;
+  height: 11px;
+  margin: 10px 0;
+  &::-moz-range-thumb {
+    appearance: none;
+    width: 11px;
+    height: 11px;
+    background: theme.$foreground-color;
+    cursor: pointer;
+  }
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 11px;
+    height: 11px;
+    background: theme.$foreground-color;
+    cursor: pointer;
+  }
+}
+.line {
+  @extend .child;
+  margin: 15px 0;
+  height: 0px;
+  width: 90%;
+  left: 5%
+}

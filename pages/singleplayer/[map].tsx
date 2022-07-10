@@ -10,16 +10,18 @@ import type {
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import { getCities, getRandomCities } from '../../utils/api';
-import { getMapPaths } from '../../utils/functions/getMapPaths';
 import { MapData } from '../../utils/types/MapData';
 import { MapDisplay } from '../../components/common/MapDisplay';
-import { CityPoint, PointType } from '../../utils/types/CityPoint';
-import { CityResponse, GeoResponse } from '../../utils/types/GeoResponse';
+import { CityPoint } from '../../utils/types/CityPoint';
+import { GeoResponse } from '../../utils/types/GeoResponse';
 import {
   calculateDistance,
   convertToRelScreenCoords,
   withinRange,
 } from '../../utils/functions/coords';
+import { useRouter } from 'next/router';
+import styles from '../../styles/Singleplayer.module.scss'
+import Cookies from 'js-cookie';
 
 const Map: NextPage = ({
   mapData,
@@ -29,6 +31,24 @@ const Map: NextPage = ({
   useEffect(() => {
     getCities(mapData, 'wake up!');
   }, [mapData]);
+
+  // Translating difficulty
+  const getDifficultyModifier = (value: number) => {
+    switch(value) {
+      case 1:
+        return 4.0;
+      case 2:
+        return 2.0;
+      case 3:
+        return 1.0;
+      case 4:
+        return 0.8;
+      case 5:
+        return 0.6;
+      default:
+        return 1.0;
+    }
+  };
 
   const focusInput = useRef<HTMLInputElement>(null);
   setInterval(() => focusInput.current?.focus(), 5);
@@ -52,8 +72,9 @@ const Map: NextPage = ({
 
   // Multiply search radius by modifier when searchRadius is changed
   const [searchRadius, setSearchRadius] = useState<number>(
-    mapData.searchRadius
+    mapData.searchRadius * getDifficultyModifier(parseInt(Cookies.get('Difficulty') ?? '1.0'))
   );
+
 
   // To organise the code better
   const handleSearch = (search: string) => {
@@ -177,6 +198,8 @@ const Map: NextPage = ({
     }
   };
 
+  const router = useRouter()
+
   return (
     <Layout description="Singleplayer Routle">
       <h2>{`Get from ${startCity.name} to ${endCity.name}`}</h2>
@@ -192,7 +215,10 @@ const Map: NextPage = ({
       />
       <p>{tagline}</p>
       {hasWon ? (
+        <>
         <h2>Number of cities: {pastPoints.length}</h2>
+        <button onClick={router.reload} className={styles['play-again']}>Play again?</button>
+        </>
       ) : (
         <input
           type="text"

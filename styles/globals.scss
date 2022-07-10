@@ -11,23 +11,15 @@ body {
   color: theme.$foreground-color
 }
 
-button {
-  background-color: transparent;
-  border: none;
+a {
   color: inherit;
-  font-weight: bold;
-
+  text-decoration: none;
   &:hover {
     filter: brightness(90%);
   }
   &:active {
     filter: brightness(80%);
   }
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
 }
 
 input {

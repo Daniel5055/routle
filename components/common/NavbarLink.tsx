@@ -3,13 +3,10 @@ import styles from '../../styles/Navbar.module.scss'
 
 const NavbarLink = (props: {href: string, children: string}) => {
       return (
-      <button className={styles['nav-button']}>
         <Link href={props.href}>
-          <a>
-            {props.children}
-          </a>
-          </Link>
-      </button>);
+            <a className={styles['nav-button']}>{props.children}</a>
+        </Link>
+      );
 }
 
 export default NavbarLink;

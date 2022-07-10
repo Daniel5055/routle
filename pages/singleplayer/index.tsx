@@ -2,6 +2,7 @@ import { readFileSync } from 'fs'
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next'
 import Link from 'next/link'
 import Layout from '../../components/common/Layout'
+import { LoadingLink } from '../../components/common/LoadingLink'
 import styles from '../../styles/Singleplayer.module.scss'
 import { MapData } from '../../utils/types/MapData'
 
@@ -15,13 +16,11 @@ const Singleplayer: NextPage = ({mapData}: InferGetStaticPropsType<typeof getSta
           return a.name > b.name
         })
         .map((map: MapData) => {
-          return <button className={styles.option} key={map.name}>
-              <Link href={`/singleplayer/${map.name}`}>
-                <a className={styles['nav-link']}>
-                  {map.name}
-                </a>
-              </Link>
-            </button>
+          return (
+            <LoadingLink key={map.name} src={`/singleplayer/${map.name}`} className={styles.option}>
+              {map.name}
+            </LoadingLink>
+          )
         })}
     </Layout>
   )

@@ -1,12 +1,11 @@
 import { readFileSync } from 'fs';
 import type {
-  GetServerSideProps,
   GetStaticPaths,
   GetStaticProps,
-  InferGetServerSidePropsType,
   InferGetStaticPropsType,
   NextPage,
 } from 'next';
+import { getMapPaths } from '../../utils/functions/getMapPaths';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import { getCities, getRandomCities } from '../../utils/api';
@@ -27,7 +26,7 @@ const Map: NextPage = ({
   mapData,
   startCity,
   endCity,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   useEffect(() => {
     getCities(mapData, 'wake up!');
   }, [mapData]);
@@ -52,6 +51,7 @@ const Map: NextPage = ({
 
   const focusInput = useRef<HTMLInputElement>(null);
   setInterval(() => focusInput.current?.focus(), 5);
+  const [hasTyped, setHasTyped] = useState(false);
 
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -225,8 +225,15 @@ const Map: NextPage = ({
           aria-label="input"
           autoFocus
           onKeyDown={handleKeyDown}
-          value={entry}
-          onChange={(e) => setEntry(e.target.value)}
+          value={hasTyped ? entry : 'Start typing places'}
+          onChange={(e) => {
+            if (!hasTyped) {
+              setHasTyped(true);
+              setEntry(e.target.value.slice(-1))
+            } else {
+              setEntry(e.target.value);
+            }
+          }}
           ref={focusInput}
         />
       )}
@@ -234,7 +241,6 @@ const Map: NextPage = ({
   );
 };
 
-/*
 export const getStaticPaths: GetStaticPaths = async () => {
   
   const paths = getMapPaths();
@@ -244,9 +250,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: false,
   }
 }
-*/
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
   const { map } = context.params!!;
 
   // Find the map data
@@ -265,7 +270,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const startCity = response.geonames[rand2];
   let endCity = response.geonames[rand3];
 
-  const minDist = (mapData.latMax - mapData.latMin) / 6;
+  const minDist = (mapData.latMax - mapData.latMin) / 4;
   while (
     withinRange(startCity.lat, startCity.lng, endCity.lat, endCity.lng, minDist)
   ) {

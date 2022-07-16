@@ -244,7 +244,6 @@ const Map: NextPage = ({
 export const getStaticPaths: GetStaticPaths = async () => {
   
   const paths = getMapPaths();
-  console.log(paths)
   return {
     paths,
     fallback: false,

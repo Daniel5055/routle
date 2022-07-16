@@ -1,14 +1,14 @@
 import { MapData } from './types/MapData';
 
 export const getRandomCities = async (mapData: MapData) => {
-  let path2 = `http://api.geonames.org/searchJSON?&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055`;
+  let path2 = `https://secure.geonames.org/searchJSON?&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055`;
   mapData.countryCodes.forEach((cc) => (path2 += `&country=${cc}`));
 
   return fetch(path2);
 };
 
 export const getCities = async (mapData: MapData, name: string) => {
-  let path = `http://api.geonames.org/searchJSON?name_equals=${name}&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055`;
+  let path = `https://secure.geonames.org/searchJSON?name_equals=${name}&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055`;
   mapData.countryCodes.forEach((cc) => (path += `&country=${cc}`));
   return fetch(path);
 };

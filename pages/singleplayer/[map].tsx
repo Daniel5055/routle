@@ -202,7 +202,7 @@ const Map: NextPage = ({
 
   return (
     <Layout description="Singleplayer Routle">
-      <h2>{`Get from ${startCity.name} to ${endCity.name}`}</h2>
+      <h3>{`Get from ${startCity.name} to ${endCity.name}`}</h3>
       <MapDisplay
         mapData={mapData}
         svgRef={svgRef}
@@ -213,7 +213,7 @@ const Map: NextPage = ({
         pastPoints={pastPoints}
         farPoints={farPoints}
       />
-      <p>{tagline}</p>
+      <p className={styles.tagline}>{tagline}</p>
       {hasWon ? (
         <>
         <h2>Number of cities: {pastPoints.length}</h2>

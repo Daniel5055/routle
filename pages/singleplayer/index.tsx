@@ -50,27 +50,30 @@ const Singleplayer: NextPage = ({
   }
 
   return (
-    <Layout description="Singleplayer Routle">
+    <Layout description='Singleplayer Routle'>
       <h2 className={styles.header}>Where to?</h2>
       <hr className={styles.underline} />
-      {mapData
-        .sort((a: MapData, b: MapData) => {
-          return a.name > b.name;
-        })
-        .map((map: MapData) => {
-          return (
-            <LoadingLink
-              key={map.name}
-              src={`/singleplayer/${map.name}`}
-              className={styles.option}
-            >
-              {map.name}
-            </LoadingLink>
-          );
-        })}
+      <div className={styles['options-container']}>
+        {mapData
+          .sort((a: MapData, b: MapData) => {
+            return a.name > b.name;
+          })
+          .map((map: MapData) => {
+            return (
+              <LoadingLink
+                key={map.name}
+                src={`/singleplayer/${map.name}`}
+                className={styles.option}
+              >
+                {map.name}
+              </LoadingLink>
+            );
+          })
+        }
+      </div>
       <hr className={styles.underline} />
       <h2 className={styles.header}>Difficulty</h2>
-      <h3 className={styles.tag}>{difficultyText}</h3>
+      <p className={styles.tag}>{difficultyText}</p>
       <Slider
         min={1}
         max={5}

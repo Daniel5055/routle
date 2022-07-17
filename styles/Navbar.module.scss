@@ -9,16 +9,15 @@
   margin: 0 4%;
 }
 
-.header {
+.title {
   @extend .nav-item;
-  font-size: 4rem;
   text-align: center;
   width: min-content;
 }
 
 .nav-button {
   @extend .nav-item;
-  font-size: 2rem;
+  font-size: theme.$header-font;
 }
 
 .seperator {

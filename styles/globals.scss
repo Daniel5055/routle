@@ -9,9 +9,10 @@ body {
   margin: 0;
   font-family: 'Quicksand', cursive;
 
-  font-weight: bold;
   background-color: theme.$background-color;
   color: theme.$foreground-color;
+  height: 100vh;
+  overflow-x: hidden;
 }
 
 a {
@@ -29,6 +30,7 @@ button {
   border: none;
   color: inherit;
   text-decoration: none;
+  font-family: 'Quicksand', cursive;
   &:hover {
     filter: brightness(90%);
   }
@@ -39,16 +41,48 @@ button {
 
 input {
   color: inherit;
-  font-size: 2.5rem;
-  margin-top: 40px;
+  margin-top: 20px;
   text-align: center;
   background-color: transparent;
   font-family: 'Quicksand', cursive;
   border: none;
-  font-weight: bold;
   &:focus {
     outline: none;
   }
-
   caret-color: transparent;
+  font-size: theme.$header-font;
+}
+
+hr {
+  height: 0px;
+  background: theme.$foreground-color;
+  color: theme.$foreground-color;
+  border-color: theme.$foreground-color;
+}
+
+.header {
+  font-weight: normal;
+}
+
+h1 {
+  @extend .header;
+  font-size: theme.$title-font;
+}
+h2 {
+  @extend .header;
+  font-size: theme.$header-font;
+}
+h3 {
+  @extend .header;
+  font-size: theme.$default-font;
+}
+
+p {
+  font-size: theme.$secondary-font;
+}
+
+div {
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
 }

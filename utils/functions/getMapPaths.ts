@@ -15,7 +15,7 @@ export const getMapPaths = () => {
   return parsedData.map((mapData) => {
     return {
       params: {
-        map: mapData.name,
+        map: mapData.webPath,
       },
     };
   });

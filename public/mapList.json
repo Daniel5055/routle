@@ -1,112 +1,129 @@
 [
   {
     "name": "Uk and Ireland",
-    "path": "/maps/uk.png",
+    "webPath": "uk-ireland",
+    "imagePath": "/maps/uk.png",
     "longMax": "1.9201",
     "longMin": "-10.6320",
     "latMax": "59.4629",
     "latMin": "49.8367",
-    "countryCodes": ["GB", "IE"],
+    "countryCodes": { "whole": ["GB", "IE"]},
     "searchRadius": "1.0"
   },
   {
     "name": "Norway",
-    "path": "/maps/norway.png",
+    "webPath": "norway",
+    "imagePath": "/maps/norway.png",
     "longMax": "31.4490",
     "longMin": "4.2616",
     "latMax": "71.3384",
     "latMin": "57.84577",
-    "countryCodes": ["NO"],
+    "countryCodes": { "whole": ["NO"]},
     "searchRadius": "1.0"
   },
   {
     "name": "Italy",
-    "path": "/maps/italy.png",
+    "webPath": "italy",
+    "imagePath": "/maps/italy.png",
     "longMax": "18.5895",
     "longMin": "6.4951",
     "latMax": "47.3478",
     "latMin": "36.4973",
-    "countryCodes": ["IT"],
+    "countryCodes": {
+      "whole": ["IT"],
+      "part": [{
+        "country": "FR",
+        "regions": [94]
+      }]
+    },
     "searchRadius": "1.0"
   },
   {
     "name": "The Lowlands",
-    "path": "/maps/lowlands.png",
+    "webPath": "lowlands",
+    "imagePath": "/maps/lowlands.png",
     "longMax": "7.2752",
     "longMin": "2.4895",
     "latMax": "53.6728",
     "latMin": "49.4255",
-    "countryCodes": ["NL", "BE", "LU"],
+    "countryCodes": { "whole": ["NL", "BE", "LU"] },
     "searchRadius": "1.0"
   },
   {
     "name": "Germany",
-    "path": "/maps/germany.png",
+    "webPath": "germany",
+    "imagePath": "/maps/germany.png",
     "longMax": "15.2470",
     "longMin": "5.6944",
     "latMax": "55.1644",
     "latMin": "47.2073",
-    "countryCodes": ["DE"],
+    "countryCodes": { "whole": ["DE"] },
     "searchRadius": "1.0"
   },
   {
     "name": "Iberia",
-    "path": "/maps/iberia.png",
+    "webPath": "iberia",
+    "imagePath": "/maps/iberia.png",
     "longMax": "4.39106",
     "longMin": "-9.59654",
     "latMax": "43.9828",
     "latMin": "35.9588",
-    "countryCodes": ["ES", "PT", "AD", "GI"],
+    "countryCodes": { "whole": ["ES", "PT", "AD", "GI"] },
     "searchRadius": "1.0"
   },
   {
     "name": "Indian Subcontinent",
-    "path": "/maps/india.png",
+    "webPath": "india-region",
+    "imagePath": "/maps/india.png",
     "longMax": "97.9039",
     "longMin": "67.1767",
     "latMax": "35.7319",
     "latMin": "5.2632",
-    "countryCodes": ["IN", "BD", "BT", "NP", "LK"],
+    "countryCodes": { "whole": ["IN", "BD", "BT", "NP", "LK"] },
     "searchRadius": "1.0"
   },
   {
     "name": "Egypt",
-    "path": "/maps/egypt.png",
+    "webPath": "egypt",
+    "imagePath": "/maps/egypt.png",
     "longMax": "37.2743",
     "longMin": "24.6224",
     "latMax": "32.1793",
     "latMin": "21.7099",
-    "countryCodes": ["EG"],
+    "countryCodes": { "whole": ["EG"] },
     "searchRadius": "1.0"
   },
   {
     "name": "Japan",
-    "path": "/maps/japan.png",
+    "webPath": "japan",
+    "imagePath": "/maps/japan.png",
     "longMax": "150.853",
     "longMin": "128.490",
     "latMax": "46.3507",
     "latMin": "30.1351",
-    "countryCodes": ["JP"],
+    "countryCodes": { "whole": ["JP"] },
     "searchRadius": "1.0"
   },
   {
     "name": "Australia",
-    "path": "/maps/australia.png",
+    "webPath": "australia",
+    "imagePath": "/maps/australia.png",
     "longMax": "154.532",
     "longMin": "112.525",
     "latMax": "-10.0650",
     "latMin": "-44.0693",
-    "countryCodes": ["AU"],
+    "countryCodes": { "whole": ["AU"] },
     "searchRadius": "1.0"
   },
   {
     "name": "Europe",
-    "path": "/maps/europe.png",
+    "webPath": "europe",
+    "imagePath": "/maps/europe.png",
     "longMax": "43.2722",
     "longMin": "-10.8614",
     "latMax": "71.3575",
     "latMin": "29.9009",
-    "countryCodes": [
+    "countryCodes": { "whole": [
       "AT",
       "BE",
       "BG",
@@ -164,17 +181,18 @@
       "JO",
       "PS",
       "LB"
-    ],
+    ] },
     "searchRadius": "0.5"
   },
   {
     "name": "USA",
-    "path": "/maps/usa.png",
+    "webPath": "usa",
+    "imagePath": "/maps/usa.png",
     "longMax": "-65.17820",
     "longMin": "-126.46133",
     "latMax": "49.38370",
     "latMin": "25.13495",
-    "countryCodes": ["US"],
+    "countryCodes": { "whole": ["US"] },
     "searchRadius": "1.0"
   }
 ]

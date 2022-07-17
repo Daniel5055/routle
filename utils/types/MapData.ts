@@ -1,11 +1,12 @@
 export interface MapData {
   name: string;
-  path: string;
+  webPath: string;
+  imagePath: string;
   longMax: number;
   longMin: number;
   latMax: number;
   latMin: number;
-  countryCodes: string[];
+  countryCodes: { whole: string[]; part: { country: string; regions: string[] }[]}
   searchRadius: number;
 }
 

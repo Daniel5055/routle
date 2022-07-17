@@ -63,7 +63,7 @@ const Singleplayer: NextPage = ({
             return (
               <LoadingLink
                 key={map.name}
-                src={`/singleplayer/${map.name}`}
+                src={`/singleplayer/${map.webPath}`}
                 className={styles.option}
               >
                 {map.name}

@@ -12,7 +12,7 @@ import { getCities, getRandomCities } from '../../utils/api';
 import { MapData } from '../../utils/types/MapData';
 import { MapDisplay } from '../../components/common/MapDisplay';
 import { CityPoint } from '../../utils/types/CityPoint';
-import { GeoResponse } from '../../utils/types/GeoResponse';
+import { CityResponse } from '../../utils/types/GeoResponse';
 import {
   calculateDistance,
   convertToRelScreenCoords,
@@ -24,12 +24,8 @@ import Cookies from 'js-cookie';
 
 const Map: NextPage = ({
   mapData,
-  startCity,
-  endCity,
+  map100Cities
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  useEffect(() => {
-    getCities(mapData, 'wake up!');
-  }, [mapData]);
 
   // Translating difficulty
   const getDifficultyModifier = (value: number) => {
@@ -49,26 +45,49 @@ const Map: NextPage = ({
     }
   };
 
+  // Pick a city
+  useEffect(() => {
+    const startCityResponse = map100Cities[Math.floor(Math.random() * map100Cities.length)]
+    let endCityResponse = map100Cities[Math.floor(Math.random() * map100Cities.length)]
+
+    // Iterate until end city is far enough ( a bit shoddy yes I know)
+    const minDist = (mapData.latMax - mapData.latMin) / 4;
+    while (
+      withinRange(startCityResponse.lat, startCityResponse.lng, endCityResponse.lat, endCityResponse.lng, minDist)
+    ) {
+      endCityResponse =
+        map100Cities[Math.floor(Math.random() * map100Cities.length)];
+    }
+
+    const end = { ...convertToRelScreenCoords(mapData, endCityResponse.lat, endCityResponse.lng), name: endCityResponse.name}
+    const start = { ...convertToRelScreenCoords(mapData, startCityResponse.lat, startCityResponse.lng), name: startCityResponse.name}
+
+    setStartPoint(start)
+    setCurrentPoint(start)
+    setEndPoint(end)
+    setTagline(start.name)
+  }, [])
+
+  // City state
+  const nullPoint: CityPoint = { x: 10000, y: 10000, name: '???'}
+  const [startPoint, setStartPoint] = useState<CityPoint>(nullPoint);
+  const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);
+  const [pastPoints, setPastPoints] = useState<CityPoint[]>([]);
+  const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
+  const [currentPoint, setCurrentPoint] = useState<CityPoint>(startPoint);
+
+  // Input state
   const focusInput = useRef<HTMLInputElement>(null);
   setInterval(() => focusInput.current?.focus(), 5);
   const [hasTyped, setHasTyped] = useState(false);
-
-  const svgRef = useRef<SVGSVGElement>(null);
-
   const [entry, setEntry] = useState('');
-  const [tagline, setTagline] = useState(startCity.name);
+
+
+  // Other state
+  const [tagline, setTagline] = useState(startPoint.name);
   const [hasWon, setHasWon] = useState(false);
 
-  const [pastPoints, setPastPoints] = useState<CityPoint[]>([]);
-  const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
-  const [currentPoint, setCurrentPoint] = useState<CityPoint>({
-    ...convertToRelScreenCoords(mapData, startCity.lat, startCity.lng),
-    name: startCity.name,
-  });
-  const [endPoint, setEndPoint] = useState<CityPoint>({
-    ...convertToRelScreenCoords(mapData, endCity.lat, endCity.lng),
-    name: endCity.name,
-  });
+  const svgRef = useRef<SVGSVGElement>(null);
 
   // Multiply search radius by modifier when searchRadius is changed
   const [searchRadius, setSearchRadius] = useState<number>(
@@ -79,8 +98,6 @@ const Map: NextPage = ({
   // To organise the code better
   const handleSearch = (search: string) => {
     getCities(mapData, search)
-      .then((res) => res.json())
-      .then((res: GeoResponse) => res.geonames)
       .then((cities) => {
         // If no hits
         if (cities.length === 0) {
@@ -202,7 +219,7 @@ const Map: NextPage = ({
 
   return (
     <Layout description="Singleplayer Routle">
-      <h3>{`Get from ${startCity.name} to ${endCity.name}`}</h3>
+      <h3>{`Get from ${startPoint.name} to ${endPoint.name}`}</h3>
       <MapDisplay
         mapData={mapData}
         svgRef={svgRef}
@@ -256,32 +273,15 @@ export const getStaticProps: GetStaticProps = async (context) => {
   // Find the map data
   const data = readFileSync('public/mapList.json');
   const parsedData: MapData[] = JSON.parse(data.toString());
-  const mapData = parsedData.find((m) => m.name === map)!!;
+  const mapData = parsedData.find((m) => m.webPath === map)!!;
 
-  const response: GeoResponse = await getRandomCities(mapData).then((value) =>
-    value.json()
-  );
-
-  // Not ready
-  const rand2 = Math.floor(Math.random() * response.geonames.length);
-  let rand3 = Math.floor(Math.random() * response.geonames.length);
-
-  const startCity = response.geonames[rand2];
-  let endCity = response.geonames[rand3];
-
-  const minDist = (mapData.latMax - mapData.latMin) / 4;
-  while (
-    withinRange(startCity.lat, startCity.lng, endCity.lat, endCity.lng, minDist)
-  ) {
-    endCity =
-      response.geonames[Math.floor(Math.random() * response.geonames.length)];
-  }
+  // Get a list of the top 100 cities by pop
+  const map100Cities = await getRandomCities(mapData);
 
   return {
     props: {
       mapData,
-      startCity,
-      endCity,
+      map100Cities,
     },
   };
 };

@@ -17,6 +17,7 @@ const Singleplayer: NextPage = ({
 
   useEffect(() => {
     handleDifficultyChange(difficulty)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleDifficultyChange = (value: number) => {

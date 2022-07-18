@@ -156,7 +156,7 @@ const Map: NextPage = ({
               endPoint.x * svgRef.current!!.clientWidth,
               currentPoint!!.y * svgRef.current!!.clientHeight,
               currentPoint!!.x * svgRef.current!!.clientWidth,
-              searchRadius
+              searchRadius * svgRef.current!!.clientHeight
             )
           ) {
             // You win!
@@ -181,7 +181,7 @@ const Map: NextPage = ({
             closestCity.x * svgRef.current!!.clientWidth,
             currentPoint!!.y * svgRef.current!!.clientHeight,
             currentPoint!!.x * svgRef.current!!.clientWidth,
-            searchRadius
+            searchRadius * svgRef.current!!.clientHeight
           )
         ) {
           // Within circle

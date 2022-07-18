@@ -30,14 +30,14 @@ export const MapDisplay = ({
 
   const onMapLoad = (info: { naturalWidth: number; naturalHeight: number }) => {
     setSearchRadius(
-      (searchRadius * mapContainerRef.current!!.clientHeight) / 8
+      (searchRadius / 8)
     );
 
     setMapRatio(info.naturalWidth / info.naturalHeight);
-    console.log(info.naturalWidth /info.naturalHeight)
   };
 
   const height = 40;
+  const pointRadius=`${0.8 * mapData.searchRadius}%`
 
   return (
     <div
@@ -62,13 +62,13 @@ export const MapDisplay = ({
         <circle
           cx={`${(currentPoint?.x ?? 10000) * 100}%`}
           cy={`${(currentPoint?.y ?? 10000) * 100}%`}
-          r={2}
+          r={pointRadius}
           fill={PointType.current}
         />
         <circle
           cx={`${(endPoint?.x ?? 10000) * 100}%`}
           cy={`${(endPoint?.y ?? 10000) * 100}%`}
-          r={2}
+          r={pointRadius}
           fill={PointType.end}
         />
         {pastPoints.map((p1, i, a) => {
@@ -90,7 +90,7 @@ export const MapDisplay = ({
           <circle
             cx={`${p.x * 100}%`}
             cy={`${p.y * 100}%`}
-            r={2}
+            r={pointRadius}
             fill={PointType.past}
             key={i}
           />
@@ -99,7 +99,7 @@ export const MapDisplay = ({
           <circle
             cx={`${p.x * 100}%`}
             cy={`${p.y * 100}%`}
-            r={2}
+            r={pointRadius}
             fill={PointType.far}
             key={i}
           />
@@ -107,8 +107,9 @@ export const MapDisplay = ({
         <circle
           cx={`${(currentPoint?.x ?? 10000) * 100}%`}
           cy={`${(currentPoint?.y ?? 10000) * 100}%`}
-          r={searchRadius}
+          r={`${searchRadius * 100}%`}
           stroke={PointType.current}
+          strokeWidth={mapData.searchRadius}
           fill="none"
         />
       </svg>

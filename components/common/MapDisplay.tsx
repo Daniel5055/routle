@@ -37,7 +37,7 @@ export const MapDisplay = ({
   };
 
   const height = 40;
-  const pointRadius=`${0.8 * mapData.searchRadius}%`
+  const pointRadius=`${0.75 * mapData.searchRadius}%`
 
   return (
     <div
@@ -107,7 +107,7 @@ export const MapDisplay = ({
         <circle
           cx={`${(currentPoint?.x ?? 10000) * 100}%`}
           cy={`${(currentPoint?.y ?? 10000) * 100}%`}
-          r={`${searchRadius * 100}%`}
+          r={mapRatio ? `${searchRadius * 100}%` : 0}
           stroke={PointType.current}
           strokeWidth={mapData.searchRadius}
           fill="none"

@@ -12,6 +12,18 @@
     "pointRadius": "0.9"
   },
   {
+    "name": "France",
+    "webPath": "france",
+    "imagePath": "/maps/france.png",
+    "longMax": "8.30366",
+    "longMin": "-5.1830",
+    "latMax": "51.2380",
+    "latMin": "42.2462",
+    "countryCodes": { "whole": ["FR"]},
+    "searchRadius": "1.0",
+    "pointRadius": "0.9"
+  },
+  {
     "name": "Norway",
     "webPath": "norway",
     "imagePath": "/maps/norway.png",

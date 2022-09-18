@@ -28,11 +28,10 @@ export const MapDisplay = ({
 
   const onMapLoad = (info: { naturalWidth: number; naturalHeight: number }) => {
     setSearchRadius(searchRadius / 8);
-    console.log(info);
     setMapRatio(info.naturalWidth / info.naturalHeight);
   };
 
-  const height = 50;
+  const height = 40;
   const pointRadius = `${0.6 * mapData.pointRadius}%`;
 
   return (

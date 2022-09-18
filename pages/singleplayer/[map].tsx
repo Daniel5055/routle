@@ -12,7 +12,6 @@ import { getCities, getRandomCities } from '../../utils/api';
 import { MapData } from '../../utils/types/MapData';
 import { MapDisplay } from '../../components/common/MapDisplay';
 import { CityPoint } from '../../utils/types/CityPoint';
-import { CityResponse } from '../../utils/types/GeoResponse';
 import {
   calculateDistance,
   convertToRelScreenCoords,
@@ -21,6 +20,7 @@ import {
 import { useRouter } from 'next/router';
 import styles from '../../styles/Singleplayer.module.scss'
 import Cookies from 'js-cookie';
+import { useCities } from '../../components/common/CityHook';
 
 const Map: NextPage = ({
   mapData,
@@ -45,36 +45,16 @@ const Map: NextPage = ({
     }
   };
 
-  // Pick a city
-  useEffect(() => {
-    const startCityResponse = map100Cities[Math.floor(Math.random() * map100Cities.length)]
-    let endCityResponse = map100Cities[Math.floor(Math.random() * map100Cities.length)]
-
-    // Iterate until end city is far enough ( a bit shoddy yes I know)
-    const minDist = (mapData.latMax - mapData.latMin) / 4;
-    while (
-      withinRange(startCityResponse.lat, startCityResponse.lng, endCityResponse.lat, endCityResponse.lng, minDist)
-    ) {
-      endCityResponse =
-        map100Cities[Math.floor(Math.random() * map100Cities.length)];
-    }
-
-    const end = { ...convertToRelScreenCoords(mapData, endCityResponse.lat, endCityResponse.lng), name: endCityResponse.name}
-    const start = { ...convertToRelScreenCoords(mapData, startCityResponse.lat, startCityResponse.lng), name: startCityResponse.name}
-
-    setStartPoint(start)
-    setCurrentPoint(start)
-    setEndPoint(end)
-    setTagline(start.name)
-  }, [])
-
-  // City state
-  const nullPoint: CityPoint = { x: 10000, y: 10000, name: '???'}
-  const [startPoint, setStartPoint] = useState<CityPoint>(nullPoint);
-  const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);
+  const { startPoint, endPoint} = useCities(mapData, map100Cities);
   const [pastPoints, setPastPoints] = useState<CityPoint[]>([]);
   const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
   const [currentPoint, setCurrentPoint] = useState<CityPoint>(startPoint);
+
+  useEffect(() => {
+    setCurrentPoint(startPoint);
+    setTagline(startPoint.name);
+  }, [startPoint])
+
 
   // Input state
   const focusInput = useRef<HTMLInputElement>(null);

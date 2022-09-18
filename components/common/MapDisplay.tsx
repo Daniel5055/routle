@@ -26,8 +26,6 @@ export const MapDisplay = ({
 }) => {
   const [mapRatio, setMapRatio] = useState(0);
 
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-
   const onMapLoad = (info: { naturalWidth: number; naturalHeight: number }) => {
     setSearchRadius(
       (searchRadius / 8)
@@ -42,7 +40,6 @@ export const MapDisplay = ({
   return (
     <div
       className={styles['map-container']}
-      ref={mapContainerRef}
       style={{ width: `${mapRatio * height}vh`, height: `${height}vh`  }}
     >
       <Image

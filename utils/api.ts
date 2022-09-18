@@ -34,8 +34,6 @@ export const getCities = async (mapData: MapData, name: string) => {
   let path = `https://secure.geonames.org/searchJSON?name_equals=${name}&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055`;
   let pathWhole = path
   let pathPart = path
-  console.log(mapData.countryCodes.whole)
-  console.log(mapData.countryCodes)
   mapData.countryCodes.whole?.forEach((cc) => pathWhole += `&country=${cc}`);
   mapData.countryCodes.part?.forEach((part) => {
     pathPart += `&country=${part.country}`

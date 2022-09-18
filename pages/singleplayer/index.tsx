@@ -57,7 +57,7 @@ const Singleplayer: NextPage = ({
       <div className={styles['options-container']}>
         {mapData
           .sort((a: MapData, b: MapData) => {
-            return a.name > b.name;
+            return a.name.localeCompare(b.name);
           })
           .map((map: MapData) => {
             return (

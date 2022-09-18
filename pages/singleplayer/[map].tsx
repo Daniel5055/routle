@@ -21,6 +21,7 @@ import { useRouter } from 'next/router';
 import styles from '../../styles/Singleplayer.module.scss';
 import Cookies from 'js-cookie';
 import { useCities } from '../../components/common/CityHook';
+import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 
 const Map: NextPage = ({
   mapData,
@@ -171,11 +172,19 @@ const Map: NextPage = ({
         // Clear far points
         setFarPoints([]);
 
-        setTagline(closestCity.name);
+        if (areNamesEqual(closestCity.name, search)) {
+          setTagline(closestCity.name);
+        } else {
+          setTagline(`${closestCity.name} (${formatName(search)})`);
+        }
       } else {
         // Outside of circle
         setFarPoints(farPoints.concat(closestCity));
-        setTagline(`${closestCity.name} is too far!`);
+        if (areNamesEqual(closestCity.name, search)) {
+          setTagline(`${closestCity.name} is too far!`);
+        } else {
+          setTagline(`${closestCity.name} (${formatName(search)}) is too far!`);
+        }
       }
     });
     return;

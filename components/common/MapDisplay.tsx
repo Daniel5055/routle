@@ -1,5 +1,5 @@
 import styles from '../../styles/Singleplayer.module.scss';
-import { RefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, useState } from 'react';
 import { MapData } from '../../utils/types/MapData';
 import { CityPoint, PointType } from '../../utils/types/CityPoint';
 import Image from 'next/image';
@@ -27,6 +27,8 @@ export const MapDisplay = ({
   const [mapRatio, setMapRatio] = useState(0);
 
   const onMapLoad = (info: { naturalWidth: number; naturalHeight: number }) => {
+    // Currently there is a likely a bug in firefox which sometimes
+    // renders the image with square aspect ratio
     setSearchRadius(searchRadius / 8);
     setMapRatio(info.naturalWidth / info.naturalHeight);
   };

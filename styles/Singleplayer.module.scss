@@ -5,6 +5,9 @@
   overflow-y: scroll;
   text-align: center;
   min-height: theme.$header-font;
+  padding: 0px 15px;
+
+  scrollbar-color: theme.$foreground-color transparent;
 }
 
 .option {

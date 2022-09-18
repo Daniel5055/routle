@@ -27,20 +27,18 @@ export const MapDisplay = ({
   const [mapRatio, setMapRatio] = useState(0);
 
   const onMapLoad = (info: { naturalWidth: number; naturalHeight: number }) => {
-    setSearchRadius(
-      (searchRadius / 8)
-    );
-    console.log(info)
+    setSearchRadius(searchRadius / 8);
+    console.log(info);
     setMapRatio(info.naturalWidth / info.naturalHeight);
   };
 
   const height = 50;
-  const pointRadius=`${0.6 * mapData.pointRadius}%`
+  const pointRadius = `${0.6 * mapData.pointRadius}%`;
 
   return (
     <div
       className={styles['map-container']}
-      style={{ width: `${mapRatio * height}vh`, height: `${height}vh`  }}
+      style={{ width: `${mapRatio * height}vh`, height: `${height}vh` }}
     >
       <Image
         src={mapData.imagePath}
@@ -106,7 +104,7 @@ export const MapDisplay = ({
           cy={`${(currentPoint?.y ?? 10000) * 100}%`}
           r={mapRatio ? `${searchRadius * height}vh` : 0}
           stroke={PointType.current}
-          strokeWidth={`${mapData.pointRadius*0.3}%`}
+          strokeWidth={`${mapData.pointRadius * 0.3}%`}
           fill="none"
         />
       </svg>

@@ -6,52 +6,53 @@ import { LoadingLink } from '../../components/common/LoadingLink';
 import { Slider } from '../../components/common/Slider';
 import styles from '../../styles/Singleplayer.module.scss';
 import { MapData } from '../../utils/types/MapData';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 
 const Singleplayer: NextPage = ({
   mapData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-
-  const [difficulty, setDifficulty] = useState(parseInt(Cookies.get('Difficulty') ?? '3.0'))
-  const [difficultyText, setDifficultyText] = useState('Normal')
+  const [difficulty, setDifficulty] = useState(
+    parseInt(Cookies.get('Difficulty') ?? '3.0')
+  );
+  const [difficultyText, setDifficultyText] = useState('Normal');
 
   useEffect(() => {
-    handleDifficultyChange(difficulty)
+    handleDifficultyChange(difficulty);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   const handleDifficultyChange = (value: number) => {
     setDifficulty(value);
-    switch(value) {
+    switch (value) {
       case 1:
-        setDifficultyText('Baby Mode')
-        Cookies.set('Difficulty', '1')
+        setDifficultyText('Baby Mode');
+        Cookies.set('Difficulty', '1');
         break;
       case 2:
-        setDifficultyText('Easy')
-        Cookies.set('Difficulty', '2')
+        setDifficultyText('Easy');
+        Cookies.set('Difficulty', '2');
         break;
       case 3:
-        setDifficultyText('Normal')
-        Cookies.set('Difficulty', '3')
+        setDifficultyText('Normal');
+        Cookies.set('Difficulty', '3');
         break;
       case 4:
-        setDifficultyText('Hard')
-        Cookies.set('Difficulty', '4')
+        setDifficultyText('Hard');
+        Cookies.set('Difficulty', '4');
         break;
       case 5:
-        setDifficultyText('Fredrik mode')
-        Cookies.set('Difficulty', '5')
+        setDifficultyText('Fredrik mode');
+        Cookies.set('Difficulty', '5');
         break;
       default:
-        setDifficultyText('Unknwon territory?: ' + value)
-        Cookies.set('Difficulty', '1.0')
+        setDifficultyText('Unknwon territory?: ' + value);
+        Cookies.set('Difficulty', '1.0');
         break;
     }
-  }
+  };
 
   return (
-    <Layout description='Singleplayer Routle'>
+    <Layout description="Singleplayer Routle">
       <h2 className={styles.header}>Where to?</h2>
       <hr className={styles.underline} />
       <div className={styles['options-container']}>
@@ -69,8 +70,7 @@ const Singleplayer: NextPage = ({
                 {map.name}
               </LoadingLink>
             );
-          })
-        }
+          })}
       </div>
       <hr className={styles.underline} />
       <h2 className={styles.header}>Difficulty</h2>

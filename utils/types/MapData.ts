@@ -6,7 +6,10 @@ export interface MapData {
   longMin: number;
   latMax: number;
   latMin: number;
-  countryCodes: { whole: string[]; part: { country: string; admin1: string[]; admin2: string[] }[]}
+  countryCodes: {
+    whole: string[];
+    part: { country: string; admin1: string[]; admin2: string[] }[];
+  };
   searchRadius: number;
   pointRadius: number;
 }

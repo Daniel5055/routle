@@ -18,18 +18,17 @@ import {
   withinRange,
 } from '../../utils/functions/coords';
 import { useRouter } from 'next/router';
-import styles from '../../styles/Singleplayer.module.scss'
+import styles from '../../styles/Singleplayer.module.scss';
 import Cookies from 'js-cookie';
 import { useCities } from '../../components/common/CityHook';
 
 const Map: NextPage = ({
   mapData,
-  map100Cities
+  map100Cities,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-
   // Translating difficulty
   const getDifficultyModifier = (value: number) => {
-    switch(value) {
+    switch (value) {
       case 1:
         return 4.0;
       case 2:
@@ -45,7 +44,7 @@ const Map: NextPage = ({
     }
   };
 
-  const { startPoint, endPoint} = useCities(mapData, map100Cities);
+  const { startPoint, endPoint } = useCities(mapData, map100Cities);
   const [pastPoints, setPastPoints] = useState<CityPoint[]>([]);
   const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
   const [currentPoint, setCurrentPoint] = useState<CityPoint>(startPoint);
@@ -53,15 +52,13 @@ const Map: NextPage = ({
   useEffect(() => {
     setCurrentPoint(startPoint);
     setTagline(startPoint.name);
-  }, [startPoint])
-
+  }, [startPoint]);
 
   // Input state
   const focusInput = useRef<HTMLInputElement>(null);
   setInterval(() => focusInput.current?.focus(), 5);
   const [hasTyped, setHasTyped] = useState(false);
   const [entry, setEntry] = useState('');
-
 
   // Other state
   const [tagline, setTagline] = useState(startPoint.name);
@@ -71,117 +68,116 @@ const Map: NextPage = ({
 
   // Multiply search radius by modifier when searchRadius is changed
   const [searchRadius, setSearchRadius] = useState<number>(
-    mapData.searchRadius * getDifficultyModifier(parseInt(Cookies.get('Difficulty') ?? '1.0'))
+    mapData.searchRadius *
+      getDifficultyModifier(parseInt(Cookies.get('Difficulty') ?? '1.0'))
   );
-
 
   // To organise the code better
   const handleSearch = (search: string) => {
-    getCities(mapData, search)
-      .then((cities) => {
-        // If no hits
-        if (cities.length === 0) {
-          setTagline(`${search} ???`);
-          return;
-        }
+    getCities(mapData, search).then((cities) => {
+      // If no hits
+      if (cities.length === 0) {
+        setTagline(`${search} ???`);
+        return;
+      }
 
-        // Find the closest among the cities
-        let closestCity: CityPoint | undefined;
-        let closestDistace = 1000000000;
+      // Find the closest among the cities
+      let closestCity: CityPoint | undefined;
+      let closestDistace = 1000000000;
 
-        let endPointCandidate = false;
-        cities
-          .map((city): CityPoint => {
-            // Converting to city point
-            return {
-              ...convertToRelScreenCoords(mapData, city.lat, city.lng),
-              name: city.name,
-            };
-          })
-          .forEach((city, i) => {
-            // Skip if already current city
-            if (city.x === currentPoint?.x && city.y === currentPoint?.y) {
-              return;
-            }
-
-            if (city.x === endPoint?.x && city.y === endPoint?.y) {
-              endPointCandidate = true;
-            }
-
-            // Comparing distances
-            const distance = calculateDistance(
-              city.y,
-              city.x,
-              currentPoint!!.y,
-              currentPoint!!.x
-            );
-
-            if (distance < closestDistace) {
-              closestCity = city;
-              closestDistace = distance;
-            }
-          });
-
-        // This means that there was one hit yet that was the current city so return nothing
-        if (!!!closestCity) {
-          setTagline(`Already in ${search}`);
-          return;
-        }
-
-        // If entered end point city name and is close enough
-        if (endPointCandidate) {
-          if (
-            withinRange(
-              endPoint.y * svgRef.current!!.clientHeight,
-              endPoint.x * svgRef.current!!.clientWidth,
-              currentPoint!!.y * svgRef.current!!.clientHeight,
-              currentPoint!!.x * svgRef.current!!.clientWidth,
-              searchRadius * svgRef.current!!.clientHeight
-            )
-          ) {
-            // You win!
-            // Push current city to past cities
-            setPastPoints(pastPoints.concat(currentPoint!!));
-
-            // Set new city as current city
-            setCurrentPoint(endPoint!!);
-
-            setFarPoints([]);
-
-            setTagline('You win!');
-            setHasWon(true);
+      let endPointCandidate = false;
+      cities
+        .map((city): CityPoint => {
+          // Converting to city point
+          return {
+            ...convertToRelScreenCoords(mapData, city.lat, city.lng),
+            name: city.name,
+          };
+        })
+        .forEach((city, i) => {
+          // Skip if already current city
+          if (city.x === currentPoint?.x && city.y === currentPoint?.y) {
             return;
           }
-        }
 
-        // Is within circle?
+          if (city.x === endPoint?.x && city.y === endPoint?.y) {
+            endPointCandidate = true;
+          }
+
+          // Comparing distances
+          const distance = calculateDistance(
+            city.y,
+            city.x,
+            currentPoint!!.y,
+            currentPoint!!.x
+          );
+
+          if (distance < closestDistace) {
+            closestCity = city;
+            closestDistace = distance;
+          }
+        });
+
+      // This means that there was one hit yet that was the current city so return nothing
+      if (!!!closestCity) {
+        setTagline(`Already in ${search}`);
+        return;
+      }
+
+      // If entered end point city name and is close enough
+      if (endPointCandidate) {
         if (
           withinRange(
-            closestCity.y * svgRef.current!!.clientHeight,
-            closestCity.x * svgRef.current!!.clientWidth,
+            endPoint.y * svgRef.current!!.clientHeight,
+            endPoint.x * svgRef.current!!.clientWidth,
             currentPoint!!.y * svgRef.current!!.clientHeight,
             currentPoint!!.x * svgRef.current!!.clientWidth,
             searchRadius * svgRef.current!!.clientHeight
           )
         ) {
-          // Within circle
-
+          // You win!
           // Push current city to past cities
           setPastPoints(pastPoints.concat(currentPoint!!));
 
           // Set new city as current city
-          setCurrentPoint(closestCity);
+          setCurrentPoint(endPoint!!);
 
-          // Clear far points
           setFarPoints([]);
 
-          setTagline(closestCity.name);
-        } else {
-          // Outside of circle
-          setFarPoints(farPoints.concat(closestCity));
-          setTagline(`${closestCity.name} is too far!`);
+          setTagline('You win!');
+          setHasWon(true);
+          return;
         }
-      });
+      }
+
+      // Is within circle?
+      if (
+        withinRange(
+          closestCity.y * svgRef.current!!.clientHeight,
+          closestCity.x * svgRef.current!!.clientWidth,
+          currentPoint!!.y * svgRef.current!!.clientHeight,
+          currentPoint!!.x * svgRef.current!!.clientWidth,
+          searchRadius * svgRef.current!!.clientHeight
+        )
+      ) {
+        // Within circle
+
+        // Push current city to past cities
+        setPastPoints(pastPoints.concat(currentPoint!!));
+
+        // Set new city as current city
+        setCurrentPoint(closestCity);
+
+        // Clear far points
+        setFarPoints([]);
+
+        setTagline(closestCity.name);
+      } else {
+        // Outside of circle
+        setFarPoints(farPoints.concat(closestCity));
+        setTagline(`${closestCity.name} is too far!`);
+      }
+    });
     return;
   };
 
@@ -195,7 +191,7 @@ const Map: NextPage = ({
     }
   };
 
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <Layout description="Singleplayer Routle">
@@ -213,8 +209,10 @@ const Map: NextPage = ({
       <p className={styles.tagline}>{tagline}</p>
       {hasWon ? (
         <>
-        <h2>Number of cities: {pastPoints.length}</h2>
-        <button onClick={router.reload} className={styles['play-again']}>Play again?</button>
+          <h2>Number of cities: {pastPoints.length}</h2>
+          <button onClick={router.reload} className={styles['play-again']}>
+            Play again?
+          </button>
         </>
       ) : (
         <input
@@ -226,7 +224,7 @@ const Map: NextPage = ({
           onChange={(e) => {
             if (!hasTyped) {
               setHasTyped(true);
-              setEntry(e.target.value.slice(-1))
+              setEntry(e.target.value.slice(-1));
             } else {
               setEntry(e.target.value);
             }
@@ -239,13 +237,12 @@ const Map: NextPage = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  
   const paths = getMapPaths();
   return {
     paths,
     fallback: false,
-  }
-}
+  };
+};
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { map } = context.params!!;

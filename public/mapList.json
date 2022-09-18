@@ -220,6 +220,18 @@
     "pointRadius": "0.6"
   },
   {
+    "name": "Greece",
+    "webPath": "greece",
+    "imagePath": "/maps/greece.png",
+    "longMax": "28.3113",
+    "longMin": "19.5714",
+    "latMax": "41.8292",
+    "latMin": "34.8151",
+    "countryCodes": { "whole": ["GR"] },
+    "searchRadius": "1.0",
+    "pointRadius": "0.9"
+  },
+  {
     "name": "Fife",
     "webPath": "fife",
     "imagePath": "/maps/fife.png",

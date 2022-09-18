@@ -30,12 +30,12 @@ export const MapDisplay = ({
     setSearchRadius(
       (searchRadius / 8)
     );
-
+    console.log(info)
     setMapRatio(info.naturalWidth / info.naturalHeight);
   };
 
   const height = 50;
-  const pointRadius=`${0.75 * mapData.searchRadius}%`
+  const pointRadius=`${0.6 * mapData.pointRadius}%`
 
   return (
     <div
@@ -106,7 +106,7 @@ export const MapDisplay = ({
           cy={`${(currentPoint?.y ?? 10000) * 100}%`}
           r={mapRatio ? `${searchRadius * height}vh` : 0}
           stroke={PointType.current}
-          strokeWidth={`${mapData.searchRadius*0.3}%`}
+          strokeWidth={`${mapData.pointRadius*0.3}%`}
           fill="none"
         />
       </svg>

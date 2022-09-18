@@ -8,6 +8,7 @@ export interface MapData {
   latMin: number;
   countryCodes: { whole: string[]; part: { country: string; regions: string[] }[]}
   searchRadius: number;
+  pointRadius: number;
 }
 
 export interface Bounds {

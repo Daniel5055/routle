@@ -8,7 +8,8 @@
     "latMax": "59.4629",
     "latMin": "49.8367",
     "countryCodes": { "whole": ["GB", "IE"]},
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "0.9"
   },
   {
     "name": "Norway",
@@ -19,7 +20,8 @@
     "latMax": "71.3384",
     "latMin": "57.84577",
     "countryCodes": { "whole": ["NO"]},
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "1.0"
   },
   {
     "name": "Italy",
@@ -36,7 +38,8 @@
         "regions": [94]
       }]
     },
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "1.0"
   },
   {
     "name": "The Lowlands",
@@ -47,7 +50,8 @@
     "latMax": "53.6728",
     "latMin": "49.4255",
     "countryCodes": { "whole": ["NL", "BE", "LU"] },
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "1.0"
   },
   {
     "name": "Germany",
@@ -58,7 +62,8 @@
     "latMax": "55.1644",
     "latMin": "47.2073",
     "countryCodes": { "whole": ["DE"] },
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "1.0"
   },
   {
     "name": "Iberia",
@@ -69,7 +74,8 @@
     "latMax": "43.9828",
     "latMin": "35.9588",
     "countryCodes": { "whole": ["ES", "PT", "AD", "GI"] },
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "0.9"
   },
   {
     "name": "Indian Subcontinent",
@@ -80,7 +86,8 @@
     "latMax": "35.7319",
     "latMin": "5.2632",
     "countryCodes": { "whole": ["IN", "BD", "BT", "NP", "LK"] },
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "0.9"
   },
   {
     "name": "Egypt",
@@ -91,7 +98,8 @@
     "latMax": "32.1793",
     "latMin": "21.7099",
     "countryCodes": { "whole": ["EG"] },
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "1.0"
   },
   {
     "name": "Japan",
@@ -102,7 +110,8 @@
     "latMax": "46.3507",
     "latMin": "30.1351",
     "countryCodes": { "whole": ["JP"] },
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "0.8"
   },
   {
     "name": "Australia",
@@ -113,7 +122,8 @@
     "latMax": "-10.0650",
     "latMin": "-44.0693",
     "countryCodes": { "whole": ["AU"] },
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "0.8"
   },
   {
     "name": "Europe",
@@ -182,7 +192,8 @@
       "PS",
       "LB"
     ] },
-    "searchRadius": "0.5"
+    "searchRadius": "0.5",
+    "pointRadius": "0.5"
   },
   {
     "name": "USA",
@@ -193,6 +204,7 @@
     "latMax": "49.38370",
     "latMin": "25.13495",
     "countryCodes": { "whole": ["US"] },
-    "searchRadius": "1.0"
+    "searchRadius": "1.0",
+    "pointRadius": "0.6"
   }
 ]

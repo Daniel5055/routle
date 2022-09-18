@@ -17,10 +17,15 @@ export const getRandomCities = async (mapData: MapData) => {
   if (mapData.countryCodes.part != null) {
     mapData.countryCodes.part?.forEach((part) => {
       pathPart += `&country=${part.country}`
-      part.regions.forEach((region) => {
+      part.admin1?.forEach((region) => {
         pathPart += `&adminCode1=${region}`
       })
+      part.admin2?.forEach((region) => {
+        pathPart += `&adminCode2=${region}`
+      })
     })
+
+    console.log(pathPart);
     const partResponse = await fetch(pathPart).then((res) => res.json()) as GeoResponse;
     response = response.concat(partResponse.geonames)
   }
@@ -37,12 +42,15 @@ export const getCities = async (mapData: MapData, name: string) => {
   mapData.countryCodes.whole?.forEach((cc) => pathWhole += `&country=${cc}`);
   mapData.countryCodes.part?.forEach((part) => {
     pathPart += `&country=${part.country}`
-    part.regions.forEach((region) => {
+    part.admin1?.forEach((region) => {
       pathPart += `&adminCode1=${region}`
+    })
+    part.admin2?.forEach((region) => {
+      pathPart += `&adminCode2=${region}`
     })
   })
 
-  const wholeResponse = await fetch(pathWhole).then((res) => res.json()) as GeoResponse;
+  const wholeResponse = (mapData.countryCodes.whole ? await fetch(pathWhole).then((res) => res.json()) : { totalResultsCount: 0, geonames: []}) as GeoResponse;
   const partResponse = (mapData.countryCodes.part ? await fetch(pathPart).then((res) => res.json()) : { totalResultsCount: 0, geonames: []}) as GeoResponse;
 
   return wholeResponse.geonames.concat(partResponse.geonames);

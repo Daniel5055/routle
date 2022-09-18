@@ -47,7 +47,7 @@
       "whole": ["IT"],
       "part": [{
         "country": "FR",
-        "regions": [94]
+        "admin1": [94]
       }]
     },
     "searchRadius": "1.0",
@@ -218,5 +218,23 @@
     "countryCodes": { "whole": ["US"] },
     "searchRadius": "1.0",
     "pointRadius": "0.6"
+  },
+  {
+    "name": "Fife",
+    "webPath": "fife",
+    "imagePath": "/maps/fife.png",
+    "longMax": "-2.5785",
+    "longMin": "-3.8698",
+    "latMax": "56.4574",
+    "latMin": "56.0019",
+    "countryCodes": {
+      "part": [{
+        "country": "GB",
+        "admin1": ["SCT"],
+        "admin2": ["V1"]
+      }]
+    },
+    "searchRadius": "1.0",
+    "pointRadius": "0.9"
   }
 ]

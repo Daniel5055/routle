@@ -208,6 +208,7 @@ const Map: NextPage = ({
           </button>
         </>
       ) : (
+        <>
         <input
           type="text"
           aria-label="input"
@@ -224,6 +225,8 @@ const Map: NextPage = ({
           }}
           ref={focusInput}
         />
+        <hr className={styles['input-line']} />
+        </>
       )}
     </Layout>
   );

@@ -15,9 +15,20 @@
   width: min-content;
 }
 
+.title-alone {
+  font-size: theme.$header-font;
+  margin: 0 0%;
+}
+
 .nav-button {
   @extend .nav-item;
   font-size: theme.$header-font;
+}
+
+.nav-button-small {
+  @extend .nav-item;
+  font-size: theme.$secondary-font;
+  margin: 0 10px;
 }
 
 .nav-info {

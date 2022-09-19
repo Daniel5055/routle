@@ -24,6 +24,8 @@ import { useCities } from '../../components/common/CityHook';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { readFile } from 'fs/promises';
 import { fetchDifficulty } from '../../utils/functions/difficulty';
+import { isMobile } from '../../utils/functions/mobile';
+import { useMobile } from '../../components/common/MobileHook';
 
 const Map: NextPage = ({
   mapData,
@@ -40,11 +42,23 @@ const Map: NextPage = ({
     setTagline(startPoint.name);
   }, [startPoint]);
 
+  const isMobile = useMobile();
+
   // Input state
   const focusInput = useRef<HTMLInputElement>(null);
   setInterval(() => focusInput.current?.focus(), 5);
   const [hasTyped, setHasTyped] = useState(false);
   const [entry, setEntry] = useState('');
+
+  // For mobile phones that scroll on input focus
+  useEffect(() => {
+    focusInput.current?.addEventListener('touchstart', (event) => {
+      event.stopPropagation();
+      focusInput.current!.style.transform = 'TranslateY(-10000px)'
+      focusInput.current!.focus();
+      setTimeout(function () { focusInput.current!.style.transform = 'none' }, 100);
+    }, );
+  }, [focusInput])
 
   // Other state
   const [tagline, setTagline] = useState(startPoint.name);
@@ -187,8 +201,8 @@ const Map: NextPage = ({
   const router = useRouter();
 
   return (
-    <Layout description="Singleplayer Routle">
-      <h3>{`Get from ${startPoint.name} to ${endPoint.name}`}</h3>
+    <Layout description="Singleplayer Routle" isMobile={isMobile}>
+      <h3 className={styles[isMobile ? 'prompt-small' : 'prompt']}>{`Get from ${startPoint.name} to ${endPoint.name}`}</h3>
       <MapDisplay
         mapData={mapData}
         svgRef={svgRef}
@@ -198,6 +212,7 @@ const Map: NextPage = ({
         currentPoint={currentPoint}
         pastPoints={pastPoints}
         farPoints={farPoints}
+        isMobile={isMobile}
       />
       <p className={styles.tagline}>{tagline}</p>
       {hasWon ? (

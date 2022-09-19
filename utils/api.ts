@@ -29,7 +29,6 @@ export const getRandomCities = async (mapData: MapData) => {
       });
     });
 
-    console.log(pathPart);
     const partResponse = (await fetch(pathPart).then((res) =>
       res.json()
     )) as GeoResponse;

@@ -5,31 +5,35 @@ import { Post } from "../utils/types/Post";
 import { marked } from "marked";
 import parseHtml from "html-react-parser"
 import style from "../styles/Blog.module.scss"
+import { useMobile } from "../components/common/MobileHook";
 
 const Blog: NextPage = ({
   posts,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
+
+  const isMobile = useMobile();
+
   return (
-  <Layout description="Blog Routle">
-    <div className={style['post-container']}>
-      {posts
-        ?.sort((a: Post, b: Post) => b.id - a.id)
-        .map((post: Post) => {
-          return (
-            <div key={post.id} className={style['post']}>
-              <h2>{post.title}</h2>
-              <h3>{post.date}</h3>
-              <hr />
-              <div className={style['post-body']}>
-                {parseHtml(post.body!)}
+    <Layout description="Blog Routle" isMobile={isMobile}>
+      <div className={style['post-container']}>
+        {posts
+          ?.sort((a: Post, b: Post) => b.id - a.id)
+          .map((post: Post) => {
+            return (
+              <div key={post.id} className={style['post']}>
+                <h2>{post.title}</h2>
+                <h3>{post.date}</h3>
+                <hr />
+                <div className={style['post-body']}>
+                  {parseHtml(post.body!)}
+                </div>
               </div>
-            </div>
-          )
-        })
-      }
-    </div>
-    <hr className={style['bottom-line']} />
-  </Layout>
+            )
+          })
+        }
+      </div>
+      <hr className={style['bottom-line']} />
+    </Layout>
   )
 }
 

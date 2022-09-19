@@ -29,6 +29,15 @@
   margin-bottom: 0px;
 }
 
+.prompt {
+  text-align: center;
+}
+
+.prompt-small {
+  font-size: theme.$secondary-font;
+  text-align: center;
+}
+
 // Game stuff
 .map-container {
   position: relative;

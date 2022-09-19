@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "date": "18/09/2022",
+        "title": "The USA is Bug Free!",
+        "bodyPath": "1.md"
+    },
+    {
+        "id": 2,
+        "date": "19/09/2022",
+        "title": "Post board introduced",
+        "bodyPath": "2.md"
+    }
+]

@@ -35,6 +35,7 @@ export const MapDisplay = ({
 
   const height = 40;
   const pointRadius = `${0.6 * mapData.pointRadius}%`;
+  const strokeWidth = `${0.3 * mapData.pointRadius}%`;
 
   return (
     <div
@@ -79,6 +80,7 @@ export const MapDisplay = ({
               x2={`${p2.x * 100}%`}
               y2={`${p2.y * 100}%`}
               stroke={PointType.past}
+              strokeWidth={strokeWidth}
             />
           );
         })}
@@ -105,7 +107,7 @@ export const MapDisplay = ({
           cy={`${(currentPoint?.y ?? 10000) * 100}%`}
           r={mapRatio ? `${searchRadius * height}vh` : 0}
           stroke={PointType.current}
-          strokeWidth={`${mapData.pointRadius * 0.3}%`}
+          strokeWidth={strokeWidth}
           fill="none"
         />
       </svg>

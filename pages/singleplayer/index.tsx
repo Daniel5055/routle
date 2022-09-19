@@ -7,6 +7,7 @@ import { Slider } from '../../components/common/Slider';
 import styles from '../../styles/Singleplayer.module.scss';
 import { MapData } from '../../utils/types/MapData';
 import Cookies from 'js-cookie';
+import { applyDifficulty } from '../../utils/functions/difficulty';
 
 const Singleplayer: NextPage = ({
   mapData,
@@ -16,40 +17,15 @@ const Singleplayer: NextPage = ({
   );
   const [difficultyText, setDifficultyText] = useState('Normal');
 
+  const handleDifficultyChange = (value: number) => {
+    setDifficulty(value);
+    setDifficultyText(applyDifficulty(value));
+  };
+
   useEffect(() => {
     handleDifficultyChange(difficulty);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleDifficultyChange = (value: number) => {
-    setDifficulty(value);
-    switch (value) {
-      case 1:
-        setDifficultyText('Baby Mode');
-        Cookies.set('Difficulty', '1');
-        break;
-      case 2:
-        setDifficultyText('Easy');
-        Cookies.set('Difficulty', '2');
-        break;
-      case 3:
-        setDifficultyText('Normal');
-        Cookies.set('Difficulty', '3');
-        break;
-      case 4:
-        setDifficultyText('Hard');
-        Cookies.set('Difficulty', '4');
-        break;
-      case 5:
-        setDifficultyText('Fredrik mode');
-        Cookies.set('Difficulty', '5');
-        break;
-      default:
-        setDifficultyText('Unknwon territory?: ' + value);
-        Cookies.set('Difficulty', '1.0');
-        break;
-    }
-  };
 
   return (
     <Layout description="Singleplayer Routle">

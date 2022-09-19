@@ -23,28 +23,12 @@ import Cookies from 'js-cookie';
 import { useCities } from '../../components/common/CityHook';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { readFile } from 'fs/promises';
+import { fetchDifficulty } from '../../utils/functions/difficulty';
 
 const Map: NextPage = ({
   mapData,
   map100Cities,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  // Translating difficulty
-  const getDifficultyModifier = (value: number) => {
-    switch (value) {
-      case 1:
-        return 4.0;
-      case 2:
-        return 2.0;
-      case 3:
-        return 1.0;
-      case 4:
-        return 0.8;
-      case 5:
-        return 0.6;
-      default:
-        return 1.0;
-    }
-  };
 
   const { startPoint, endPoint } = useCities(mapData, map100Cities);
   const [pastPoints, setPastPoints] = useState<CityPoint[]>([]);
@@ -70,8 +54,7 @@ const Map: NextPage = ({
 
   // Multiply search radius by modifier when searchRadius is changed
   const [searchRadius, setSearchRadius] = useState<number>(
-    mapData.searchRadius *
-      getDifficultyModifier(parseInt(Cookies.get('Difficulty') ?? '1.0'))
+    mapData.searchRadius * fetchDifficulty()
   );
 
   // To organise the code better

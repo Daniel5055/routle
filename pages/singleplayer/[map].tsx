@@ -22,6 +22,7 @@ import styles from '../../styles/Singleplayer.module.scss';
 import Cookies from 'js-cookie';
 import { useCities } from '../../components/common/CityHook';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
+import { readFile } from 'fs/promises';
 
 const Map: NextPage = ({
   mapData,
@@ -257,7 +258,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const { map } = context.params!!;
 
   // Find the map data
-  const data = readFileSync('public/mapList.json');
+  const data = await readFile('public/mapList.json');
   const parsedData: MapData[] = JSON.parse(data.toString());
   const mapData = parsedData.find((m) => m.webPath === map)!!;
 

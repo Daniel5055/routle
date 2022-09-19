@@ -1,0 +1,37 @@
+$post-width: 600px;
+
+.post-container {
+    overflow-y: scroll;
+    height: 80vh;
+    padding: 0 15px
+}
+
+.post {
+    position: relative;
+    width: $post-width;
+    margin-bottom: 50px;
+}
+
+.post h2 {
+    text-align: left;
+    margin-bottom: 0;
+    display: inline-block;
+    width: 75%;
+}
+
+.post h3 {
+    text-align: right;
+    margin-bottom: 0;
+    display: inline-block;
+    width: 25%;
+}
+
+.post-body {
+    padding-left: 30px;
+    padding-right: 10px;
+}
+
+.bottom-line {
+    margin: 0 0;
+    width: $post-width + 50;
+}

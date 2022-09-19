@@ -10,5 +10,11 @@
         "date": "19/09/2022",
         "title": "Post board introduced",
         "bodyPath": "2.md"
+    },
+    {
+        "id": 3,
+        "date": "19/09/2022",
+        "title": "Now open source!",
+        "bodyPath": "3.md"
     }
 ]

@@ -20,7 +20,7 @@ const Blog: NextPage = ({
               <h2>{post.title}</h2>
               <h3>{post.date}</h3>
               <hr />
-              <div className = {style['post-body']}>
+              <div className={style['post-body']}>
                 {parseHtml(post.body!)}
               </div>
             </div>
@@ -28,6 +28,7 @@ const Blog: NextPage = ({
         })
       }
     </div>
+    <hr className={style['bottom-line']} />
   </Layout>
   )
 }

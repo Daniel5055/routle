@@ -16,7 +16,7 @@ const Blog: NextPage = ({
         ?.sort((a: Post, b: Post) => b.id - a.id)
         .map((post: Post) => {
           return (
-            <div className={style['post']}>
+            <div key={post.id} className={style['post']}>
               <h2>{post.title}</h2>
               <h3>{post.date}</h3>
               <hr />

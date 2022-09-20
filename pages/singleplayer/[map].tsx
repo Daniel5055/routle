@@ -184,7 +184,21 @@ const Map: NextPage = ({
     }
   };
 
+
   const router = useRouter();
+
+  const loadNewGame = router.reload
+
+  // Enter shortcut for new game
+  useEffect(() => {
+    if (hasWon) {
+      addEventListener('keyup', (e) => {
+        if (e.code === 'Enter') {
+          loadNewGame()
+        }
+      })
+    }
+  }, [hasWon])
 
   return (
     <Layout description="Singleplayer Routle">
@@ -203,7 +217,7 @@ const Map: NextPage = ({
       {hasWon ? (
         <>
           <h2>Number of cities: {pastPoints.length}</h2>
-          <button onClick={router.reload} className={styles['play-again']}>
+          <button onClick={loadNewGame} className={styles['play-again']}>
             Play again?
           </button>
         </>

@@ -1,4 +1,3 @@
-import { readFileSync } from 'fs';
 import type {
   GetStaticPaths,
   GetStaticProps,
@@ -19,11 +18,11 @@ import {
 } from '../../utils/functions/coords';
 import { useRouter } from 'next/router';
 import styles from '../../styles/Singleplayer.module.scss';
-import Cookies from 'js-cookie';
 import { useCities } from '../../components/common/CityHook';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { readFile } from 'fs/promises';
 import { fetchDifficulty } from '../../utils/functions/difficulty';
+import { CityInput } from '../../components/common/CityInput';
 
 const Map: NextPage = ({
   mapData,
@@ -39,12 +38,6 @@ const Map: NextPage = ({
     setCurrentPoint(startPoint);
     setTagline(startPoint.name);
   }, [startPoint]);
-
-  // Input state
-  const focusInput = useRef<HTMLInputElement>(null);
-  setInterval(() => focusInput.current?.focus(), 5);
-  const [placeholder, setPlaceholder] = useState('Enter a city')
-  const [entry, setEntry] = useState('');
 
   // Other state
   const [tagline, setTagline] = useState(startPoint.name);
@@ -174,17 +167,6 @@ const Map: NextPage = ({
     return;
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // On enter press
-    if (e.key === 'Enter') {
-      if (entry.trim().length > 0) {
-        handleSearch(entry.trim());
-        setEntry('');
-      }
-    }
-  };
-
-
   const router = useRouter();
 
   const loadNewGame = router.reload
@@ -222,26 +204,10 @@ const Map: NextPage = ({
           </button>
         </>
       ) : (
-        <>
-        <input
-          type="text"
-          aria-label="input"
-          autoFocus
-          onKeyDown={handleKeyDown}
-          value={entry}
-          onChange={(e) => {
-            setEntry(e.target.value);
-
-            // Clear placeholder after first typing
-            if (placeholder !== '') {
-              setPlaceholder('');
-            }
-          }}
-          placeholder={placeholder}
-          ref={focusInput}
+        <CityInput
+          handleEntry={handleSearch}
+          placeholder="Enter a city"
         />
-        <hr className={styles['input-line']} />
-        </>
       )}
     </Layout>
   );

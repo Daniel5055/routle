@@ -46,6 +46,8 @@ export const getCities = async (mapData: MapData, name: string) => {
   mapData.countryCodes.whole?.forEach((cc) => (pathWhole += `&country=${cc}`));
   mapData.countryCodes.part?.forEach((part) => {
     pathPart += `&country=${part.country}`;
+
+    // Notably currently only works for a single admin code?
     part.admin1?.forEach((region) => {
       pathPart += `&adminCode1=${region}`;
     });

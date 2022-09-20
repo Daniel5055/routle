@@ -43,7 +43,7 @@ const Map: NextPage = ({
   // Input state
   const focusInput = useRef<HTMLInputElement>(null);
   setInterval(() => focusInput.current?.focus(), 5);
-  const [hasTyped, setHasTyped] = useState(false);
+  const [placeholder, setPlaceholder] = useState('Enter a city')
   const [entry, setEntry] = useState('');
 
   // Other state
@@ -214,15 +214,16 @@ const Map: NextPage = ({
           aria-label="input"
           autoFocus
           onKeyDown={handleKeyDown}
-          value={hasTyped ? entry : 'Start typing places'}
+          value={entry}
           onChange={(e) => {
-            if (!hasTyped) {
-              setHasTyped(true);
-              setEntry(e.target.value.slice(-1));
-            } else {
-              setEntry(e.target.value);
+            setEntry(e.target.value);
+
+            // Clear placeholder after first typing
+            if (placeholder !== '') {
+              setPlaceholder('');
             }
           }}
+          placeholder={placeholder}
           ref={focusInput}
         />
         <hr className={styles['input-line']} />

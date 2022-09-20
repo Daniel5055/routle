@@ -28,7 +28,6 @@ const Map: NextPage = ({
   mapData,
   map100Cities,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-
   const { startPoint, endPoint } = useCities(mapData, map100Cities);
   const [pastPoints, setPastPoints] = useState<CityPoint[]>([]);
   const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
@@ -169,18 +168,18 @@ const Map: NextPage = ({
 
   const router = useRouter();
 
-  const loadNewGame = router.reload
+  const loadNewGame = router.reload;
 
   // Enter shortcut for new game
   useEffect(() => {
     if (hasWon) {
       addEventListener('keyup', (e) => {
         if (e.code === 'Enter') {
-          loadNewGame()
+          loadNewGame();
         }
-      })
+      });
     }
-  }, [hasWon])
+  }, [hasWon]);
 
   return (
     <Layout description="Singleplayer Routle">
@@ -204,10 +203,7 @@ const Map: NextPage = ({
           </button>
         </>
       ) : (
-        <CityInput
-          handleEntry={handleSearch}
-          placeholder="Enter a city"
-        />
+        <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
       )}
     </Layout>
   );

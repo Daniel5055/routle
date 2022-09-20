@@ -1,14 +1,13 @@
 import { useRef, useState } from 'react';
-import styles from '../../styles/Singleplayer.module.scss'
+import styles from '../../styles/Singleplayer.module.scss';
 
 export const CityInput = (props: {
   handleEntry: (entry: string) => void;
   placeholder?: string;
 }) => {
-
   // What is shown in the input box before typing, removed after typing
   const [placeholder, setPlaceholder] = useState(props.placeholder ?? '');
-  const [entry, setEntry] = useState('')
+  const [entry, setEntry] = useState('');
 
   // Keep focus on text input on deskop broswer
   const focusInput = useRef<HTMLInputElement>(null);
@@ -46,5 +45,5 @@ export const CityInput = (props: {
       />
       <hr className={styles['input-line']} />
     </>
-  )
-}
+  );
+};

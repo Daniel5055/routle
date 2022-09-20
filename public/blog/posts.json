@@ -1,32 +1,32 @@
 [
-    {
-        "id": 1,
-        "date": "18/09/2022",
-        "title": "The USA is Bug Free!",
-        "bodyPath": "1.md"
-    },
-    {
-        "id": 2,
-        "date": "19/09/2022",
-        "title": "Post board introduced",
-        "bodyPath": "2.md"
-    },
-    {
-        "id": 3,
-        "date": "19/09/2022",
-        "title": "Now open source!",
-        "bodyPath": "3.md"
-    },
-    {
-        "id": 4,
-        "date": "20/09/2022",
-        "title": "Shorter URL!",
-        "bodyPath": "4.md"
-    },
-    {
-        "id": 5,
-        "date": "20/09/2022",
-        "title": "Maps and fixes!",
-        "bodyPath": "5.md"
-    }
+  {
+    "id": 1,
+    "date": "18/09/2022",
+    "title": "The USA is Bug Free!",
+    "bodyPath": "1.md"
+  },
+  {
+    "id": 2,
+    "date": "19/09/2022",
+    "title": "Post board introduced",
+    "bodyPath": "2.md"
+  },
+  {
+    "id": 3,
+    "date": "19/09/2022",
+    "title": "Now open source!",
+    "bodyPath": "3.md"
+  },
+  {
+    "id": 4,
+    "date": "20/09/2022",
+    "title": "Shorter URL!",
+    "bodyPath": "4.md"
+  },
+  {
+    "id": 5,
+    "date": "20/09/2022",
+    "title": "Maps and fixes!",
+    "bodyPath": "5.md"
+  }
 ]

@@ -1,34 +1,34 @@
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
-const DIFFICULTY_COOKIE = 'Difficulty'
+const DIFFICULTY_COOKIE = 'Difficulty';
 
 /**
- * Sets a cookie for difficulty 
- * 
+ * Sets a cookie for difficulty
+ *
  * @param difficulty The difficulty to set to, expects 1 to 5 inclusively
  * @returns The name of the difficlty
  */
 export function applyDifficulty(difficulty: number): string {
-    Cookies.set(DIFFICULTY_COOKIE, difficulty.toString());
-    switch (difficulty) {
-        case 1:
-            return 'Baby Mode';
-        case 2:
-            return 'Easy';
-        case 3:
-            return 'Normal';
-        case 4:
-            return 'Hard';
-        case 5:
-            return 'Fredrik Mode';
-        default:
-            return `Unknown Territory: ${difficulty}`
-    }
+  Cookies.set(DIFFICULTY_COOKIE, difficulty.toString());
+  switch (difficulty) {
+    case 1:
+      return 'Baby Mode';
+    case 2:
+      return 'Easy';
+    case 3:
+      return 'Normal';
+    case 4:
+      return 'Hard';
+    case 5:
+      return 'Fredrik Mode';
+    default:
+      return `Unknown Territory: ${difficulty}`;
+  }
 }
 
 /**
  * Fetches difficulty from cookie and returns as multiplier
- * 
+ *
  * @returns The multiplier to apply to the search radius
  */
 export function fetchDifficulty(): number {

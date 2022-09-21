@@ -26,7 +26,13 @@
   {
     "id": 5,
     "date": "20/09/2022",
-    "title": "Maps and fixes!",
+    "title": "Maps and fixes",
     "bodyPath": "5.md"
+  },
+  {
+   "id": 6,
+    "date": "21/09/2022",
+    "title": "Better mobile support",
+    "bodyPath": "6.md"
   }
 ]

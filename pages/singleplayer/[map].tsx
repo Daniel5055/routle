@@ -182,7 +182,7 @@ const Map: NextPage = ({
         }
       });
     }
-  }, [hasWon]);
+  }, [loadNewGame, hasWon]);
 
   return (
     <Layout description="Singleplayer Routle" isMobile={isMobile}>

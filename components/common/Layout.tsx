@@ -6,10 +6,11 @@ const Layout = (props: {
   children: JSX.Element | JSX.Element[];
   title?: string;
   description?: string;
+  isMobile: boolean;
 }) => {
   return (
     <>
-      <Navbar />
+      <Navbar isMobile={props.isMobile} />
       <div className={styles.container}>
         <Head>
           <title>{props.title ? props.title : 'Routle'}</title>

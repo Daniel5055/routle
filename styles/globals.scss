@@ -11,7 +11,7 @@ body {
 
   background-color: theme.$background-color;
   color: theme.$foreground-color;
-  height: 100vh;
+  height: 100%;
   overflow-x: hidden;
 }
 
@@ -41,7 +41,7 @@ button {
 
 input {
   color: inherit;
-  margin-top: 20px;
+  margin-top: 10px;
   text-align: center;
   background-color: transparent;
   font-family: 'Quicksand', cursive;
@@ -50,7 +50,7 @@ input {
     outline: none;
   }
   caret-color: transparent;
-  font-size: theme.$header-font;
+  font-size: theme.$default-font;
 }
 
 hr {

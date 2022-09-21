@@ -1,19 +1,26 @@
 @use './theme.scss' as theme;
 
-$post-width: 600px;
-
 .post-container {
-  overflow-y: scroll;
-  height: 80vh;
-  padding: 0 15px;
-  scrollbar-color: theme.$foreground-color transparent;
-  scrollbar-width: thin;
+    overflow-y: scroll;
+    height: 70vh;
+    padding: 0 15px;
+    min-height: theme.$header-font;
+    scrollbar-color: theme.$foreground-color transparent;
+    scrollbar-width: thin;
 }
 
 .post {
-  position: relative;
-  width: $post-width;
-  margin-bottom: 50px;
+    position: relative;
+    width: 600px;
+    margin-bottom: 50px;
+}
+
+@media screen and (max-width: 768px) {
+    .post {
+        position: relative;
+        width: 90%;
+        margin-bottom: 50px;
+    }
 }
 
 .post h2 {
@@ -30,12 +37,37 @@ $post-width: 600px;
   width: 25%;
 }
 
+@media screen and (max-width: 500px) {
+    .post h2 {
+        text-align: left;
+        margin-bottom: 0;
+        display: inline-block;
+        width: 75%;
+        font-size: theme.$default-font;
+    }
+
+    .post h3 {
+        text-align: right;
+        margin-bottom: 0;
+        display: inline-block;
+        width: 25%;
+        font-size: theme.$secondary-font;
+    }
+}
+
 .post-body {
   padding-left: 30px;
   padding-right: 10px;
 }
 
 .bottom-line {
-  margin: 0 0;
-  width: $post-width + 50;
+    margin: 0 0;
+    width: 80vh;
+}
+
+@media screen and (max-width: 768px) {
+    .bottom-line {
+        margin: 0 0;
+        width: 100%;
+    }
 }

@@ -14,6 +14,7 @@ export const MapDisplay = ({
   endPoint,
   pastPoints,
   farPoints,
+  isMobile,
 }: {
   mapData: MapData;
   setSearchRadius: (searchRadius: number) => void;
@@ -23,6 +24,7 @@ export const MapDisplay = ({
   endPoint?: CityPoint;
   pastPoints: CityPoint[];
   farPoints: CityPoint[];
+  isMobile: boolean;
 }) => {
   const [mapRatio, setMapRatio] = useState(0);
 
@@ -33,7 +35,7 @@ export const MapDisplay = ({
     setMapRatio(info.naturalWidth / info.naturalHeight);
   };
 
-  const height = 40;
+  const height = isMobile ? 20 : 50;
   const pointRadius = `${0.6 * mapData.pointRadius}%`;
   const strokeWidth = `${0.3 * mapData.pointRadius}%`;
 

@@ -8,10 +8,14 @@ import styles from '../../styles/Singleplayer.module.scss';
 import { MapData } from '../../utils/types/MapData';
 import Cookies from 'js-cookie';
 import { applyDifficulty } from '../../utils/functions/difficulty';
+import { useMobile } from '../../components/common/MobileHook';
 
 const Singleplayer: NextPage = ({
   mapData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
+
+  const isMobile = useMobile();
+
   const [difficulty, setDifficulty] = useState(
     parseInt(Cookies.get('Difficulty') ?? '3.0')
   );
@@ -28,7 +32,7 @@ const Singleplayer: NextPage = ({
   }, []);
 
   return (
-    <Layout description="Singleplayer Routle">
+    <Layout description="Singleplayer Routle" isMobile={isMobile}>
       <h2 className={styles.header}>Where to?</h2>
       <hr className={styles.underline} />
       <div className={styles['options-container']}>

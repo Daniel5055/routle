@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from '../../styles/Singleplayer.module.scss';
 
 export const CityInput = (props: {
@@ -12,6 +12,16 @@ export const CityInput = (props: {
   // Keep focus on text input on deskop broswer
   const focusInput = useRef<HTMLInputElement>(null);
   setInterval(() => focusInput.current?.focus(), 5);
+
+  // For mobile phones that scroll on input focus
+  useEffect(() => {
+    focusInput.current?.addEventListener('touchstart', (event) => {
+      event.stopPropagation();
+      focusInput.current!.style.transform = 'TranslateY(-10000px)'
+      focusInput.current!.focus();
+      setTimeout(function () { focusInput.current!.style.transform = 'none' }, 100);
+    }, );
+  }, [focusInput])
 
   // On enter press
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

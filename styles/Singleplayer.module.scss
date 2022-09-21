@@ -29,6 +29,15 @@
   margin-bottom: 0px;
 }
 
+.prompt {
+  text-align: center;
+}
+
+.prompt-small {
+  font-size: theme.$secondary-font;
+  text-align: center;
+}
+
 // Game stuff
 .map-container {
   position: relative;
@@ -61,4 +70,10 @@
 .input-line {
   width: 20vw;
   margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .input-line {
+    width: 50vw;
+  }
 }

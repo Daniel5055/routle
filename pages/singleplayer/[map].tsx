@@ -23,6 +23,7 @@ import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { readFile } from 'fs/promises';
 import { fetchDifficulty } from '../../utils/functions/difficulty';
 import { CityInput } from '../../components/common/CityInput';
+import { useMobile } from '../../components/common/MobileHook';
 
 const Map: NextPage = ({
   mapData,
@@ -37,6 +38,8 @@ const Map: NextPage = ({
     setCurrentPoint(startPoint);
     setTagline(startPoint.name);
   }, [startPoint]);
+
+  const isMobile = useMobile();
 
   // Other state
   const [tagline, setTagline] = useState(startPoint.name);
@@ -182,8 +185,8 @@ const Map: NextPage = ({
   }, [hasWon]);
 
   return (
-    <Layout description="Singleplayer Routle">
-      <h3>{`Get from ${startPoint.name} to ${endPoint.name}`}</h3>
+    <Layout description="Singleplayer Routle" isMobile={isMobile}>
+      <h3 className={styles[isMobile ? 'prompt-small' : 'prompt']}>{`Get from ${startPoint.name} to ${endPoint.name}`}</h3>
       <MapDisplay
         mapData={mapData}
         svgRef={svgRef}
@@ -193,6 +196,7 @@ const Map: NextPage = ({
         currentPoint={currentPoint}
         pastPoints={pastPoints}
         farPoints={farPoints}
+        isMobile={isMobile}
       />
       <p className={styles.tagline}>{tagline}</p>
       {hasWon ? (

@@ -176,7 +176,7 @@ const Map: NextPage = ({
   // Enter shortcut for new game
   useEffect(() => {
     if (hasWon) {
-      addEventListener('keyup', (e) => {
+      addEventListener('keydown', (e) => {
         if (e.code === 'Enter') {
           loadNewGame();
         }

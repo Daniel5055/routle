@@ -7,7 +7,7 @@ import type {
 import { getMapPaths } from '../../utils/functions/getMapPaths';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/common/Layout';
-import { getCities, getRandomCities } from '../../utils/api';
+import { getCities, getRandomCities } from '../../utils/api/cities';
 import { MapData } from '../../utils/types/MapData';
 import { MapDisplay } from '../../components/common/MapDisplay';
 import { CityPoint } from '../../utils/types/CityPoint';
@@ -24,6 +24,7 @@ import { readFile } from 'fs/promises';
 import { fetchDifficulty } from '../../utils/functions/difficulty';
 import { CityInput } from '../../components/common/CityInput';
 import { useMobile } from '../../components/common/MobileHook';
+import { addMapFinished, addMapPlay } from '../../utils/api/database';
 
 const Map: NextPage = ({
   mapData,
@@ -51,6 +52,10 @@ const Map: NextPage = ({
   const [searchRadius, setSearchRadius] = useState<number>(
     mapData.searchRadius * fetchDifficulty()
   );
+
+  useEffect(() => {
+    addMapPlay(mapData.webPath);
+  }, [])
 
   // To organise the code better
   const handleSearch = (search: string) => {
@@ -181,6 +186,8 @@ const Map: NextPage = ({
           loadNewGame();
         }
       });
+
+      addMapFinished(mapData.webPath)
     }
   }, [loadNewGame, hasWon]);
 

@@ -1,5 +1,5 @@
-import { CityResponse, GeoResponse } from './types/GeoResponse';
-import { MapData } from './types/MapData';
+import { CityResponse, GeoResponse } from '../types/GeoResponse';
+import { MapData } from '../types/MapData';
 
 export const getRandomCities = async (mapData: MapData) => {
   const path = `https://secure.geonames.org/searchJSON?&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055&orderby=population`;

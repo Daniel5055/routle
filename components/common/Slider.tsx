@@ -27,7 +27,7 @@ export const Slider = ({
         type="range"
         min={min}
         max={max}
-        value={value}
+        value={value >= min && value <= max ? value : 3}
         onInput={(e) => {
           setValue(parseInt(e.currentTarget.value));
           setTag(onValueChange(parseInt(e.currentTarget.value)) ?? '');

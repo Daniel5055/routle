@@ -16,6 +16,7 @@ const Singleplayer: NextPage = ({
   const isMobile = useMobile();
 
   const initialDifficulty = useRef(fetchDifficulty(false));
+  const initialText = useRef(applyDifficulty(initialDifficulty.current));
 
   return (
     <Layout description="Singleplayer Routle" isMobile={isMobile}>
@@ -44,7 +45,7 @@ const Singleplayer: NextPage = ({
         min={1}
         max={5}
         initialValue={initialDifficulty.current}
-        initialText={'Normal'}
+        initialText={initialText.current}
         onValueChange={(value) => applyDifficulty(value)}
       />
     </Layout>

@@ -49,7 +49,7 @@ const Map: NextPage = ({
 
   // Multiply search radius by modifier when searchRadius is changed
   const [searchRadius, setSearchRadius] = useState<number>(
-    mapData.searchRadius * fetchDifficulty()
+    mapData.searchRadius * fetchDifficulty(true)
   );
 
   // To organise the code better

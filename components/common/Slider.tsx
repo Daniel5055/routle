@@ -14,7 +14,6 @@ export const Slider = ({
   initialText?: string;
   onValueChange: (value: number) => string | void;
 }) => {
-
   const [value, setValue] = useState(initialValue);
   const [tag, setTag] = useState(initialText);
 

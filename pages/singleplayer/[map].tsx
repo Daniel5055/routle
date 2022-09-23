@@ -186,7 +186,9 @@ const Map: NextPage = ({
 
   return (
     <Layout description="Singleplayer Routle" isMobile={isMobile}>
-      <h3 className={styles[isMobile ? 'prompt-small' : 'prompt']}>{`Get from ${startPoint.name} to ${endPoint.name}`}</h3>
+      <h3
+        className={styles[isMobile ? 'prompt-small' : 'prompt']}
+      >{`Get from ${startPoint.name} to ${endPoint.name}`}</h3>
       <MapDisplay
         mapData={mapData}
         svgRef={svgRef}

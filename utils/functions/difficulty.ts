@@ -35,13 +35,7 @@ export function applyDifficulty(difficulty: number): string {
 export function fetchDifficulty(asMultiplier: boolean = false): number {
   const difficultyEnum = parseInt(Cookies.get(DIFFICULTY_COOKIE) ?? '3');
   if (asMultiplier) {
-    return [
-      4.0,
-      2.0,
-      1.0,
-      0.8,
-      0.6
-    ][difficultyEnum-1] ?? 1.0;
+    return [4.0, 2.0, 1.0, 0.8, 0.6][difficultyEnum - 1] ?? 1.0;
   }
 
   return difficultyEnum;

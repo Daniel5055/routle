@@ -6,13 +6,15 @@ import { LoadingLink } from '../../components/common/LoadingLink';
 import { Slider } from '../../components/common/Slider';
 import styles from '../../styles/Singleplayer.module.scss';
 import { MapData } from '../../utils/types/MapData';
-import { applyDifficulty, fetchDifficulty } from '../../utils/functions/difficulty';
+import {
+  applyDifficulty,
+  fetchDifficulty,
+} from '../../utils/functions/difficulty';
 import { useMobile } from '../../components/common/MobileHook';
 
 const Singleplayer: NextPage = ({
   mapData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-
   const isMobile = useMobile();
 
   const initialDifficulty = useRef(fetchDifficulty(false));

@@ -1,16 +1,15 @@
-import { readFile } from "fs/promises";
-import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
-import Layout from "../components/common/Layout";
-import { Post } from "../utils/types/Post";
-import { marked } from "marked";
-import parseHtml from "html-react-parser"
-import style from "../styles/Blog.module.scss"
-import { useMobile } from "../components/common/MobileHook";
+import { readFile } from 'fs/promises';
+import { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
+import Layout from '../components/common/Layout';
+import { Post } from '../utils/types/Post';
+import { marked } from 'marked';
+import parseHtml from 'html-react-parser';
+import style from '../styles/Blog.module.scss';
+import { useMobile } from '../components/common/MobileHook';
 
 const Blog: NextPage = ({
   posts,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-
   const isMobile = useMobile();
 
   return (
@@ -28,14 +27,13 @@ const Blog: NextPage = ({
                   {parseHtml(post.body!)}
                 </div>
               </div>
-            )
-          })
-        }
+            );
+          })}
       </div>
       <hr className={style['bottom-line']} />
     </Layout>
-  )
-}
+  );
+};
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const posts = await readFile('public/blog/posts.json');

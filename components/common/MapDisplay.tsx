@@ -45,6 +45,7 @@ export const MapDisplay = ({
       style={{ width: `${mapRatio * height}vh`, height: `${height}vh` }}
     >
       <Image
+        // Fix to firefox bug 1758035
         onLoad={(e) => e.currentTarget.decode()}
         src={mapData.imagePath}
         alt="Map"

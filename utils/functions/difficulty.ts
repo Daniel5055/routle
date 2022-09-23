@@ -3,10 +3,10 @@ import Cookies from 'js-cookie';
 const DIFFICULTY_COOKIE = 'Difficulty';
 
 /**
- * Sets a cookie for difficulty
+ * Sets a cookie for difficulty and returns the new text
  *
  * @param difficulty The difficulty to set to, expects 1 to 5 inclusively
- * @returns The name of the difficlty
+ * @returns The name of the difficulty
  */
 export function applyDifficulty(difficulty: number): string {
   Cookies.set(DIFFICULTY_COOKIE, difficulty.toString());
@@ -27,23 +27,22 @@ export function applyDifficulty(difficulty: number): string {
 }
 
 /**
- * Fetches difficulty from cookie and returns as multiplier
+ * Fetches difficulty from cookie and returns as multiplier or normal
  *
- * @returns The multiplier to apply to the search radius
+ * @param asMultiplier whether to return as multiplier or enumerated
+ * @returns The multiplier to apply to the search radius or the difficulty enum
  */
-export function fetchDifficulty(): number {
-  switch (parseInt(Cookies.get(DIFFICULTY_COOKIE) ?? '3')) {
-    case 1:
-      return 4.0;
-    case 2:
-      return 2.0;
-    case 3:
-      return 1.0;
-    case 4:
-      return 0.8;
-    case 5:
-      return 0.6;
-    default:
-      return 1.0;
+export function fetchDifficulty(asMultiplier: boolean = false): number {
+  const difficultyEnum = parseInt(Cookies.get(DIFFICULTY_COOKIE) ?? '3');
+  if (asMultiplier) {
+    return [
+      4.0,
+      2.0,
+      1.0,
+      0.8,
+      0.6
+    ][difficultyEnum-1] ?? 1.0;
   }
+
+  return difficultyEnum;
 }

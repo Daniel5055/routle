@@ -45,6 +45,7 @@ export const MapDisplay = ({
       style={{ width: `${mapRatio * height}vh`, height: `${height}vh` }}
     >
       <Image
+        onLoad={(e) => e.currentTarget.decode()}
         src={mapData.imagePath}
         alt="Map"
         layout="fill"

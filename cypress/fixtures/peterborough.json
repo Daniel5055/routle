@@ -1,0 +1,23 @@
+{
+  "totalResultsCount": 1,
+  "geonames": [
+    {
+      "adminCode1": "ENG",
+      "lng": "-0.24777",
+      "geonameId": 2640354,
+      "toponymName": "Peterborough",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 163379,
+      "countryCode": "GB",
+      "name": "Peterborough",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "seat of a second-order administrative division",
+      "adminName1": "England",
+      "lat": "52.57364",
+      "fcode": "PPLA2"
+    }
+  ]
+}

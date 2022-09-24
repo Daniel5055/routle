@@ -1,0 +1,41 @@
+{
+  "totalResultsCount": 2,
+  "geonames": [
+    {
+      "adminCode1": "ENG",
+      "lng": "-1.4659",
+      "geonameId": 2638077,
+      "toponymName": "Sheffield",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 685368,
+      "countryCode": "GB",
+      "name": "Sheffield",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "seat of a second-order administrative division",
+      "adminName1": "England",
+      "lat": "53.38297",
+      "fcode": "PPLA2"
+    },
+    {
+      "adminCode1": "ENG",
+      "lng": "-5.55519",
+      "geonameId": 12266175,
+      "toponymName": "Sheffield",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 0,
+      "countryCode": "GB",
+      "name": "Sheffield",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "populated place",
+      "adminName1": "England",
+      "lat": "50.08598",
+      "fcode": "PPL"
+    }
+  ]
+}

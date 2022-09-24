@@ -1,0 +1,41 @@
+{
+  "totalResultsCount": 2,
+  "geonames": [
+    {
+      "adminCode1": "ENG",
+      "lng": "-0.12574",
+      "geonameId": 2643743,
+      "toponymName": "London",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 8961989,
+      "countryCode": "GB",
+      "name": "London",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "capital of a political entity",
+      "adminName1": "England",
+      "lat": "51.50853",
+      "fcode": "PPLC"
+    },
+    {
+      "adminCode1": "ENG",
+      "lng": "-0.09184",
+      "geonameId": 2643741,
+      "toponymName": "City of London",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 8072,
+      "countryCode": "GB",
+      "name": "City of London",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "seat of a third-order administrative division",
+      "adminName1": "England",
+      "lat": "51.51279",
+      "fcode": "PPLA3"
+    }
+  ]
+}

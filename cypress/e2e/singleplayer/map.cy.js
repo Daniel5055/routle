@@ -77,17 +77,13 @@ describe('Singleplayer map', () => {
 
     it('submits on enter', () => {
       // Stub geonames
-      cy.intercept('https://secure.geonames.org/searchJSON?*', (req) => {
-        req.reply({
-          statusCode: 200,
-          fixture: 'no-cities.json',
-        });
-      });
+      cy.intercept('GET', 'https://secure.geonames.org/searchJSON?*', { fixture: 'no-cities.json'}).as('request')
 
       const text = 'hello there';
       cy.get('@input').type(text);
       cy.get('@input').type('{enter}');
       cy.get('@input').should('have.attr', 'value', '');
+      cy.wait('@request');
     });
 
     it('hides placeholder on type', () => {

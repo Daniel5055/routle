@@ -29,7 +29,18 @@ const Map: NextPage = ({
   mapData,
   map100Cities,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { startPoint, endPoint } = useCities(mapData, map100Cities);
+  const isMobile = useMobile();
+  const router = useRouter();
+
+  const city1 = parseInt(router.query.c1 as string);
+  const city2 = parseInt(router.query.c2 as string);
+
+  const { startPoint, endPoint } = useCities(
+    mapData,
+    map100Cities,
+    isNaN(city1) ? undefined : city1,
+    isNaN(city2) ? undefined : city2,
+  );
   const [pastPoints, setPastPoints] = useState<CityPoint[]>([]);
   const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
   const [currentPoint, setCurrentPoint] = useState<CityPoint>(startPoint);
@@ -38,8 +49,6 @@ const Map: NextPage = ({
     setCurrentPoint(startPoint);
     setTagline(startPoint.name);
   }, [startPoint]);
-
-  const isMobile = useMobile();
 
   // Other state
   const [tagline, setTagline] = useState(startPoint.name);
@@ -169,7 +178,6 @@ const Map: NextPage = ({
     return;
   };
 
-  const router = useRouter();
 
   const loadNewGame = router.reload;
 

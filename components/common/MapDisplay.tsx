@@ -3,6 +3,7 @@ import { RefObject, useState } from 'react';
 import { MapData } from '../../utils/types/MapData';
 import { CityPoint, PointType } from '../../utils/types/CityPoint';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 // Seperating functionality
 export const MapDisplay = ({
@@ -26,6 +27,10 @@ export const MapDisplay = ({
   farPoints: CityPoint[];
   isMobile: boolean;
 }) => {
+
+  // Have to use to fix firefox bug
+  const router = useRouter();
+
   const [mapRatio, setMapRatio] = useState(0);
 
   const onMapLoad = (info: { naturalWidth: number; naturalHeight: number }) => {
@@ -33,8 +38,14 @@ export const MapDisplay = ({
     // renders the image with square aspect ratio
     setSearchRadius(searchRadius / 8);
     setMapRatio(info.naturalWidth / info.naturalHeight);
-  };
 
+    console.log(info);
+
+    // Until firefox bug 1758035 is fixed
+    if (info.naturalHeight == 1 && info.naturalWidth == 1) {
+      router.reload();
+    }
+  };
   const height = isMobile ? 20 : 50;
   const pointRadius = `${0.6 * mapData.pointRadius}%`;
   const strokeWidth = `${0.3 * mapData.pointRadius}%`;
@@ -45,8 +56,6 @@ export const MapDisplay = ({
       style={{ width: `${mapRatio * height}vh`, height: `${height}vh` }}
     >
       <Image
-        // Fix to firefox bug 1758035
-        onLoad={(e) => e.currentTarget.decode()}
         src={mapData.imagePath}
         alt="Map"
         layout="fill"

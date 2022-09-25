@@ -1,10 +1,10 @@
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
 const POST_COOKIE = 'lastRead';
 
 /**
  * Fetches the last read post using cookies
- * 
+ *
  * @returns The last read post id or undefined if not set
  */
 export function getLastReadPost(): number | undefined {

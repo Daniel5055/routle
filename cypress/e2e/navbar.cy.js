@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import posts from '../../public/blog/posts.json';
+
 describe('navbar', () => {
   beforeEach(() => {
     // Visit blog
@@ -9,12 +11,12 @@ describe('navbar', () => {
 
   context('wide screen', () => {
     it('displays app name', () => {
-      cy.get('header').contains('Routle').as('title').should('be.visible');
+      cy.get('@navbar').contains('Routle').as('title').should('be.visible');
       cy.get('@title').should('have.css', 'font-size', '48px');
     });
 
     it('displays link to singleplayer', () => {
-      cy.get('header')
+      cy.get('@navbar')
         .get('a[href="/singleplayer"]')
         .as('singleplayer')
         .should('be.visible')
@@ -23,7 +25,7 @@ describe('navbar', () => {
     });
 
     it('displays link to multiplayer', () => {
-      cy.get('header')
+      cy.get('@navbar')
         .get('a[href="/multiplayer"]')
         .as('multiplayer')
         .should('be.visible')
@@ -32,11 +34,11 @@ describe('navbar', () => {
     });
 
     it('displays icon to blog', () => {
-      cy.get('header').get('a[href="/blog"] img').should('be.visible');
+      cy.get('@navbar').get('a[href="/blog"] img').should('be.visible');
     });
 
     it('displays line at bottom of header', () => {
-      cy.get('header').get('hr').should('be.visible');
+      cy.get('@navbar').get('hr').should('be.visible');
     });
   });
 
@@ -47,12 +49,12 @@ describe('navbar', () => {
     });
 
     it('displays app name', () => {
-      cy.get('header').contains('Routle').as('title').should('be.visible');
+      cy.get('@navbar').contains('Routle').as('title').should('be.visible');
       cy.get('@title').should('have.css', 'font-size', '32px');
     });
 
     it('displays link to singleplayer', () => {
-      cy.get('header')
+      cy.get('@navbar')
         .get('a[href="/singleplayer"]')
         .as('singleplayer')
         .should('be.visible')
@@ -61,7 +63,7 @@ describe('navbar', () => {
     });
 
     it('displays link to multiplayer', () => {
-      cy.get('header')
+      cy.get('@navbar')
         .get('a[href="/multiplayer"]')
         .as('multiplayer')
         .should('be.visible')
@@ -70,11 +72,69 @@ describe('navbar', () => {
     });
 
     it('displays icon to blog', () => {
-      cy.get('header').get('a[href="/blog"] img').should('be.visible');
+      cy.get('@navbar').get('a[href="/blog"] img').should('be.visible');
     });
 
     it('displays line at bottom of header', () => {
-      cy.get('header').get('hr').should('be.visible');
+      cy.get('@navbar').get('hr').should('be.visible');
+    });
+  });
+
+  describe('blog notifications', () => {
+    beforeEach(() => {
+      cy.get('@navbar').get('a[href="/blog"]').as('icon');
+    });
+
+    it('shows ! for new comers', () => {
+      cy.get('@icon').get('span').contains('!').should('be.visible');
+    });
+
+    it('disappears when visiting blog', () => {
+      cy.get('@icon').click();
+      cy.get('@icon').get('span').contains('!').should('not.exist');
+
+      // Stays disappeared
+      cy.visit('/');
+      cy.get('@icon').get('span').contains('!').should('not.exist');
+    });
+
+    it('shows number of unread', () => {
+      if (posts.length > 1) {
+        cy.setCookie('lastRead', (posts.length - 1).toString());
+        cy.visit('/');
+        cy.get('@icon')
+          .get('span')
+          .last()
+          .should('have.text', '1')
+          .should('be.visible');
+      }
+
+      if (posts.length > 2) {
+        cy.setCookie('lastRead', (posts.length - 2).toString());
+        cy.reload();
+        cy.get('@icon')
+          .get('span')
+          .last()
+          .should('have.text', '2')
+          .should('be.visible');
+      }
+
+      if (posts.length > 3) {
+        cy.setCookie('lastRead', (posts.length - 3).toString());
+        cy.reload();
+        cy.get('@icon')
+          .get('span')
+          .last()
+          .should('have.text', '3')
+          .should('be.visible');
+      }
+    });
+
+    it('does not exist if last read is length of posts', () => {
+      cy.setCookie('lastRead', posts.length.toString());
+      cy.reload();
+      cy.get('@icon').get('span').contains('0').should('not.be.visible');
+      cy.get('@icon').get('span').should('have.length', 2);
     });
   });
 });

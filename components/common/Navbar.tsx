@@ -25,7 +25,7 @@ export default function Navbar(props: { isMobile: boolean }) {
 
   return (
     <header className={styles.container}>
-      <BlogLink/>
+      <BlogLink />
       {portrait ? (
         <>
           <h1 className={styles['title-alone']}>Routle</h1>

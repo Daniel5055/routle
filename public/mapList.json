@@ -150,6 +150,7 @@
     "countryCodes": {
       "whole": [
         "AT",
+        "AX",
         "BE",
         "BG",
         "HR",
@@ -342,5 +343,25 @@
     },
     "searchRadius": "0.6",
     "pointRadius": "0.5"
+  },
+  {
+    "name": "Scandinavia",
+    "webPath": "scandinavia",
+    "imagePath": "/maps/scandinavia.png",
+    "longMax": "32.8349",
+    "longMin": "4.3594",
+    "latMax": "71.2187",
+    "latMin": "54.4244",
+    "countryCodes": {
+      "whole": [
+        "NO",
+        "FI",
+        "SE",
+        "AX",
+        "DK"
+      ]
+    },
+    "searchRadius": "0.9",
+    "pointRadius": "0.8"
   }
 ]

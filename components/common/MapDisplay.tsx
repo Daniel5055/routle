@@ -27,7 +27,6 @@ export const MapDisplay = ({
   farPoints: CityPoint[];
   isMobile: boolean;
 }) => {
-
   // Have to use to fix firefox bug
   const router = useRouter();
 

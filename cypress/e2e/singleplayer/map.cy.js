@@ -65,27 +65,31 @@ describe('Singleplayer map', () => {
     describe('on win', () => {
       beforeEach(() => {
         cy.visit('/singleplayer/uk-ireland?c1=0&c2=52');
-        cy.intercept('https://secure.geonames.org/searchJSON?*Oxford*', { fixture: 'oxford.json'}).as('oxford');
+        cy.intercept('https://secure.geonames.org/searchJSON?*Oxford*', {
+          fixture: 'oxford.json',
+        }).as('oxford');
         cy.get('main>input').type('Oxford{enter}');
         cy.wait('@oxford');
-      })
+      });
 
       it('contains win statement', () => {
-        cy.contains('You win!').should('exist')
-      })
+        cy.contains('You win!').should('exist');
+      });
 
       it('contains city count', () => {
-        cy.get('main>h2').invoke('text').should('match', /^Number of cities: [1-9][0-9]*$/);
-      })
+        cy.get('main>h2')
+          .invoke('text')
+          .should('match', /^Number of cities: [1-9][0-9]*$/);
+      });
 
       it('contains play again button', () => {
         cy.get('main>button').should('have.text', 'Play again?');
-      })
+      });
 
       it('does not contain input', () => {
-        cy.get('main>input').should('not.exist')
-      })
-    })
+        cy.get('main>input').should('not.exist');
+      });
+    });
   });
 
   describe('input', () => {
@@ -107,7 +111,9 @@ describe('Singleplayer map', () => {
 
     it('submits on enter', () => {
       // Stub geonames
-      cy.intercept('GET', 'https://secure.geonames.org/searchJSON?*', { fixture: 'no-cities.json'}).as('request')
+      cy.intercept('GET', 'https://secure.geonames.org/searchJSON?*', {
+        fixture: 'no-cities.json',
+      }).as('request');
 
       const text = 'hello there';
       cy.get('@input').type(text);

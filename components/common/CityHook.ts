@@ -7,7 +7,12 @@ import { CityPoint } from '../../utils/types/CityPoint';
 import { CityResponse } from '../../utils/types/GeoResponse';
 import { MapData } from '../../utils/types/MapData';
 
-export function useCities(mapData: MapData, cities: CityResponse[], city1?: number, city2?: number) {
+export function useCities(
+  mapData: MapData,
+  cities: CityResponse[],
+  city1?: number,
+  city2?: number
+) {
   // Random is not deterministic, so must assign randomness from within hook.
   // This is because both 'server' and client side evaluate random, which leads to weird stuff.
   useEffect(() => {
@@ -41,7 +46,7 @@ export function useCities(mapData: MapData, cities: CityResponse[], city1?: numb
           minDist
         )
       ) {
-        endIndex = Math.floor(Math.random() *  cities.length);
+        endIndex = Math.floor(Math.random() * cities.length);
         endCityResponse = cities[endIndex];
       }
     }

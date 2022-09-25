@@ -39,7 +39,7 @@ const Map: NextPage = ({
     mapData,
     map100Cities,
     isNaN(city1) ? undefined : city1,
-    isNaN(city2) ? undefined : city2,
+    isNaN(city2) ? undefined : city2
   );
   const [pastPoints, setPastPoints] = useState<CityPoint[]>([]);
   const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
@@ -177,7 +177,6 @@ const Map: NextPage = ({
     });
     return;
   };
-
 
   const loadNewGame = router.reload;
 

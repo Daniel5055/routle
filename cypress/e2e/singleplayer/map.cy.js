@@ -13,7 +13,7 @@ describe('Singleplayer map', () => {
       cy.get('header')
         .should('have.length', 1)
         .contains('Routle')
-        .should('exist');
+        .should('be.visible');
     });
 
     it('contains prompt', () => {
@@ -24,8 +24,8 @@ describe('Singleplayer map', () => {
     });
 
     it('contains map', () => {
-      cy.get('main div img').as('img').should('exist');
-      cy.get('main div svg').as('svg').should('exist');
+      cy.get('main div img').as('img').should('be.visible');
+      cy.get('main div svg').as('svg').should('be.visible');
 
       // Ensure that img and svg aligned properly
       cy.get('@img').then(($img) => {
@@ -54,7 +54,7 @@ describe('Singleplayer map', () => {
       cy.get('@input').should('have.attr', 'value', '');
 
       // Underlined
-      cy.get('@input').next('hr').should('exist');
+      cy.get('@input').next('hr').should('be.visible');
     });
 
     it('does not contain win elements', () => {
@@ -73,7 +73,7 @@ describe('Singleplayer map', () => {
       });
 
       it('contains win statement', () => {
-        cy.contains('You win!').should('exist');
+        cy.contains('You win!').should('be.visible');
       });
 
       it('contains city count', () => {

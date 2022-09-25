@@ -31,6 +31,9 @@ describe('gameplay', () => {
     }).as('wrong');
 
     cy.visit('/singleplayer/uk-ireland?c1=0&c2=59');
+    // FIXME
+    // Have to wait currently as may generate different cities before loading, may need to fix
+    cy.wait(50);
     cy.get('main>input').as('input');
     cy.get('main>p').as('tagline');
   });

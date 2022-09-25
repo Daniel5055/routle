@@ -12,7 +12,7 @@ describe('Singleplayer menu', () => {
     cy.get('header')
       .should('have.length', 1)
       .contains('Routle')
-      .should('exist');
+      .should('be.visible');
   });
 
   describe('map list', () => {
@@ -20,7 +20,7 @@ describe('Singleplayer menu', () => {
       // Maps that should be options
       const maps = ['Europe', 'Italy', 'Norway', 'Uk and Ireland', 'USA'];
 
-      cy.contains('Where to?').should('exist');
+      cy.contains('Where to?').should('be.visible');
 
       // Should have a fair number of maps to choose from
       // At least the core ones
@@ -66,14 +66,14 @@ describe('Singleplayer menu', () => {
 
   describe('difficulty', () => {
     it('is visible', () => {
-      cy.contains('Difficulty').should('exist');
+      cy.contains('Difficulty').should('be.visible');
       cy.get('input[type=range]').should('have.length', 1).as('range');
       cy.get('@range').siblings('p').should('have.length', 1);
     });
 
     it('starts on normal', () => {
       cy.get('input[type=range]').as('range');
-      cy.get('@range').siblings('p').contains('Normal').should('exist');
+      cy.get('@range').siblings('p').contains('Normal').should('be.visible');
       cy.get('@range').should('have.attr', 'value', '3');
       cy.getCookie('Difficulty').should('have.property', 'value', '3');
     });

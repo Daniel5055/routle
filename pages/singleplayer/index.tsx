@@ -1,35 +1,24 @@
 import { readFileSync } from 'fs';
 import type { GetStaticProps, InferGetStaticPropsType, NextPage } from 'next';
-import { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import Layout from '../../components/common/Layout';
 import { LoadingLink } from '../../components/common/LoadingLink';
 import { Slider } from '../../components/common/Slider';
 import styles from '../../styles/Singleplayer.module.scss';
 import { MapData } from '../../utils/types/MapData';
-import Cookies from 'js-cookie';
-import { applyDifficulty } from '../../utils/functions/difficulty';
+import {
+  applyDifficulty,
+  fetchDifficulty,
+} from '../../utils/functions/difficulty';
 import { useMobile } from '../../components/common/MobileHook';
 
 const Singleplayer: NextPage = ({
   mapData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-
   const isMobile = useMobile();
 
-  const [difficulty, setDifficulty] = useState(
-    parseInt(Cookies.get('Difficulty') ?? '3.0')
-  );
-  const [difficultyText, setDifficultyText] = useState('Normal');
-
-  const handleDifficultyChange = (value: number) => {
-    setDifficulty(value);
-    setDifficultyText(applyDifficulty(value));
-  };
-
-  useEffect(() => {
-    handleDifficultyChange(difficulty);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const initialDifficulty = useRef(fetchDifficulty(false));
+  const initialText = useRef(applyDifficulty(initialDifficulty.current));
 
   return (
     <Layout description="Singleplayer Routle" isMobile={isMobile}>
@@ -54,12 +43,12 @@ const Singleplayer: NextPage = ({
       </div>
       <hr className={styles.underline} />
       <h2 className={styles.header}>Difficulty</h2>
-      <p className={styles.tag}>{difficultyText}</p>
       <Slider
         min={1}
         max={5}
-        value={difficulty}
-        setValue={handleDifficultyChange}
+        initialValue={initialDifficulty.current}
+        initialText={initialText.current}
+        onValueChange={(value) => applyDifficulty(value)}
       />
     </Layout>
   );

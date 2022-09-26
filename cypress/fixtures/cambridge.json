@@ -1,0 +1,41 @@
+{
+  "totalResultsCount": 2,
+  "geonames": [
+    {
+      "adminCode1": "ENG",
+      "lng": "0.11667",
+      "geonameId": 2653941,
+      "toponymName": "Cambridge",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 158434,
+      "countryCode": "GB",
+      "name": "Cambridge",
+      "fclName": "city,village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "seat of a second-order administrative division",
+      "adminName1": "England",
+      "lat": "52.2",
+      "fcode": "PPLA2"
+    },
+    {
+      "adminCode1": "ENG",
+      "lng": "-2.36667",
+      "geonameId": 2653942,
+      "toponymName": "Cambridge",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 394,
+      "countryCode": "GB",
+      "name": "Cambridge",
+      "fclName": "city,village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "populated place",
+      "adminName1": "England",
+      "lat": "51.73333",
+      "fcode": "PPL"
+    }
+  ]
+}

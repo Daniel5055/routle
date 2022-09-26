@@ -1,0 +1,23 @@
+{
+  "totalResultsCount": 1,
+  "geonames": [
+    {
+      "adminCode1": "ENG",
+      "lng": "-1.08271",
+      "geonameId": 2633352,
+      "toponymName": "York",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 153717,
+      "countryCode": "GB",
+      "name": "York",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "seat of a second-order administrative division",
+      "adminName1": "England",
+      "lat": "53.95763",
+      "fcode": "PPLA2"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "totalResultsCount": 2,
+  "geonames": [
+    {
+      "adminCode1": "ENG",
+      "lng": "-1.25596",
+      "geonameId": 2640729,
+      "toponymName": "Oxford",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 171380,
+      "countryCode": "GB",
+      "name": "Oxford",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "seat of a second-order administrative division",
+      "adminName1": "England",
+      "lat": "51.75222",
+      "fcode": "PPLA2"
+    },
+    {
+      "adminCode1": "C",
+      "lng": "-9.02145",
+      "geonameId": 12105363,
+      "toponymName": "Oxford",
+      "countryId": "2963597",
+      "fcl": "P",
+      "population": 0,
+      "countryCode": "IE",
+      "name": "Oxford",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "C" },
+      "countryName": "Ireland",
+      "fcodeName": "populated locality",
+      "adminName1": "Connaught",
+      "lat": "53.84442",
+      "fcode": "PPLL"
+    }
+  ]
+}

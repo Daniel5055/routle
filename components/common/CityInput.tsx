@@ -17,11 +17,13 @@ export const CityInput = (props: {
   useEffect(() => {
     focusInput.current?.addEventListener('touchstart', (event) => {
       event.stopPropagation();
-      focusInput.current!.style.transform = 'TranslateY(-10000px)'
+      focusInput.current!.style.transform = 'TranslateY(-10000px)';
       focusInput.current!.focus();
-      setTimeout(function () { focusInput.current!.style.transform = 'none' }, 100);
-    }, );
-  }, [focusInput])
+      setTimeout(function () {
+        focusInput.current!.style.transform = 'none';
+      }, 100);
+    });
+  }, [focusInput]);
 
   // On enter press
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

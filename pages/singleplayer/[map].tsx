@@ -24,7 +24,11 @@ import { readFile } from 'fs/promises';
 import { fetchDifficulty } from '../../utils/functions/difficulty';
 import { CityInput } from '../../components/common/CityInput';
 import { useMobile } from '../../components/common/MobileHook';
-import { addCityEntered, addMapFinished, addMapPlay } from '../../utils/api/database';
+import {
+  addCityEntered,
+  addMapFinished,
+  addMapPlay,
+} from '../../utils/api/database';
 
 const Map: NextPage = ({
   mapData,
@@ -65,7 +69,7 @@ const Map: NextPage = ({
   // On page load
   useEffect(() => {
     addMapPlay(mapData.webPath);
-  }, [])
+  }, []);
 
   // To organise the code better
   const handleSearch = (search: string) => {
@@ -199,7 +203,7 @@ const Map: NextPage = ({
         }
       });
 
-      addMapFinished(mapData.webPath)
+      addMapFinished(mapData.webPath);
     }
   }, [loadNewGame, hasWon]);
 

@@ -61,7 +61,7 @@ export function useCities(
         startCityResponse.lng
       ),
       name: startCityResponse.name,
-      id: startCityResponse.geonameId
+      id: startCityResponse.geonameId,
     });
     setEndPoint({
       ...convertToRelScreenCoords(
@@ -70,7 +70,7 @@ export function useCities(
         endCityResponse.lng
       ),
       name: endCityResponse.name,
-      id: startCityResponse.geonameId
+      id: startCityResponse.geonameId,
     });
   }, [cities, mapData, city1, city2]);
 

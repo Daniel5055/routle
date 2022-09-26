@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin'
+import * as admin from 'firebase-admin';
 import { applicationDefault } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 
@@ -10,10 +10,10 @@ const app = (() => {
   } catch {
     // Init and configure app
     return admin.initializeApp({
-        credential: applicationDefault(),
-        databaseURL: 'https://routle-db.firebaseio.com'
-      })
+      credential: applicationDefault(),
+      databaseURL: 'https://routle-db.firebaseio.com',
+    });
   }
-})()
+})();
 
 export const db = getFirestore(app);

@@ -61,6 +61,7 @@ export function useCities(
         startCityResponse.lng
       ),
       name: startCityResponse.name,
+      id: startCityResponse.geonameId
     });
     setEndPoint({
       ...convertToRelScreenCoords(
@@ -69,10 +70,11 @@ export function useCities(
         endCityResponse.lng
       ),
       name: endCityResponse.name,
+      id: startCityResponse.geonameId
     });
   }, [cities, mapData, city1, city2]);
 
-  const nullPoint = { x: 10000, y: 10000, name: '???' };
+  const nullPoint = { x: 10000, y: 10000, name: '???', id: 0 };
   const [startPoint, setStartPoint] = useState<CityPoint>(nullPoint);
   const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);
   return { startPoint, endPoint };

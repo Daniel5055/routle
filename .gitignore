@@ -34,3 +34,6 @@ key.json
 
 # typescript
 *.tsbuildinfo
+
+# cypress
+cypress/videos

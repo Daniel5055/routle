@@ -196,6 +196,7 @@ describe('gameplay', () => {
     cy.get('main svg circle').should('have.length', 3);
   });
 
+  // TODO write tests to assert that data not gathered in certain instances
   describe.only('data gathering', () => {
     beforeEach(() => {
       cy.intercept('/api/uk-ireland/play', '').as('api-play');

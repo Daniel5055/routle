@@ -7,7 +7,7 @@ import type {
 import { getMapPaths } from '../../utils/functions/getMapPaths';
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/common/Layout';
-import { getCities, getRandomCities } from '../../utils/api';
+import { getCities, getRandomCities } from '../../utils/api/cities';
 import { MapData } from '../../utils/types/MapData';
 import { MapDisplay } from '../../components/common/MapDisplay';
 import { CityPoint } from '../../utils/types/CityPoint';
@@ -24,6 +24,11 @@ import { readFile } from 'fs/promises';
 import { fetchDifficulty } from '../../utils/functions/difficulty';
 import { CityInput } from '../../components/common/CityInput';
 import { useMobile } from '../../components/common/MobileHook';
+import {
+  addCityEntered,
+  addMapFinished,
+  addMapPlay,
+} from '../../utils/api/database';
 
 const Map: NextPage = ({
   mapData,
@@ -61,6 +66,11 @@ const Map: NextPage = ({
     mapData.searchRadius * fetchDifficulty(true)
   );
 
+  // On page load
+  useEffect(() => {
+    addMapPlay(mapData.webPath);
+  }, []);
+
   // To organise the code better
   const handleSearch = (search: string) => {
     getCities(mapData, search).then((cities) => {
@@ -81,6 +91,7 @@ const Map: NextPage = ({
           return {
             ...convertToRelScreenCoords(mapData, city.lat, city.lng),
             name: city.name,
+            id: city.geonameId,
           };
         })
         .forEach((city, i) => {
@@ -151,6 +162,9 @@ const Map: NextPage = ({
       ) {
         // Within circle
 
+        // Add to db
+        addCityEntered(mapData.webPath, closestCity.id);
+
         // Push current city to past cities
         setPastPoints(pastPoints.concat(currentPoint!!));
 
@@ -180,7 +194,7 @@ const Map: NextPage = ({
 
   const loadNewGame = router.reload;
 
-  // Enter shortcut for new game
+  // On game won
   useEffect(() => {
     if (hasWon) {
       addEventListener('keydown', (e) => {
@@ -188,6 +202,8 @@ const Map: NextPage = ({
           loadNewGame();
         }
       });
+
+      addMapFinished(mapData.webPath);
     }
   }, [loadNewGame, hasWon]);
 

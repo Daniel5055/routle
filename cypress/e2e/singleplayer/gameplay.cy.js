@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 // Helper functions
 const tooFar = (city) => `${city} is too far!`;
 const inRange = (city) => city;
@@ -192,5 +194,41 @@ describe('gameplay', () => {
     cy.get('@tagline').should('have.text', noCity(city));
 
     cy.get('main svg circle').should('have.length', 3);
+  });
+
+  // TODO write tests to assert that data not gathered in certain instances
+  describe.only('data gathering', () => {
+    beforeEach(() => {
+      cy.intercept('/api/uk-ireland/play', '').as('api-play');
+      cy.intercept('/api/uk-ireland/finish', '').as('api-finish');
+      cy.intercept('/api/uk-ireland/city', '').as('api-city');
+    });
+
+    it('counts when game played', () => {
+      // Should send play request when loading page
+      cy.visit('/singleplayer/uk-ireland');
+      cy.wait('@api-play').its('response.statusCode').should('eq', 200);
+    });
+
+    it('counts cities entered', () => {
+      const cities = ['Cambridge', 'Peterborough', 'Sheffield'];
+
+      cities.forEach((city) => {
+        cy.get('@input').type(`${city}{enter}`);
+        cy.wait('@api-city').its('request.body.id').should('be.greaterThan', 0);
+      });
+    });
+
+    it('counts when game finished', () => {
+      const cities = ['Cambridge', 'Peterborough', 'Sheffield', 'York'];
+
+      cities.forEach((city) => {
+        cy.get('@input').type(`${city}{enter}`);
+      });
+
+      // Make sure game is won
+      cy.get('@tagline').should('have.text', `You win!`);
+      cy.wait('@api-finish').its('response.statusCode').should('eq', 200);
+    });
   });
 });

@@ -82,7 +82,7 @@ const Map: NextPage = ({
 
       // Find the closest among the cities
       let closestCity: CityPoint | undefined;
-      let closestDistace = 1000000000;
+      let closestDistance = 1000000000;
 
       let endPointCandidate = false;
       cities
@@ -112,9 +112,9 @@ const Map: NextPage = ({
             currentPoint!!.x
           );
 
-          if (distance < closestDistace) {
+          if (distance < closestDistance) {
             closestCity = city;
-            closestDistace = distance;
+            closestDistance = distance;
           }
         });
 

@@ -1,7 +1,14 @@
 import { MapData } from '../types/MapData';
-import { CityPoint } from '../types/CityPoint';
 
-const flattenCoords = (
+/**
+ * Converts latitude and longitude coordinates to 2D coordinates based on the
+ * Web Mercator Projection.
+ * 
+ * @param lat the latitude as a decimal
+ * @param long the longitude as a decimal
+ * @returns an object containing latitude and longitude for a 2D plane
+ */
+export const flattenCoords = (
   lat: number,
   long: number
 ): {
@@ -14,42 +21,69 @@ const flattenCoords = (
   };
 };
 
-const flattenLat = (lat: number) => {
-  return Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
-};
-
+/**
+ * Calculates the distance between to flattened coordinates using pythagoras.
+ * 
+ * @param flatLat1 flattened latitude of first coordinate
+ * @param flatLong1 flattened longitude of first coordinate
+ * @param flatLat2 flattened latitude of second coordinate
+ * @param flatLong2 flattened longitude of second coordinate
+ * @returns the distance between the two coordinates
+ */
 export const calculateDistance = (
-  lat1: number,
-  long1: number,
-  lat2: number,
-  long2: number
-) => {
+  flatLat1: number,
+  flatLong1: number,
+  flatLat2: number,
+  flatLong2: number
+): number => {
   // Good ol pythagoras
-  return Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(long1 - long2, 2));
+  return Math.sqrt(Math.pow(flatLat1 - flatLat2, 2) + Math.pow(flatLong1 - flatLong2, 2));
 };
 
+/**
+ * Determines whether two flattened coordinates are within range of each other.
+ * 
+ * @param flatLat1 flattened latitude of first coordinate
+ * @param flatLong1 flattened longitude of first coordinate
+ * @param flatLat2 flattened latitude of second coordinate
+ * @param flatLong2 flattened longitude of second coordinate
+ * @param distance the maximum distance the coordinates can be to in range
+ * @returns the distance between the two coordinates
+ */
 export const withinRange = (
-  lat1: number,
-  long1: number,
-  lat2: number,
-  long2: number,
+  flatLat1: number,
+  flatLong1: number,
+  flatLat2: number,
+  flatLong2: number,
   distance: number
-) => {
-  return calculateDistance(lat1, long1, lat2, long2) <= distance;
+): boolean => {
+  return calculateDistance(flatLat1, flatLong1, flatLat2, flatLong2) <= distance;
 };
 
+/**
+ * Converts spherical coordinates to flattened coordinates relative to a bounds.
+ * 
+ * @param mapData data containing information on the bounds of the coordinates
+ * @param lat the latitude of the coordinate
+ * @param long the longitude of the coordinate
+ * @returns an object containing the relative flattened coordinates, should be 
+ * between 0 and 1 in theory 
+ */
 export const convertToRelScreenCoords = (
   mapData: MapData,
   lat: number,
   long: number
-) => {
-  const flattened = flattenCoords(lat, long);
+): {x: number, y: number} => {
+  // First flatten the coordinates to 2d plane
+  const flattenedCoords = flattenCoords(lat, long);
+  const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
+  const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
 
   const x =
-    (flattened.long - mapData.longMin) / (mapData.longMax - mapData.longMin);
+    (flattenedCoords.long - flattenedMin.long) / (flattenedMax.long - flattenedMin.long);
   const y =
-    (flattenLat(mapData.latMax) - flattened.lat) /
-    (flattenLat(mapData.latMax) - flattenLat(mapData.latMin));
+    (flattenedMax.lat - flattenedCoords.lat) /
+    (flattenedMax.lat - flattenedMin.lat);
 
-  return { x: x, y: y };
+  return { x, y };
 };

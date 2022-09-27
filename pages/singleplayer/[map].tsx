@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import { getCities, getRandomCities } from '../../utils/api/cities';
 import { MapData } from '../../utils/types/MapData';
-import { MapDisplay } from '../../components/common/MapDisplay';
+import { MapDisplay } from '../../components/map/MapDisplay';
 import { CityPoint } from '../../utils/types/CityPoint';
 import {
   calculateDistance,
@@ -18,12 +18,12 @@ import {
 } from '../../utils/functions/coords';
 import { useRouter } from 'next/router';
 import styles from '../../styles/Singleplayer.module.scss';
-import { useCities } from '../../components/common/CityHook';
+import { useCities } from '../../components/hooks/CityHook';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { readFile } from 'fs/promises';
 import { fetchDifficulty } from '../../utils/functions/difficulty';
-import { CityInput } from '../../components/common/CityInput';
-import { useMobile } from '../../components/common/MobileHook';
+import { CityInput } from '../../components/map/CityInput';
+import { useMobile } from '../../components/hooks/MobileHook';
 import {
   addCityEntered,
   addMapFinished,

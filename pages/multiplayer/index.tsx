@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import Layout from '../../components/common/Layout';
-import { useMobile } from '../../components/common/MobileHook';
+import { useMobile } from '../../components/hooks/MobileHook';
 
 const Multiplayer: NextPage = () => {
   const isMobile = useMobile();

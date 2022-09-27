@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import info from '../../public/info.png';
 import styles from '../../styles/Navbar.module.scss';
-import { NotificationBubble } from './NotificationBubble';
+import { NotificationBubble } from '../common/NotificationBubble';
 import { getLastReadPost } from '../../utils/functions/lastReadPost';
 import posts from '../../public/blog/posts.json';
 

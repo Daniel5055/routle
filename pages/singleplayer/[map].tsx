@@ -47,7 +47,7 @@ const Map: NextPage = ({
     isNaN(city2) ? undefined : city2
   );
 
-  // Ensure this is retained
+  // Ensure 'this' is retained and correct
   queryCity = queryCity.bind({ cities });
 
   // Other state
@@ -63,7 +63,7 @@ const Map: NextPage = ({
     setTagline(cities.start.name);
   }, [cities.start.name]);
 
-  // To organise the code better
+  // Pushing search to city hook and modifying ui based on result
   const handleSearch = async (search: string) => {
     function format(name: string, search: string) {
       if (areNamesEqual(name, search)) {

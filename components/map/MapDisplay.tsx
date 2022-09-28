@@ -1,9 +1,8 @@
 import styles from '../../styles/Singleplayer.module.scss';
-import { RefObject, useState } from 'react';
+import { useState } from 'react';
 import { MapData } from '../../utils/types/MapData';
 import { CityPoint, PointType } from '../../utils/types/CityPoint';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { flattenCoords } from '../../utils/functions/coords';
 
 // Separating functionality
@@ -38,6 +37,7 @@ export const MapDisplay = ({
   const pointRadius = `${0.6 * mapData.pointRadius}%`;
   const strokeWidth = `${0.3 * mapData.pointRadius}%`;
 
+  // Rendering the map and the cities
   return (
     <div
       className={styles['map-container']}

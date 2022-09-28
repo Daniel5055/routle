@@ -4,41 +4,45 @@ import { MapData } from '../../utils/types/MapData';
 import { CityPoint, PointType } from '../../utils/types/CityPoint';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { flattenCoords } from '../../utils/functions/coords';
 
-// Seperating functionality
+// Separating functionality
 export const MapDisplay = ({
   mapData,
-  setSearchRadius,
-  searchRadius,
-  svgRef,
-  currentPoint,
-  endPoint,
-  pastPoints,
-  farPoints,
+  searchRadiusMultiplier,
+  cities,
   isMobile,
 }: {
   mapData: MapData;
-  setSearchRadius: (searchRadius: number) => void;
-  searchRadius: number;
-  svgRef: RefObject<SVGSVGElement>;
-  currentPoint?: CityPoint;
-  endPoint?: CityPoint;
-  pastPoints: CityPoint[];
-  farPoints: CityPoint[];
+  searchRadiusMultiplier: number;
+  cities: {
+    far: CityPoint[];
+    past: CityPoint[];
+    start: CityPoint;
+    end: CityPoint;
+    current: CityPoint;
+  };
   isMobile: boolean;
 }) => {
   // Have to use to fix firefox bug
   const router = useRouter();
 
-  const [mapRatio, setMapRatio] = useState(0);
+  const [mapRatio, setMapRatio] = useState(() => {
+    const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
+    const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
+
+    return (
+      (flattenedMax.long - flattenedMin.long) /
+      (flattenedMax.lat - flattenedMin.lat)
+    );
+  });
+  const [searchRadius, setSearchRadius] = useState(searchRadiusMultiplier / 8);
 
   const onMapLoad = (info: { naturalWidth: number; naturalHeight: number }) => {
+    //console.log(mapRatio, info.naturalWidth / info.naturalHeight);
     // Currently there is a likely a bug in firefox which sometimes
     // renders the image with square aspect ratio
-    setSearchRadius(searchRadius / 8);
     setMapRatio(info.naturalWidth / info.naturalHeight);
-
-    console.log(info);
 
     // Until firefox bug 1758035 is fixed
     if (info.naturalHeight == 1 && info.naturalWidth == 1) {
@@ -62,27 +66,21 @@ export const MapDisplay = ({
         onLoadingComplete={onMapLoad}
       />
 
-      <svg
-        width="100%"
-        height="100%"
-        className={styles['map-container-child']}
-        ref={svgRef}
-      >
+      <svg width="100%" height="100%" className={styles['map-container-child']}>
         <circle
-          cx={`${(currentPoint?.x ?? 10000) * 100}%`}
-          cy={`${(currentPoint?.y ?? 10000) * 100}%`}
+          cx={`${cities.current.x * 100}%`}
+          cy={`${cities.current.y * 100}%`}
           r={pointRadius}
           fill={PointType.current}
         />
         <circle
-          cx={`${(endPoint?.x ?? 10000) * 100}%`}
-          cy={`${(endPoint?.y ?? 10000) * 100}%`}
+          cx={`${cities.end.x * 100}%`}
+          cy={`${cities.end.y * 100}%`}
           r={pointRadius}
           fill={PointType.end}
         />
-        {pastPoints.map((p1, i, a) => {
-          const p2 =
-            i + 1 >= a.length ? currentPoint ?? { x: 0, y: 0 } : a[i + 1];
+        {cities.past.map((p1, i, a) => {
+          const p2 = i + 1 >= a.length ? cities.current : a[i + 1];
 
           return (
             <line
@@ -96,7 +94,7 @@ export const MapDisplay = ({
             />
           );
         })}
-        {pastPoints.map((p, i) => (
+        {cities.past.map((p, i) => (
           <circle
             cx={`${p.x * 100}%`}
             cy={`${p.y * 100}%`}
@@ -105,7 +103,7 @@ export const MapDisplay = ({
             key={i}
           />
         ))}
-        {farPoints.map((p, i) => (
+        {cities.far.map((p, i) => (
           <circle
             cx={`${p.x * 100}%`}
             cy={`${p.y * 100}%`}
@@ -115,8 +113,8 @@ export const MapDisplay = ({
           />
         ))}
         <circle
-          cx={`${(currentPoint?.x ?? 10000) * 100}%`}
-          cy={`${(currentPoint?.y ?? 10000) * 100}%`}
+          cx={`${cities.current.x * 100}%`}
+          cy={`${cities.current.y * 100}%`}
           r={mapRatio ? `${searchRadius * height}vh` : 0}
           stroke={PointType.current}
           strokeWidth={strokeWidth}

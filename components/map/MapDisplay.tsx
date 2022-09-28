@@ -24,30 +24,16 @@ export const MapDisplay = ({
   };
   isMobile: boolean;
 }) => {
-  // Have to use to fix firefox bug
-  const router = useRouter();
-
-  const [mapRatio, setMapRatio] = useState(() => {
+  const [mapRatio] = useState(() => {
     const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
     const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
 
     return (
-      (flattenedMax.long - flattenedMin.long) /
+      -(flattenedMax.long - flattenedMin.long) /
       (flattenedMax.lat - flattenedMin.lat)
     );
   });
 
-  const onMapLoad = (info: { naturalWidth: number; naturalHeight: number }) => {
-    //console.log(mapRatio, info.naturalWidth / info.naturalHeight);
-    // Currently there is a likely a bug in firefox which sometimes
-    // renders the image with square aspect ratio
-    setMapRatio(info.naturalWidth / info.naturalHeight);
-
-    // Until firefox bug 1758035 is fixed
-    if (info.naturalHeight == 1 && info.naturalWidth == 1) {
-      router.reload();
-    }
-  };
   const height = isMobile ? 20 : 50;
   const pointRadius = `${0.6 * mapData.pointRadius}%`;
   const strokeWidth = `${0.3 * mapData.pointRadius}%`;
@@ -62,7 +48,6 @@ export const MapDisplay = ({
         alt="Map"
         layout="fill"
         objectFit="contain"
-        onLoadingComplete={onMapLoad}
       />
 
       <svg width="100%" height="100%" className={styles['map-container-child']}>

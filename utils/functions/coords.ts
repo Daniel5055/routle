@@ -61,7 +61,9 @@ export const withinRange = (
   flatLong2: number,
   distance: number
 ): boolean => {
-  return calculateDistance(flatLat1, flatLong1, flatLat2, flatLong2) <= distance;
+  return (
+    calculateDistance(flatLat1, flatLong1, flatLat2, flatLong2) <= distance
+  );
 };
 
 /**

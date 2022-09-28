@@ -31,9 +31,9 @@ const Map: NextPage = ({
   const isMobile = useMobile();
   const router = useRouter();
 
-  // Multiply search radius by modifier when searchRadius is changed
-  const [searchRadius, setSearchRadius] = useState<number>(
-    mapData.searchRadius * fetchDifficulty(true)
+  const [searchRadius,] = useState<number>(
+    // 8 is just a *magic* number
+    mapData.searchRadius * fetchDifficulty(true) / 8
   );
 
   const city1 = parseInt(router.query.c1 as string);

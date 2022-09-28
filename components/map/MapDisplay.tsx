@@ -36,7 +36,6 @@ export const MapDisplay = ({
       (flattenedMax.lat - flattenedMin.lat)
     );
   });
-  const [searchRadius, setSearchRadius] = useState(searchRadiusMultiplier / 8);
 
   const onMapLoad = (info: { naturalWidth: number; naturalHeight: number }) => {
     //console.log(mapRatio, info.naturalWidth / info.naturalHeight);
@@ -115,7 +114,7 @@ export const MapDisplay = ({
         <circle
           cx={`${cities.current.x * 100}%`}
           cy={`${cities.current.y * 100}%`}
-          r={mapRatio ? `${searchRadius * height}vh` : 0}
+          r={mapRatio ? `${searchRadiusMultiplier * height}vh` : 0}
           stroke={PointType.current}
           strokeWidth={strokeWidth}
           fill="none"

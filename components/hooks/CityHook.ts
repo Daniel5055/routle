@@ -87,7 +87,7 @@ export function useCities(
   const [searchRadius, _] = useState(() => {
     const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
     const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
-    return (searchRadiusMultiplier / 8) * (flattenedMin.lat - flattenedMax.lat);
+    return searchRadiusMultiplier * (flattenedMin.lat - flattenedMax.lat);
   });
 
   const nullPoint: CityPoint = { x: 10000, y: 10000, name: '???', id: 0 };

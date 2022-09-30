@@ -6,36 +6,31 @@ export const getRandomCities = async (mapData: MapData) => {
   let pathWhole = path;
   let pathPart = path;
 
-  let response: CityResponse[] = [];
+  mapData.countryCodes.whole?.forEach((cc) => (pathWhole += `&country=${cc}`));
+  mapData.countryCodes.part?.forEach((part) => {
+    pathPart += `&country=${part.country}`;
 
-  if (mapData.countryCodes.whole != null) {
-    mapData.countryCodes.whole!!.forEach(
-      (cc) => (pathWhole += `&country=${cc}`)
-    );
-    const wholeResponse = (await fetch(pathWhole).then((res) =>
-      res.json()
-    )) as GeoResponse;
-    response = response.concat(wholeResponse.geonames);
-  }
-
-  if (mapData.countryCodes.part != null) {
-    mapData.countryCodes.part?.forEach((part) => {
-      pathPart += `&country=${part.country}`;
-      part.admin1?.forEach((region) => {
-        pathPart += `&adminCode1=${region}`;
-      });
-      part.admin2?.forEach((region) => {
-        pathPart += `&adminCode2=${region}`;
-      });
+    // Notably currently only works for a single admin code?
+    part.admin1?.forEach((region) => {
+      pathPart += `&adminCode1=${region}`;
     });
+    part.admin2?.forEach((region) => {
+      pathPart += `&adminCode2=${region}`;
+    });
+  });
 
-    const partResponse = (await fetch(pathPart).then((res) =>
-      res.json()
-    )) as GeoResponse;
-    response = response.concat(partResponse.geonames);
-  }
+  const wholeResponse = mapData.countryCodes.whole
+    ? fetch(pathWhole).then((res) => res.json())
+    : { totalResultsCount: 0, geonames: [] };
+  const partResponse = mapData.countryCodes.part
+    ? fetch(pathPart).then((res) => res.json())
+    : { totalResultsCount: 0, geonames: [] };
+  const responses = await Promise.all([wholeResponse, partResponse]);
 
-  return response.sort((a, b) => b.population - a.population).slice(0, 100);
+  return responses
+    .flatMap((response) => response.geonames)
+    .sort((a, b) => b.population - a.population)
+    .slice(0, 100);
 };
 
 export const getCities = async (mapData: MapData, name: string) => {
@@ -55,16 +50,13 @@ export const getCities = async (mapData: MapData, name: string) => {
     });
   });
 
-  const wholeResponse = (
-    mapData.countryCodes.whole
-      ? await fetch(pathWhole).then((res) => res.json())
-      : { totalResultsCount: 0, geonames: [] }
-  ) as GeoResponse;
-  const partResponse = (
-    mapData.countryCodes.part
-      ? await fetch(pathPart).then((res) => res.json())
-      : { totalResultsCount: 0, geonames: [] }
-  ) as GeoResponse;
+  const wholeResponse = mapData.countryCodes.whole
+    ? fetch(pathWhole).then((res) => res.json())
+    : { totalResultsCount: 0, geonames: [] };
+  const partResponse = mapData.countryCodes.part
+    ? fetch(pathPart).then((res) => res.json())
+    : { totalResultsCount: 0, geonames: [] };
 
-  return wholeResponse.geonames.concat(partResponse.geonames);
+  const responses = await Promise.all([wholeResponse, partResponse]);
+  return responses.flatMap((response) => response.geonames);
 };

@@ -5,7 +5,7 @@ import { CityPoint, PointType } from '../../utils/types/CityPoint';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-// Seperating functionality
+// Separating functionality
 export const MapDisplay = ({
   mapData,
   setSearchRadius,

@@ -3,46 +3,46 @@
     "name": "Uk and Ireland",
     "webPath": "uk-ireland",
     "imagePath": "/maps/uk.png",
-    "longMax": "1.9201",
-    "longMin": "-10.6320",
-    "latMax": "59.4629",
-    "latMin": "49.8367",
+    "longMax": 1.9201,
+    "longMin": -10.632,
+    "latMax": 59.4629,
+    "latMin": 49.8367,
     "countryCodes": { "whole": ["GB", "IE"] },
-    "searchRadius": "1.0",
-    "pointRadius": "0.9"
+    "searchRadius": 1.0,
+    "pointRadius": 0.9
   },
   {
     "name": "France",
     "webPath": "france",
     "imagePath": "/maps/france.png",
-    "longMax": "8.30366",
-    "longMin": "-5.1830",
-    "latMax": "51.2380",
-    "latMin": "42.2462",
+    "longMax": 8.30366,
+    "longMin": -5.183,
+    "latMax": 51.238,
+    "latMin": 42.2462,
     "countryCodes": { "whole": ["FR"] },
-    "searchRadius": "1.0",
-    "pointRadius": "0.9"
+    "searchRadius": 1.0,
+    "pointRadius": 0.9
   },
   {
     "name": "Norway",
     "webPath": "norway",
     "imagePath": "/maps/norway.png",
-    "longMax": "31.4490",
-    "longMin": "4.2616",
-    "latMax": "71.3384",
-    "latMin": "57.84577",
+    "longMax": 31.449,
+    "longMin": 4.2616,
+    "latMax": 71.3384,
+    "latMin": 57.84577,
     "countryCodes": { "whole": ["NO"] },
-    "searchRadius": "1.0",
-    "pointRadius": "1.0"
+    "searchRadius": 1.0,
+    "pointRadius": 1.0
   },
   {
     "name": "Italy",
     "webPath": "italy",
     "imagePath": "/maps/italy.png",
-    "longMax": "18.5895",
-    "longMin": "6.4951",
-    "latMax": "47.3478",
-    "latMin": "36.4973",
+    "longMax": 18.5895,
+    "longMin": 6.4951,
+    "latMax": 47.3478,
+    "latMin": 36.4973,
     "countryCodes": {
       "whole": ["IT"],
       "part": [
@@ -52,101 +52,101 @@
         }
       ]
     },
-    "searchRadius": "1.0",
-    "pointRadius": "1.0"
+    "searchRadius": 1.0,
+    "pointRadius": 1.0
   },
   {
     "name": "The Lowlands",
     "webPath": "lowlands",
     "imagePath": "/maps/lowlands.png",
-    "longMax": "7.2752",
-    "longMin": "2.4895",
-    "latMax": "53.6728",
-    "latMin": "49.4255",
+    "longMax": 7.2752,
+    "longMin": 2.4895,
+    "latMax": 53.6728,
+    "latMin": 49.4255,
     "countryCodes": { "whole": ["NL", "BE", "LU"] },
-    "searchRadius": "1.0",
-    "pointRadius": "1.0"
+    "searchRadius": 1.0,
+    "pointRadius": 1.0
   },
   {
     "name": "Germany",
     "webPath": "germany",
     "imagePath": "/maps/germany.png",
-    "longMax": "15.2470",
-    "longMin": "5.6944",
-    "latMax": "55.1644",
-    "latMin": "47.2073",
+    "longMax": 15.247,
+    "longMin": 5.6944,
+    "latMax": 55.1644,
+    "latMin": 47.2073,
     "countryCodes": { "whole": ["DE"] },
-    "searchRadius": "1.0",
-    "pointRadius": "1.0"
+    "searchRadius": 1.0,
+    "pointRadius": 1.0
   },
   {
     "name": "Iberia",
     "webPath": "iberia",
     "imagePath": "/maps/iberia.png",
-    "longMax": "4.39106",
-    "longMin": "-9.59654",
-    "latMax": "43.9828",
-    "latMin": "35.9588",
+    "longMax": 4.39106,
+    "longMin": -9.59654,
+    "latMax": 43.9828,
+    "latMin": 35.9588,
     "countryCodes": { "whole": ["ES", "PT", "AD", "GI"] },
-    "searchRadius": "1.0",
-    "pointRadius": "0.9"
+    "searchRadius": 1.0,
+    "pointRadius": 0.9
   },
   {
     "name": "Indian Subcontinent",
     "webPath": "india-region",
     "imagePath": "/maps/india.png",
-    "longMax": "97.9039",
-    "longMin": "67.1767",
-    "latMax": "35.7319",
-    "latMin": "5.2632",
+    "longMax": 97.9039,
+    "longMin": 67.1767,
+    "latMax": 35.7319,
+    "latMin": 5.2632,
     "countryCodes": { "whole": ["IN", "BD", "BT", "NP", "LK"] },
-    "searchRadius": "1.0",
-    "pointRadius": "0.9"
+    "searchRadius": 1.0,
+    "pointRadius": 0.9
   },
   {
     "name": "Egypt",
     "webPath": "egypt",
     "imagePath": "/maps/egypt.png",
-    "longMax": "37.2743",
-    "longMin": "24.6224",
-    "latMax": "32.1793",
-    "latMin": "21.7099",
+    "longMax": 37.2743,
+    "longMin": 24.6224,
+    "latMax": 32.1793,
+    "latMin": 21.7099,
     "countryCodes": { "whole": ["EG"] },
-    "searchRadius": "1.0",
-    "pointRadius": "1.0"
+    "searchRadius": 1.0,
+    "pointRadius": 1.0
   },
   {
     "name": "Japan",
     "webPath": "japan",
     "imagePath": "/maps/japan.png",
-    "longMax": "150.853",
-    "longMin": "128.490",
-    "latMax": "46.3507",
-    "latMin": "30.1351",
+    "longMax": 150.853,
+    "longMin": 128.49,
+    "latMax": 46.3507,
+    "latMin": 30.1351,
     "countryCodes": { "whole": ["JP"] },
-    "searchRadius": "1.0",
-    "pointRadius": "0.8"
+    "searchRadius": 1.0,
+    "pointRadius": 0.8
   },
   {
     "name": "Australia",
     "webPath": "australia",
     "imagePath": "/maps/australia.png",
-    "longMax": "154.532",
-    "longMin": "112.525",
-    "latMax": "-10.0650",
-    "latMin": "-44.0693",
+    "longMax": 154.532,
+    "longMin": 112.525,
+    "latMax": -10.065,
+    "latMin": -44.0693,
     "countryCodes": { "whole": ["AU"] },
-    "searchRadius": "1.0",
-    "pointRadius": "0.8"
+    "searchRadius": 1.0,
+    "pointRadius": 0.8
   },
   {
     "name": "Europe",
     "webPath": "europe",
     "imagePath": "/maps/europe.png",
-    "longMax": "43.2722",
-    "longMin": "-10.8614",
-    "latMax": "71.3575",
-    "latMin": "29.9009",
+    "longMax": 43.2722,
+    "longMin": -10.8614,
+    "latMax": 71.3575,
+    "latMin": 29.9009,
     "countryCodes": {
       "whole": [
         "AT",
@@ -209,41 +209,41 @@
         "GI"
       ]
     },
-    "searchRadius": "0.5",
-    "pointRadius": "0.5"
+    "searchRadius": 0.5,
+    "pointRadius": 0.5
   },
   {
     "name": "USA",
     "webPath": "usa",
     "imagePath": "/maps/usa.png",
-    "longMax": "-65.17820",
-    "longMin": "-126.46133",
-    "latMax": "49.38370",
-    "latMin": "25.13495",
+    "longMax": -65.1782,
+    "longMin": -126.46133,
+    "latMax": 49.3837,
+    "latMin": 25.13495,
     "countryCodes": { "whole": ["US"] },
-    "searchRadius": "1.0",
-    "pointRadius": "0.6"
+    "searchRadius": 1.0,
+    "pointRadius": 0.6
   },
   {
     "name": "Greece",
     "webPath": "greece",
     "imagePath": "/maps/greece.png",
-    "longMax": "28.3113",
-    "longMin": "19.5714",
-    "latMax": "41.8292",
-    "latMin": "34.8151",
+    "longMax": 28.3113,
+    "longMin": 19.5714,
+    "latMax": 41.8292,
+    "latMin": 34.8151,
     "countryCodes": { "whole": ["GR"] },
-    "searchRadius": "1.0",
-    "pointRadius": "0.9"
+    "searchRadius": 1.0,
+    "pointRadius": 0.9
   },
   {
     "name": "Fife",
     "webPath": "fife",
     "imagePath": "/maps/fife.png",
-    "longMax": "-2.5785",
-    "longMin": "-3.8698",
-    "latMax": "56.4574",
-    "latMin": "56.0019",
+    "longMax": -2.5785,
+    "longMin": -3.8698,
+    "latMax": 56.4574,
+    "latMin": 56.0019,
     "countryCodes": {
       "part": [
         {
@@ -253,41 +253,41 @@
         }
       ]
     },
-    "searchRadius": "1.0",
-    "pointRadius": "0.9"
+    "searchRadius": 1.0,
+    "pointRadius": 0.9
   },
   {
     "name": "China",
     "webPath": "china",
     "imagePath": "/maps/china.png",
-    "longMax": "135.1198",
-    "longMin": "73.2486",
-    "latMax": "54.0605",
-    "latMin": "17.8161",
+    "longMax": 135.1198,
+    "longMin": 73.2486,
+    "latMax": 54.0605,
+    "latMin": 17.8161,
     "countryCodes": { "whole": ["CN"] },
-    "searchRadius": "0.8",
-    "pointRadius": "0.8"
+    "searchRadius": 0.8,
+    "pointRadius": 0.8
   },
   {
     "name": "Switzerland",
     "webPath": "switzerland",
     "imagePath": "/maps/switzerland.png",
-    "longMax": "10.6092",
-    "longMin": "5.9025",
-    "latMax": "47.8224",
-    "latMin": "45.7780",
+    "longMax": 10.6092,
+    "longMin": 5.9025,
+    "latMax": 47.8224,
+    "latMin": 45.778,
     "countryCodes": { "whole": ["CH"] },
-    "searchRadius": "1.0",
-    "pointRadius": "0.9"
+    "searchRadius": 1.0,
+    "pointRadius": 0.9
   },
   {
     "name": "Asia",
     "webPath": "asia",
     "imagePath": "/maps/asia.png",
-    "longMax": "154.4726",
-    "longMin": "30.6926",
-    "latMax": "55.7081",
-    "latMin": "-11.1041",
+    "longMax": 154.4726,
+    "longMin": 30.6926,
+    "latMax": 55.7081,
+    "latMin": -11.1041,
     "countryCodes": {
       "whole": [
         "AF",
@@ -340,7 +340,7 @@
         "YE"
       ]
     },
-    "searchRadius": "0.6",
-    "pointRadius": "0.5"
+    "searchRadius": 0.6,
+    "pointRadius": 0.5
   }
 ]

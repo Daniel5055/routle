@@ -10,7 +10,7 @@ import {
   applyDifficulty,
   fetchDifficulty,
 } from '../../utils/functions/difficulty';
-import { useMobile } from '../../components/common/MobileHook';
+import { useMobile } from '../../components/hooks/MobileHook';
 
 const Singleplayer: NextPage = ({
   mapData,

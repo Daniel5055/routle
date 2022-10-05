@@ -15,7 +15,7 @@ import { MapData } from '../../utils/types/MapData';
 export function useCities(
   mapData: MapData,
   cities: CityResponse[],
-  searchRadiusMultiplier: number,
+  searchRadiusMultiplier?: number,
   city1?: number,
   city2?: number
 ) {
@@ -84,11 +84,15 @@ export function useCities(
     });
   }, [cities, mapData, city1, city2]);
 
-  const [searchRadius, _] = useState(() => {
+  const [searchRadius, setSearchRadius] = useState(0);
+
+  useEffect(() => {
     const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
     const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
-    return searchRadiusMultiplier * (flattenedMin.lat - flattenedMax.lat);
-  });
+    setSearchRadius(
+      searchRadiusMultiplier! * (flattenedMin.lat - flattenedMax.lat)
+    );
+  }, [searchRadiusMultiplier]);
 
   const nullPoint: CityPoint = { x: 10000, y: 10000, name: '???', id: 0 };
   const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);

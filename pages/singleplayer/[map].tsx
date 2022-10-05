@@ -31,9 +31,8 @@ const Map: NextPage = ({
   const isMobile = useMobile();
   const router = useRouter();
 
-  const [searchRadius] = useState<number>(
-    // 8 is just a *magic* number
-    (mapData.searchRadius * fetchDifficulty(true)) / 8
+  const [searchRadius, setSearchRadius] = useState<number | undefined>(
+    undefined
   );
 
   const city1 = parseInt(router.query.c1 as string);
@@ -57,6 +56,7 @@ const Map: NextPage = ({
   // On page load
   useEffect(() => {
     addMapPlay(mapData.webPath);
+    setSearchRadius((mapData.searchRadius * fetchDifficulty(true)) / 8);
   }, []);
 
   useEffect(() => {

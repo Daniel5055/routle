@@ -13,7 +13,7 @@ export const MapDisplay = ({
   isMobile,
 }: {
   mapData: MapData;
-  searchRadiusMultiplier: number;
+  searchRadiusMultiplier?: number;
   cities: {
     far: CityPoint[];
     past: CityPoint[];
@@ -56,12 +56,14 @@ export const MapDisplay = ({
           cy={`${cities.current.y * 100}%`}
           r={pointRadius}
           fill={PointType.current}
+          className={cities.current.name}
         />
         <circle
           cx={`${cities.end.x * 100}%`}
           cy={`${cities.end.y * 100}%`}
           r={pointRadius}
           fill={PointType.end}
+          className={cities.end.name}
         />
         {cities.past.map((p1, i, a) => {
           const p2 = i + 1 >= a.length ? cities.current : a[i + 1];
@@ -85,6 +87,7 @@ export const MapDisplay = ({
             r={pointRadius}
             fill={PointType.past}
             key={i}
+            className={p.name}
           />
         ))}
         {cities.far.map((p, i) => (
@@ -94,16 +97,20 @@ export const MapDisplay = ({
             r={pointRadius}
             fill={PointType.far}
             key={i}
+            className={p.name}
           />
         ))}
-        <circle
-          cx={`${cities.current.x * 100}%`}
-          cy={`${cities.current.y * 100}%`}
-          r={mapRatio ? `${searchRadiusMultiplier * height}vh` : 0}
-          stroke={PointType.current}
-          strokeWidth={strokeWidth}
-          fill="none"
-        />
+        {searchRadiusMultiplier && (
+          <circle
+            cx={`${cities.current.x * 100}%`}
+            cy={`${cities.current.y * 100}%`}
+            r={mapRatio ? `${searchRadiusMultiplier * height}vh` : 0}
+            stroke={PointType.current}
+            strokeWidth={strokeWidth}
+            fill="none"
+            className="search-radius"
+          />
+        )}
       </svg>
     </div>
   );

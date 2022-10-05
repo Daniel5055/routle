@@ -102,11 +102,14 @@ const Map: NextPage = ({
   // On game won
   useEffect(() => {
     if (hasWon) {
+      // Reverted until I figure until I figure out this bug
+      /*
       addEventListener('keydown', (e) => {
         if (e.code === 'Enter') {
           loadNewGame();
         }
       });
+      */
 
       addMapFinished(mapData.webPath);
     }

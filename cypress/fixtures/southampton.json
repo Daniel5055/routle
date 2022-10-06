@@ -1,0 +1,23 @@
+{
+  "totalResultsCount": 1,
+  "geonames": [
+    {
+      "adminCode1": "ENG",
+      "lng": "-1.40428",
+      "geonameId": 2637487,
+      "toponymName": "Southampton",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 246201,
+      "countryCode": "GB",
+      "name": "Southampton",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "ENG" },
+      "countryName": "United Kingdom",
+      "fcodeName": "seat of a second-order administrative division",
+      "adminName1": "England",
+      "lat": "50.90395",
+      "fcode": "PPLA2"
+    }
+  ]
+}

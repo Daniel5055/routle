@@ -36,4 +36,25 @@
 //   }
 // }
 
+Cypress.Commands.add('stubCities', (cities: String[]) => {
+  cities.forEach((city) => {
+    cy.intercept(`https://secure.geonames.org/searchJSON?*${city}*`, {
+      fixture: `${city.toLowerCase().replace(' ', '-')}.json`,
+    }).as(city.toLowerCase());
+  });
+
+  // Always ensure no cities stubbed
+  cy.intercept('https://secure.geonames.org/searchJSON?*Wrong*', {
+    fixture: 'no-cities.json',
+  }).as('wrong');
+});
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      stubCities(cities: string[]): Chainable<void>;
+    }
+  }
+}
+
 export {};

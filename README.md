@@ -28,9 +28,9 @@ Once you are comfotable with the fundementals, I recommend trying Europe which i
 
 ## Tools and Resources
 
-Routle is written using [Next.js](https://nextjs.org) with [Typescript](https://www.typescriptlang.org/). It is hosted for free on [Vercel](https://vercel.com) and uses [Firebase](https://firebase.google.com) for collecting game statistics.
+Routle is written using [Next.js](https://nextjs.org) with [Typescript](https://www.typescriptlang.org/) and [SASS](https://sass-lang.com/). It is hosted for free on [Vercel](https://vercel.com) and uses [Firebase](https://firebase.google.com) for collecting game statistics.
 
-Regarding data on cities, Routle uses [Geonames'](https://www.geonames.org) api to search exact city names and when selecting random cities. The maps used are downloaded for free from (Mapz.com)[https://mapz.com], and photoshopped using [GIMP](www.gimp.org).
+Regarding data on cities, Routle uses [Geonames'](https://www.geonames.org) api to search exact city names and when selecting random cities. The maps used are downloaded for free from [Mapz.com](https://mapz.com), and photoshopped using [GIMP](www.gimp.org).
 
 For Testing, Routle uses [Cypress](https://www.cypress.io) for end-to-end tests, written in JavaScript.
 

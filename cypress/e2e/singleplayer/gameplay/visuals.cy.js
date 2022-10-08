@@ -29,9 +29,7 @@ describe('visuals', () => {
       'Peterborough',
       'Sheffield',
       'York',
-      'Wellington',
       'London',
-      'Southampton',
     ]);
 
     // London is start city, York is end city

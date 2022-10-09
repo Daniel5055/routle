@@ -1,9 +1,7 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import styles from '../../styles/Navbar.module.scss';
 import NavbarLink from './NavbarLink';
-import info from '../../public/info.png';
 import { useEffect, useState } from 'react';
+import { BlogLink } from './BlogLink';
 
 export default function Navbar(props: { isMobile: boolean }) {
   const [portrait, setPortrait] = useState(props.isMobile);
@@ -27,11 +25,7 @@ export default function Navbar(props: { isMobile: boolean }) {
 
   return (
     <header className={styles.container}>
-      <Link href={'/blog'}>
-        <a className={styles['nav-info']}>
-          <Image src={info} alt="info" width={24} height={24} />
-        </a>
-      </Link>
+      <BlogLink />
       {portrait ? (
         <>
           <h1 className={styles['title-alone']}>Routle</h1>
@@ -49,7 +43,7 @@ export default function Navbar(props: { isMobile: boolean }) {
           <NavbarLink href="/multiplayer">Multiplayer</NavbarLink>
         </>
       )}
-      <hr className={styles.seperator} />
+      <hr className={styles.separator} />
     </header>
   );
 }

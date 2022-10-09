@@ -2,7 +2,7 @@
 
 .post-container {
   overflow-y: scroll;
-  height: 70vh;
+  height: 80vh;
   padding: 0 15px;
   min-height: theme.$header-font;
   scrollbar-color: theme.$foreground-color transparent;
@@ -62,7 +62,7 @@
 
 .bottom-line {
   margin: 0 0;
-  width: 80vh;
+  width: 40vw;
 }
 
 @media screen and (max-width: 768px) {

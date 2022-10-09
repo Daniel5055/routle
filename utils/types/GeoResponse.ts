@@ -7,4 +7,5 @@ export interface CityResponse {
   lat: number;
   name: string;
   population: number;
+  geonameId: number;
 }

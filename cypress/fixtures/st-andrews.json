@@ -1,0 +1,23 @@
+{
+  "totalResultsCount": 1,
+  "geonames": [
+    {
+      "adminCode1": "SCT",
+      "lng": "-2.79902",
+      "geonameId": 2638864,
+      "toponymName": "Saint Andrews",
+      "countryId": "2635167",
+      "fcl": "P",
+      "population": 16800,
+      "countryCode": "GB",
+      "name": "St Andrews",
+      "fclName": "city, village,...",
+      "adminCodes1": { "ISO3166_2": "SCT" },
+      "countryName": "United Kingdom",
+      "fcodeName": "populated place",
+      "adminName1": "Scotland",
+      "lat": "56.33871",
+      "fcode": "PPL"
+    }
+  ]
+}

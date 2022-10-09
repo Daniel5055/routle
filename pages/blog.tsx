@@ -5,12 +5,16 @@ import { Post } from '../utils/types/Post';
 import { marked } from 'marked';
 import parseHtml from 'html-react-parser';
 import style from '../styles/Blog.module.scss';
-import { useMobile } from '../components/common/MobileHook';
+import { useMobile } from '../components/hooks/MobileHook';
+import { setLastReadPost } from '../utils/functions/lastReadPost';
 
 const Blog: NextPage = ({
   posts,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const isMobile = useMobile();
+
+  // Update notifications
+  setLastReadPost(posts.length);
 
   return (
     <Layout description="Blog Routle" isMobile={isMobile}>

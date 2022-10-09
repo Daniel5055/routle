@@ -1,18 +1,18 @@
+/// <reference types="cypress" />
+
 // Helper functions
 const tooFar = (city) => `${city} is too far!`;
 const inRange = (city) => city;
 const alreadyIn = (city) => `Already in ${city}`;
 const noCity = (city) => `${city} ???`;
 
-// Standard theme colours
-const tooFarColour = '#e0a1a1';
-const pointColour = '#939F9b';
-const endColour = '#a652a5';
-
-describe('gameplay', () => {
+/**
+ * Testing the specific gameplay logic;
+ */
+describe('logic', () => {
   beforeEach(() => {
     // Stub the requests so everything is controlled
-    [
+    cy.stubCities([
       'Oxford',
       'Cambridge',
       'Peterborough',
@@ -20,15 +20,7 @@ describe('gameplay', () => {
       'York',
       'Wellington',
       'London',
-    ].forEach((city) => {
-      cy.intercept(`https://secure.geonames.org/searchJSON?*${city}*`, {
-        fixture: `${city.toLowerCase()}.json`,
-      }).as(city.toLowerCase());
-    });
-
-    cy.intercept('https://secure.geonames.org/searchJSON?*Wrong*', {
-      fixture: 'no-cities.json',
-    }).as('wrong');
+    ]);
 
     cy.visit('/singleplayer/uk-ireland?c1=0&c2=59');
     // FIXME
@@ -53,30 +45,21 @@ describe('gameplay', () => {
     const city = 'Oxford';
     cy.get('@input').type(`${city}{enter}`);
     cy.get('@tagline').should('have.text', inRange(city));
-    cy.get('main svg circle').should('have.length', 4);
   });
 
   it('cannot go to city out of range', () => {
     const city = 'Sheffield';
-
     cy.get('@input').type(`${city}{enter}`);
     cy.get('@tagline').should('have.text', tooFar(city));
-
-    cy.get('main svg circle').should('have.length', 4);
-    cy.get(`main svg circle[fill="${tooFarColour}"]`).should('have.length', 1);
   });
 
   it('can go to multiple cities in range', () => {
     const city1 = 'Cambridge';
     const city2 = 'Peterborough';
-
     cy.get('@input').type(`${city1}{enter}`);
     cy.get('@tagline').should('have.text', inRange(city1));
-
     cy.get('@input').type(`${city2}{enter}`);
     cy.get('@tagline').should('have.text', inRange(city2));
-
-    cy.get('main svg circle').should('have.length', 5);
   });
 
   it('can go back to previous cities in range', () => {
@@ -86,37 +69,10 @@ describe('gameplay', () => {
       cy.get('@input').type(`${city}{enter}`);
       cy.get('@tagline').should('have.text', inRange(city));
     });
-
-    cy.get('main svg circle').should('have.length', 7);
-  });
-
-  it('will go to next city of same name in range', () => {
-    const city1 = 'Oxford';
-    const city2 = 'Wellington';
-
-    cy.get('@input').type(`${city1}{enter}`);
-    cy.get('@tagline').should('have.text', inRange(city1));
-    cy.get('@input').type(`${city2}{enter}`);
-    cy.get('@tagline').should('have.text', inRange(city2));
-    cy.get('@input').type(`${city2}{enter}`);
-    cy.get('@tagline').should('have.text', inRange(city2));
-
-    cy.get('main svg circle').should('have.length', 6);
-  });
-
-  it('will not go to next city of same name if not in range', () => {
-    const city = 'Oxford';
-
-    cy.get('@input').type(`${city}{enter}`);
-    cy.get('@tagline').should('have.text', inRange(city));
-    cy.get('@input').type(`${city}{enter}`);
-    cy.get('@tagline').should('have.text', tooFar(city));
-
-    cy.get('main svg circle').should('have.length', 5);
-    cy.get(`main svg circle[fill="${tooFarColour}"]`).should('have.length', 1);
   });
 
   it('will say if already in city', () => {
+    // This only applies if there only exists a single city with the searched name
     const city1 = 'Oxford';
     const city2 = 'Peterborough';
 
@@ -126,37 +82,33 @@ describe('gameplay', () => {
     cy.get('@tagline').should('have.text', inRange(city2));
     cy.get('@input').type(`${city2}{enter}`);
     cy.get('@tagline').should('have.text', alreadyIn(city2));
-
-    cy.get('main svg circle').should('have.length', 5);
   });
 
-  it('will trigger win on going to end city in range', () => {
-    const cities = ['Cambridge', 'Peterborough', 'Sheffield'];
-    const endCity = 'York';
+  it('will go to next city of same name in range', () => {
+    // This only applies if there exists multiple city with the searched name
+    const city1 = 'Oxford';
+    const city2 = 'Wellington';
 
-    cities.forEach((city) => {
-      cy.get('@input').type(`${city}{enter}`);
-      cy.get('@tagline').should('have.text', inRange(city));
-    });
-
-    cy.get('main svg circle').should('have.length', 6);
-
-    cy.get('@input').type(`${endCity}{enter}`);
-    cy.get('@tagline').should('have.text', `You win!`);
-
-    cy.get('main svg circle').should('have.length', 7);
+    cy.get('@input').type(`${city1}{enter}`);
+    cy.get('@tagline').should('have.text', inRange(city1));
+    cy.get('@input').type(`${city2}{enter}`);
+    cy.get('@tagline').should('have.text', inRange(city2));
+    cy.get('@input').type(`${city2}{enter}`);
+    cy.get('@tagline').should('have.text', inRange(city2));
   });
 
-  it('cannot go to end city out of range', () => {
-    const endCity = 'York';
+  it('will not go to next city of same name if not in range', () => {
+    const city = 'Oxford';
 
-    cy.get('@input').type(`${endCity}{enter}`);
-    cy.get('@tagline').should('have.text', tooFar(endCity));
-
-    cy.get(`main svg circle[fill="${tooFarColour}"]`).should('have.length', 1);
+    cy.get('@input').type(`${city}{enter}`);
+    cy.get('@tagline').should('have.text', inRange(city));
+    cy.get('@input').type(`${city}{enter}`);
+    cy.get('@tagline').should('have.text', tooFar(city));
   });
 
   it('will go to nearest city of same name', () => {
+    // This is more of a specific case to show that it will not always
+    // take you to most known city of that name, even if in range
     const city1 = 'Oxford';
     const city2 = 'Cambridge';
     const city3 = 'Peterborough';
@@ -168,12 +120,31 @@ describe('gameplay', () => {
     cy.get('@tagline').should('have.text', inRange(city2));
     cy.get('@input').type(`${city3}{enter}`);
     cy.get('@tagline').should('have.text', tooFar(city3));
+  });
 
-    cy.get('main svg circle').should('have.length', 6);
-    cy.get(`main svg circle[fill="${tooFarColour}"]`).should('have.length', 1);
+  it('will trigger win on going to end city in range', () => {
+    const cities = ['Cambridge', 'Peterborough', 'Sheffield'];
+    const endCity = 'York';
+
+    cities.forEach((city) => {
+      cy.get('@input').type(`${city}{enter}`);
+      cy.get('@tagline').should('have.text', inRange(city));
+    });
+
+    cy.get('@input').type(`${endCity}{enter}`);
+    cy.get('@tagline').should('have.text', `You win!`);
+  });
+
+  it('cannot go to end city out of range', () => {
+    const endCity = 'York';
+
+    cy.get('@input').type(`${endCity}{enter}`);
+    cy.get('@tagline').should('have.text', tooFar(endCity));
   });
 
   it('will always go to end city if in range', () => {
+    // If Cambridge was not an end city, it would take you to
+    // the other closer Cambridge to the west.
     cy.visit('/singleplayer/uk-ireland?c1=0&c2=57');
     const city1 = 'Oxford';
     const city2 = 'Cambridge';
@@ -182,15 +153,11 @@ describe('gameplay', () => {
     cy.get('@tagline').should('have.text', inRange(city1));
     cy.get('@input').type(`${city2}{enter}`);
     cy.get('@tagline').should('have.text', 'You win!');
-
-    cy.get('main svg circle').should('have.length', 5);
   });
 
   it('will not go to city not found', () => {
     const city = 'Wrong';
     cy.get('@input').type(`${city}{enter}`);
     cy.get('@tagline').should('have.text', noCity(city));
-
-    cy.get('main svg circle').should('have.length', 3);
   });
 });

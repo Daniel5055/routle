@@ -9,7 +9,7 @@ export const CityInput = (props: {
   const [placeholder, setPlaceholder] = useState(props.placeholder ?? '');
   const [entry, setEntry] = useState('');
 
-  // Keep focus on text input on deskop broswer
+  // Keep focus on text input on desktop browser
   const focusInput = useRef<HTMLInputElement>(null);
   setInterval(() => focusInput.current?.focus(), 5);
 

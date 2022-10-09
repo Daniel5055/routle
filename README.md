@@ -4,7 +4,7 @@ Routle is a web-based game that tests your geography skills across different reg
 
 ## How to play
 
-Following the link to Routle will by default take you to the singleplayer menu, where you can choose which map you'd like to play on. I personally suggest starting with the UK and Ireland map as there you can name quite a few popular cities. 
+Following the link to Routle will by default take you to the singleplayer menu, where you can choose which map you'd like to play on. I personally suggest starting with the UK and Ireland map as there you can name quite a few popular cities.
 
 ![Singleplayer Menu](https://user-images.githubusercontent.com/29730245/194719698-a30420a9-02c0-4676-9b88-a72da6e92759.png)
 
@@ -24,7 +24,7 @@ There is no limit to the number of cities you can enter and you can freely go ba
 
 And that's all! If you find the circle's size to be too hard or easy, you can change the circle's size in the singleplayer menu under 'Difficulty'.
 
-Once you are comfotable with the fundementals, I recommend trying Europe which is my favourite map.
+Once you are comfortable with the fundamentals, I recommend trying Europe which is my favourite map.
 
 ## Tools and Resources
 

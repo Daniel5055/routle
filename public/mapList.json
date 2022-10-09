@@ -353,13 +353,7 @@
     "latMax": 71.2187,
     "latMin": 54.4244,
     "countryCodes": {
-      "whole": [
-        "NO",
-        "FI",
-        "SE",
-        "AX",
-        "DK"
-      ]
+      "whole": ["NO", "FI", "SE", "AX", "DK"]
     },
     "searchRadius": 0.9,
     "pointRadius": 0.8
@@ -435,5 +429,19 @@
     },
     "searchRadius": 0.8,
     "pointRadius": 0.6
+  },
+  {
+    "name": "Balkans",
+    "webPath": "balkans",
+    "imagePath": "/maps/balkans.png",
+    "longMax": 28.7806,
+    "longMin": 13.3056,
+    "latMax": 47.0666,
+    "latMin": 39.17712,
+    "countryCodes": {
+      "whole": ["SI", "RS", "AL", "ME", "MK", "HR", "BA", "BG", "XK"]
+    },
+    "searchRadius": 1.0,
+    "pointRadius": 0.8
   }
 ]

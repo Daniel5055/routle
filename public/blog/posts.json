@@ -34,5 +34,11 @@
     "date": "21/09/2022",
     "title": "Better mobile support",
     "bodyPath": "6.md"
+  },
+  {
+    "id": 7,
+    "date": "09/10/2022",
+    "title": "Maps and reworks",
+    "bodyPath": "7.md"
   }
 ]

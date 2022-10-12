@@ -102,16 +102,21 @@ const Map: NextPage = ({
   // On game won
   useEffect(() => {
     if (hasWon) {
-      // Reverted until I figure until I figure out this bug
-      /*
-      addEventListener('keydown', (e) => {
+      // Define enter key handler
+      const enterHotKey = (e: KeyboardEvent) => {
         if (e.code === 'Enter') {
           loadNewGame();
         }
-      });
-      */
+      };
+      addEventListener('keydown', enterHotKey);
 
+      // Logging stats
       addMapFinished(mapData.webPath);
+
+      // Ensure is key handler removed on demount
+      return () => {
+        removeEventListener('keydown', enterHotKey);
+      };
     }
   }, [loadNewGame, hasWon]);
 

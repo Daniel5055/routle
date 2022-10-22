@@ -49,7 +49,7 @@ input {
   &:focus {
     outline: none;
   }
-  caret-color: transparent;
+  caret-color: theme.$foreground-color;
   font-size: theme.$default-font;
 }
 

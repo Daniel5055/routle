@@ -73,6 +73,9 @@ const Map: NextPage = ({
       }
     }
 
+    // Whilst waiting for query result, specify that city is being searched for
+    setTagline(`Searching for ${search}...`);
+
     const query = await queryCity(search);
 
     // Handling the ui changes from entering city

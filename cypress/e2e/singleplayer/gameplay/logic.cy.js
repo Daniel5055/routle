@@ -5,6 +5,7 @@ const tooFar = (city) => `${city} is too far!`;
 const inRange = (city) => city;
 const alreadyIn = (city) => `Already in ${city}`;
 const noCity = (city) => `${city} ???`;
+const searchCity = (city) => `Searching for ${city}...`;
 
 /**
  * Testing the specific gameplay logic;
@@ -39,6 +40,15 @@ describe('logic', () => {
       'have.text',
       `Get from ${startCity} to ${endCity}`
     );
+  });
+
+  it('loading on city enter', () => {
+    const city = 'Oxford';
+
+    // Only says searching briefly
+    cy.get('@input').type(`${city}{enter}`);
+    cy.get('@tagline').should('have.text', searchCity(city));
+    cy.get('@tagline').should('not.have.text', searchCity(city));
   });
 
   it('can go to city in range', () => {

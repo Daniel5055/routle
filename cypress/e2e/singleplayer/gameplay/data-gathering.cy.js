@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 // TODO test that api calls don't get called at certain points
 
 /**

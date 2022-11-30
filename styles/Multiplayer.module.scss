@@ -1,0 +1,7 @@
+@use 'theme.scss' as theme;
+
+.option {
+  font-size: theme.$default-font;
+  margin: 2px;
+  display: block;
+}

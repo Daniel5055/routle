@@ -5,3 +5,42 @@
   margin: 2px;
   display: block;
 }
+
+#start-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.container {
+  border: theme.$foreground-color 2px solid;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+#players {
+  grid-column: 1;
+}
+
+#players > h2 {
+  margin: 0;
+  text-align: center;
+}
+
+#settings {
+  grid-column: 2;
+}
+
+#settings > h2 {
+  margin: 0;
+  text-align: center;
+}
+
+#player-list {
+  margin: 20px;
+}
+
+#player-list > * {
+  margin: 5px;
+}

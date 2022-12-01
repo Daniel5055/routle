@@ -41,6 +41,33 @@
   margin: 20px;
 }
 
-#player-list > * {
+.player {
   margin: 5px;
+  display: grid;
+  grid-template-columns: 1fr 2rem;
+}
+
+.player > * {
+  display: inline-block;
+}
+
+.player p {
+  margin: 0;
+  grid-column: 1;
+  width: 150px;
+}
+
+.player button {
+  grid-column: 2;
+  padding: 0;
+}
+
+.player input {
+  margin: 0;
+  grid-column: 1;
+  font-size: 1rem;
+  text-align: left;
+  max-width: 150px;
+  padding: 0;
+  font-weight: bold;
 }

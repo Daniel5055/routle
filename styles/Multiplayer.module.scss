@@ -37,8 +37,42 @@
   text-align: center;
 }
 
+#settings > h3 {
+  margin: 0;
+  text-align: center;
+}
+
+#settings > p {
+  text-align: center;
+  margin: 0;
+}
+
+#settings > hr {
+  margin: 5 0;
+}
+
+#settings > select {
+  width: 100%;
+  text-align: center;
+  background-color: theme.$background-color;
+  border: none;
+  color: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+  font-family: inherit;
+}
+
+#settings option {
+  font-family: inherit;
+}
+
 #player-list {
   margin: 20px;
+  max-height: 60vh;
+  overflow-y: scroll;
+  scrollbar-color: theme.$foreground-color transparent;
+  scrollbar-width: thin;
 }
 
 .player {

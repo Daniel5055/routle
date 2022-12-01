@@ -1,11 +1,13 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { InputHTMLAttributes, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Layout from '../../components/common/Layout';
 import { useMobile } from '../../components/hooks/MobileHook';
 import styles from '../../styles/Multiplayer.module.scss';
+import { MapData } from '../../utils/types/MapData';
 import { Player } from '../../utils/types/multiplayer/Player';
+import { Settings } from '../../utils/types/multiplayer/Settings';
 
 const Game: NextPage = () => {
   const isMobile = useMobile();
@@ -21,8 +23,19 @@ const Game: NextPage = () => {
   const [server, setServer] = useState<Socket>();
 
   const [players, setPlayers] = useState<Player[]>([]);
+  const [settings, setSettings] = useState<Settings>({
+    map: 'Europe',
+    difficulty: 'Normal',
+  });
+  const [mapData, setMapData] = useState<MapData[]>([]);
 
   const player = players.find((player) => player.you);
+
+  useEffect(() => {
+    fetch('/mapList.json')
+      .then((res) => res.json())
+      .then((data) => setMapData(data));
+  }, []);
 
   useEffect(() => {
     const server = io(url);
@@ -39,6 +52,11 @@ const Game: NextPage = () => {
         return player;
       });
       setPlayers(parsedPlayers);
+    });
+
+    server.on('settings', (msg) => {
+      const parsedSettings: Settings = JSON.parse(msg);
+      setSettings(parsedSettings);
     });
 
     server.on('not-found', () => {
@@ -61,6 +79,7 @@ const Game: NextPage = () => {
 
   function changeName(name: string) {
     server?.emit('change-name', name);
+    player && (player.name = name);
     setEditMode(false);
   }
 
@@ -103,6 +122,68 @@ const Game: NextPage = () => {
           </div>
           <div id={styles['settings']} className={styles['container']}>
             <h2>Game Settings</h2>
+            <hr />
+            <h3>Game Map</h3>
+            {isLeader ? (
+              <select
+                name="map"
+                onChange={(e) => {
+                  const newSettings = { ...settings, map: e.target.value };
+                  setSettings(newSettings);
+                  server?.emit('change-settings', JSON.stringify(newSettings));
+                }}
+                required
+                defaultValue={settings.map}
+              >
+                {mapData
+                  .sort((a: MapData, b: MapData) => {
+                    return a.name.localeCompare(b.name);
+                  })
+                  .map((map: MapData) => (
+                    <option
+                      key={map.webPath}
+                      value={map.webPath}
+                      selected={map.webPath === settings.map}
+                    >
+                      {map.name}
+                    </option>
+                  ))}
+              </select>
+            ) : (
+              <p>{settings.map}</p>
+            )}
+            <hr />
+            <h3>Difficulty</h3>
+            {isLeader ? (
+              <select
+                name="difficulty"
+                onChange={(e) => {
+                  const newSettings = {
+                    ...settings,
+                    difficulty: e.target.value,
+                  };
+                  setSettings(newSettings);
+                  server?.emit('change-settings', JSON.stringify(newSettings));
+                }}
+                required
+              >
+                <option value="easy" selected={'easy' === settings.difficulty}>
+                  Easy
+                </option>
+                <option
+                  value="normal"
+                  selected={'normal' === settings.difficulty}
+                >
+                  Normal
+                </option>
+                <option value="hard" selected={'hard' === settings.difficulty}>
+                  Hard
+                </option>
+              </select>
+            ) : (
+              <p>{settings.difficulty}</p>
+            )}
+            <hr />
           </div>
         </div>
       ) : (

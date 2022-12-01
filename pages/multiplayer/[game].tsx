@@ -1,8 +1,7 @@
-import { raw } from 'body-parser';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import { InputHTMLAttributes, useEffect, useState } from 'react';
+import { io, Socket } from 'socket.io-client';
 import Layout from '../../components/common/Layout';
 import { useMobile } from '../../components/hooks/MobileHook';
 import styles from '../../styles/Multiplayer.module.scss';
@@ -18,8 +17,12 @@ const Game: NextPage = () => {
 
   const [isValid, setIsValid] = useState(true);
   const [isLeader, setIsLeader] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [server, setServer] = useState<Socket>();
 
   const [players, setPlayers] = useState<Player[]>([]);
+
+  const player = players.find((player) => player.you);
 
   useEffect(() => {
     const server = io(url);
@@ -41,7 +44,29 @@ const Game: NextPage = () => {
     server.on('not-found', () => {
       setIsValid(false);
     });
+
+    setServer(server);
   }, [gameId]);
+
+  function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      // @ts-ignore
+      changeName(e.target?.value ?? player?.name);
+    }
+  }
+
+  function onBlur(e: React.FocusEvent<HTMLInputElement>) {
+    changeName(e.target?.value ?? player?.name);
+  }
+
+  function changeName(name: string) {
+    server?.emit('change-name', name);
+    setEditMode(false);
+  }
+
+  function onEdit() {
+    setEditMode(true);
+  }
 
   return (
     <Layout isMobile={isMobile}>
@@ -51,8 +76,27 @@ const Game: NextPage = () => {
             <h2>Players</h2>
             <div id={styles['player-list']}>
               {players.map((player) => (
-                <div key={player.id}>
-                  <p>{player.you ? <b>{player.name}</b> : player.name}</p>
+                <div className={styles['player']} key={player.id}>
+                  {player.you ? (
+                    editMode ? (
+                      // @ts-ignore
+                      <input
+                        type="text"
+                        onKeyUp={onKeyUp}
+                        onBlur={onBlur}
+                        autoFocus
+                      />
+                    ) : (
+                      <>
+                        <b>
+                          <p>{player.name}</p>
+                        </b>
+                        <button onClick={onEdit}>Edit</button>
+                      </>
+                    )
+                  ) : (
+                    <p>{player.name}</p>
+                  )}
                 </div>
               ))}
             </div>

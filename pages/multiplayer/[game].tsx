@@ -4,13 +4,19 @@ import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Layout from '../../components/common/Layout';
 import { useMobile } from '../../components/hooks/MobileHook';
+import { GameState } from '../../components/multiplayer/GameState';
 import { LobbyState } from '../../components/multiplayer/LobbyState';
-import styles from '../../styles/Multiplayer.module.scss';
 import { MapData } from '../../utils/types/MapData';
 import { Player } from '../../utils/types/multiplayer/Player';
 import { Settings } from '../../utils/types/multiplayer/Settings';
 
-type GameState = 'invalid' | 'loading' | 'lobby' | 'starting' | 'reveal';
+type GameState =
+  | 'invalid'
+  | 'loading'
+  | 'lobby'
+  | 'starting'
+  | 'reveal'
+  | 'game';
 
 // TODO: Move to separate file and integrate with current difficulty system
 export const difficulties = [
@@ -104,13 +110,17 @@ const Game: NextPage = () => {
       case 'starting':
         return (
           <LobbyState
+            gameState={gameState}
             players={players}
             settings={settings}
             setSettings={setSettings}
             mapData={mapData}
             server={server}
-          ></LobbyState>
+          />
         );
+      case 'reveal':
+      case 'game':
+        return <GameState />;
       default:
         return <h2>???</h2>;
     }

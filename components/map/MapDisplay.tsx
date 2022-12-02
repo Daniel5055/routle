@@ -12,6 +12,7 @@ export const MapDisplay = ({
   holeRadiusMultiplier,
   cities,
   isMobile,
+  onMapLoad,
 }: {
   mapData: MapData;
   searchRadiusMultiplier?: number;
@@ -25,6 +26,7 @@ export const MapDisplay = ({
     holes: Point[];
   };
   isMobile: boolean;
+  onMapLoad?: () => void;
 }) => {
   const [mapRatio] = useState(() => {
     const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
@@ -53,6 +55,7 @@ export const MapDisplay = ({
         alt="Map"
         layout="fill"
         objectFit="contain"
+        onLoad={onMapLoad}
       />
 
       <svg width="100%" height="100%" className={styles['map-container-child']}>

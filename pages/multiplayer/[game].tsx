@@ -29,6 +29,34 @@ const Game: NextPage = () => {
   });
   const [mapData, setMapData] = useState<MapData[]>([]);
 
+  const difficulties = [
+    {
+      value: 'easiest',
+      multiplier: 4.0,
+      name: 'Baby Mode',
+    },
+    {
+      value: 'easy',
+      multiplier: 2.0,
+      name: 'Easy',
+    },
+    {
+      value: 'normal',
+      multiplier: 1.0,
+      name: 'Normal',
+    },
+    {
+      value: 'hard',
+      multiplier: 0.8,
+      name: 'Hard',
+    },
+    {
+      value: 'hardest',
+      multiplier: 0.6,
+      name: 'Fredrik Mode',
+    },
+  ];
+
   const player = players.find((player) => player.you);
 
   useEffect(() => {
@@ -150,7 +178,10 @@ const Game: NextPage = () => {
                   ))}
               </select>
             ) : (
-              <p>{settings.map}</p>
+              <p>
+                {mapData.find((map) => map.webPath === settings.map)?.name ??
+                  '???'}
+              </p>
             )}
             <hr />
             <h3>Difficulty</h3>
@@ -167,21 +198,21 @@ const Game: NextPage = () => {
                 }}
                 required
               >
-                <option value="easy" selected={'easy' === settings.difficulty}>
-                  Easy
-                </option>
-                <option
-                  value="normal"
-                  selected={'normal' === settings.difficulty}
-                >
-                  Normal
-                </option>
-                <option value="hard" selected={'hard' === settings.difficulty}>
-                  Hard
-                </option>
+                {difficulties.map((difficulty) => (
+                  <option
+                    key={difficulty.value}
+                    value={difficulty.value}
+                    selected={difficulty.value === settings.difficulty}
+                  >
+                    {difficulty.name}
+                  </option>
+                ))}
               </select>
             ) : (
-              <p>{settings.difficulty}</p>
+              <p>
+                {difficulties.find((d) => d.value === settings.difficulty)
+                  ?.name ?? '???'}
+              </p>
             )}
             <hr />
           </div>

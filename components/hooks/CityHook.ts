@@ -64,6 +64,10 @@ export function useCities(
   // Random is not deterministic, so must assign randomness from within hook.
   // This is because both 'server' and client side evaluate random, which leads to weird stuff.
   useEffect(() => {
+    if (cities.length === 0) {
+      return;
+    }
+
     let startIndex;
     let endIndex;
     if (city1 !== undefined && city1 >= 0 && city1 <= cities.length) {

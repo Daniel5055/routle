@@ -98,6 +98,12 @@ const Game: NextPage = () => {
     });
 
     setServer(server);
+
+    return () => {
+      server?.off('players');
+      server?.off('settings');
+      server?.off('state');
+    }
   }, [gameId]);
 
   function renderGameState() {

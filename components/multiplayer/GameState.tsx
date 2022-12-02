@@ -68,6 +68,15 @@ export const GameState = (props: {
       setPromptData(data);
       console.log(data);
     });
+    server?.on('city-entered', (msg) => {
+      const { playerId, city } = JSON.parse(msg);
+      console.log(playerId, city)
+    })
+
+    return () => {
+      server?.off('prompt-cities');
+      server?.off('city-entered');
+    }
   }, [server]);
 
   // Pushing search to city hook and modifying ui based on result
@@ -88,6 +97,7 @@ export const GameState = (props: {
     // Handling the ui changes from entering city
     switch (query.result) {
       case 'In':
+        server?.emit('city-entered', query.city)
         setTagline(format(query.city!.name, search));
         break;
       case 'Out':
@@ -106,6 +116,7 @@ export const GameState = (props: {
   };
 
   const onMapLoad = () => {
+    console.log('called acknowledgement')
     server?.emit('state-ack', 'reveal');
   };
 

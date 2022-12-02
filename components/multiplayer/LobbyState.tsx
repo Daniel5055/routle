@@ -26,6 +26,10 @@ export const LobbyState = (props: {
     server?.on('new-leader', (id) => {
       setIsLeader(server.id === id);
     });
+
+    return () => {
+      server?.off('new-leader');
+    }
   }, [server]);
 
   function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {

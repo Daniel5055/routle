@@ -96,7 +96,13 @@ export function useCities(
     setSearchRadius(
       searchRadiusMultiplier! * (flattenedMin.lat - flattenedMax.lat)
     );
-  }, [mapData.latMax, mapData.latMin, mapData.longMax, mapData.longMin, searchRadiusMultiplier]);
+  }, [
+    mapData.latMax,
+    mapData.latMin,
+    mapData.longMax,
+    mapData.longMin,
+    searchRadiusMultiplier,
+  ]);
 
   const nullPoint: CityPoint = { x: 10000, y: 10000, name: '???', id: 0 };
   const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);

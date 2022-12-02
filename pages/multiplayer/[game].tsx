@@ -120,7 +120,20 @@ const Game: NextPage = () => {
         );
       case 'reveal':
       case 'game':
-        return <GameState />;
+        return (
+          <GameState
+            isMobile={isMobile}
+            gameState={gameState}
+            server={server}
+            players={players}
+            mapData={mapData.find((map) => map.webPath === settings.map)!!}
+            difficulty={
+              difficulties.find(
+                (difficulty) => difficulty.value === settings.difficulty
+              )!!.multiplier
+            }
+          />
+        );
       default:
         return <h2>???</h2>;
     }

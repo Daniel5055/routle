@@ -57,7 +57,7 @@ const Map: NextPage = ({
   useEffect(() => {
     addMapPlay(mapData.webPath);
     setSearchRadius((mapData.searchRadius * fetchDifficulty(true)) / 8);
-  }, []);
+  }, [mapData.searchRadius, mapData.webPath]);
 
   useEffect(() => {
     setTagline(cities.start.name);
@@ -121,7 +121,7 @@ const Map: NextPage = ({
         removeEventListener('keydown', enterHotKey);
       };
     }
-  }, [loadNewGame, hasWon]);
+  }, [loadNewGame, hasWon, mapData.webPath]);
 
   return (
     <Layout description="Singleplayer Routle" isMobile={isMobile}>

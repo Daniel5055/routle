@@ -7,29 +7,24 @@ import { Player } from '../../utils/types/multiplayer/Player';
 import { Settings } from '../../utils/types/multiplayer/Settings';
 
 export const LobbyState = (props: {
+  gameState: 'lobby' | 'starting';
   players: Player[];
   settings: Settings;
   setSettings: (settings: Settings) => void;
   mapData: MapData[];
   server?: Socket;
 }) => {
-  const { players, settings, setSettings, mapData, server } = props;
+  const { gameState, players, settings, setSettings, mapData, server } = props;
 
   const player = players.find((player) => player.you);
 
   const [isLeader, setIsLeader] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [starting, setStarting] = useState(false);
 
   useEffect(() => {
     server?.emit('state-ack', 'lobby');
     server?.on('new-leader', (id) => {
       setIsLeader(server.id === id);
-    });
-    server?.on('state', (state) => {
-      if (state === 'starting') {
-        setStarting(true);
-      }
     });
   }, [server]);
 
@@ -156,7 +151,7 @@ export const LobbyState = (props: {
         )}
         <hr />
       </div>
-      {starting ? (
+      {gameState === 'starting' ? (
         <h3>Starting...</h3>
       ) : isLeader ? (
         <button onClick={startGame}>

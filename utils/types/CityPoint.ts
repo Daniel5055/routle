@@ -11,6 +11,7 @@ export enum PointType {
   far = '#E0A1A1',
   current = '#939F9B',
   hole = '#6b231e66',
+  other = '#939F9B80',
 }
 
 export interface Point {

@@ -13,3 +13,5 @@ export enum PointType {
   current = '#939F9B',
   other = '#939F9B80',
 }
+
+export const nullPoint: CityPoint = { x: 10000, y: 10000, name: '???', id: 0 };

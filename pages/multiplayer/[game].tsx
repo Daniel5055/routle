@@ -51,7 +51,7 @@ const Game: NextPage = () => {
   const isMobile = useMobile();
   const router = useRouter();
 
-  const url = 'https://12f8-138-251-222-204.eu.ngrok.io';
+  const url = 'localhost:23177';
 
   const { game: gameId } = router.query;
 

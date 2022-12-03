@@ -8,7 +8,7 @@ import {
   revertRelX,
   withinRange,
 } from '../../utils/functions/coords';
-import { CityPoint } from '../../utils/types/CityPoint';
+import { CityPoint, nullPoint } from '../../utils/types/CityPoint';
 import { CityResponse } from '../../utils/types/GeoResponse';
 import { MapData } from '../../utils/types/MapData';
 
@@ -104,7 +104,6 @@ export function useCities(
     searchRadiusMultiplier,
   ]);
 
-  const nullPoint: CityPoint = { x: 10000, y: 10000, name: '???', id: 0 };
   const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);
   const [routePoints, setRoutePoints] = useState<CityPoint[]>([]);
   const [farPoints, setFarPoints] = useState<CityPoint[]>([]);

@@ -12,6 +12,7 @@ export const MapDisplay = ({
   cities,
   isMobile,
   onMapLoad,
+  otherCities,
 }: {
   mapData: MapData;
   searchRadiusMultiplier?: number;
@@ -24,6 +25,7 @@ export const MapDisplay = ({
   };
   isMobile: boolean;
   onMapLoad?: () => void;
+  otherCities?: { [player: string]: CityPoint[] }
 }) => {
   const [mapRatio] = useState(() => {
     const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
@@ -56,6 +58,37 @@ export const MapDisplay = ({
       />
 
       <svg width="100%" height="100%" className={styles['map-container-child']}>
+        {otherCities && Object.values(otherCities).flatMap((oCities) => 
+          oCities.map((p1, i, a) => {
+            if (i + 1 >= a.length) {
+              return;
+            }
+
+            const p2 = a[i + 1];
+
+            return (
+              <line
+                key={i}
+                x1={`${p1.x * 100}%`}
+                y1={`${p1.y * 100}%`}
+                x2={`${p2.x * 100}%`}
+                y2={`${p2.y * 100}%`}
+                stroke={PointType.other}
+                strokeWidth={strokeWidth}
+              />
+            )
+          }))}
+        {otherCities && Object.values(otherCities).flatMap((oCities) => 
+          oCities.map((p, i) => (
+            <circle
+              cx={`${p.x * 100}%`}
+              cy={`${p.y * 100}%`}
+              r={pointRadius}
+              fill={PointType.other}
+              key={i}
+              className={cleanName(p.name)}
+            />
+          )))}
         <circle
           cx={`${cities.current.x * 100}%`}
           cy={`${cities.current.y * 100}%`}

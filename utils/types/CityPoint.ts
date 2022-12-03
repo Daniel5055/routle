@@ -11,4 +11,5 @@ export enum PointType {
   past = '#939F9B',
   far = '#E0A1A1',
   current = '#939F9B',
+  other = '#939F9B80',
 }

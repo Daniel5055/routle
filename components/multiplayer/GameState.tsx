@@ -8,6 +8,7 @@ import styles from '../../styles/Singleplayer.module.scss';
 import { MapDisplay } from '../map/MapDisplay';
 import { CityInput } from '../map/CityInput';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
+import { CityPoint } from '../../utils/types/CityPoint';
 
 export const GameState = (props: {
   isMobile: boolean;
@@ -38,7 +39,7 @@ export const GameState = (props: {
   // Ensure 'this' is retained and correct
   queryCity = queryCity.bind({ cities });
 
-  const [otherCities, setOtherCities] = useState();
+  const [otherCities, setOtherCities] = useState<{ [player: string]: CityPoint[]}>({});
   const [tagline, setTagline] = useState(cities.current.name);
   const [countDown, setCountDown] = useState<number>(3);
 
@@ -60,7 +61,13 @@ export const GameState = (props: {
 
   useEffect(() => {
     setTagline(cities.start.name);
-  }, [cities.start.name]);
+    if (Object.values(otherCities).length === 0 && cities.start.name !== '???') {
+      setOtherCities(Object.fromEntries(players.filter((player) => player.id !== server?.id).map((player) => [
+        player.id,
+        [cities.start]
+      ])))
+    }
+  }, [cities.start, otherCities, players, server?.id]);
 
   useEffect(() => {
     server?.on('prompt-cities', (msg) => {
@@ -69,15 +76,17 @@ export const GameState = (props: {
       console.log(data);
     });
     server?.on('city-entered', (msg) => {
-      const { playerId, city } = JSON.parse(msg);
-      console.log(playerId, city)
+      const { player: playerId, city } = JSON.parse(msg);
+      const playerCities = otherCities[playerId] ?? [];
+      const newPlayerCities = [ ...playerCities, city];
+      setOtherCities({...otherCities, [playerId]: newPlayerCities});
     })
 
     return () => {
       server?.off('prompt-cities');
       server?.off('city-entered');
     }
-  }, [server]);
+  }, [otherCities, server]);
 
   // Pushing search to city hook and modifying ui based on result
   const handleSearch = async (search: string) => {
@@ -97,7 +106,7 @@ export const GameState = (props: {
     // Handling the ui changes from entering city
     switch (query.result) {
       case 'In':
-        server?.emit('city-entered', query.city)
+        server?.emit('city-entered', JSON.stringify(query.city))
         setTagline(format(query.city!.name, search));
         break;
       case 'Out':
@@ -131,6 +140,7 @@ export const GameState = (props: {
         cities={cities}
         isMobile={isMobile}
         onMapLoad={onMapLoad}
+        otherCities={otherCities}
       />
       {gameState === 'game' ? (
         countDown === 0 ? (

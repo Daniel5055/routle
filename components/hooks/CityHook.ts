@@ -8,7 +8,7 @@ import {
   revertRelX,
   withinRange,
 } from '../../utils/functions/coords';
-import { CityPoint, Point } from '../../utils/types/CityPoint';
+import { CityPoint, nullPoint, Point } from '../../utils/types/CityPoint';
 import { CityResponse } from '../../utils/types/GeoResponse';
 import { MapData } from '../../utils/types/MapData';
 import priority from '../../utils/functions/settings/priority';
@@ -28,17 +28,6 @@ export function useCities(
 
   const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
   const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
-
-  const nullPoint = useMemo<CityPoint>(
-    () => ({
-      x: 10000,
-      y: 10000,
-      name: '???',
-      id: 0,
-      population: 0,
-    }),
-    []
-  );
 
   const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);
   const [routePoints, setRoutePoints] = useState<CityPoint[]>([]);
@@ -237,7 +226,7 @@ export function useCities(
     if (newHoles.length > 0) {
       console.log(params.map((vals, i) => `h${i}=${vals.join(',')}`).join('&'));
     }
-  }, [endPoint, holeParams, holeRadius, mapData, nullPoint, routePoints]);
+  }, [endPoint, holeParams, holeRadius, mapData, routePoints]);
 
   return {
     cities: {

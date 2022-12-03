@@ -18,3 +18,5 @@ export interface Point {
   x: number;
   y: number;
 }
+
+export const nullPoint: CityPoint = { x: 10000, y: 10000, name: '???', id: 0, population: 0 };

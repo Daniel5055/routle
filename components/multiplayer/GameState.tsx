@@ -8,7 +8,7 @@ import styles from '../../styles/Singleplayer.module.scss';
 import { MapDisplay } from '../map/MapDisplay';
 import { CityInput } from '../map/CityInput';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
-import { CityPoint } from '../../utils/types/CityPoint';
+import { CityPoint, nullPoint } from '../../utils/types/CityPoint';
 
 export const GameState = (props: {
   isMobile: boolean;
@@ -61,7 +61,10 @@ export const GameState = (props: {
 
   useEffect(() => {
     setTagline(cities.start.name);
-    if (Object.values(otherCities).length === 0 && cities.start.name !== '???') {
+  }, [cities.start.name])
+
+  useEffect(() => {
+    if (Object.values(otherCities).length === 0 && cities.start !== nullPoint) {
       setOtherCities(Object.fromEntries(players.filter((player) => player.id !== server?.id).map((player) => [
         player.id,
         [cities.start]
@@ -119,6 +122,7 @@ export const GameState = (props: {
         setTagline(`${search} ???`);
         break;
       case 'Win':
+        server?.emit('city-entered', JSON.stringify(query.city))
         setTagline('You win!');
         break;
     }

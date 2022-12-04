@@ -3,4 +3,5 @@ export interface Player {
   name: string;
   leader?: boolean;
   you?: boolean;
+  distance?: number;
 }

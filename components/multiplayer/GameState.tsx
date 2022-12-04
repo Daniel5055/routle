@@ -9,16 +9,26 @@ import { MapDisplay } from '../map/MapDisplay';
 import { CityInput } from '../map/CityInput';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { CityPoint, nullPoint } from '../../utils/types/CityPoint';
+import { calculateDistance } from '../../utils/functions/coords';
 
 export const GameState = (props: {
   isMobile: boolean;
-  gameState: 'reveal' | 'game';
+  gameState: 'reveal' | 'game' | 'won';
+  isLeader: boolean;
   players: Player[];
   difficulty: number;
   mapData: MapData;
   server?: Socket;
 }) => {
-  const { isMobile, gameState, players, difficulty, mapData, server } = props;
+  const {
+    isMobile,
+    gameState,
+    isLeader,
+    players,
+    difficulty,
+    mapData,
+    server,
+  } = props;
 
   const [searchRadius, setSearchRadius] = useState<number | undefined>();
   const [promptData, setPromptData] = useState<{
@@ -39,57 +49,89 @@ export const GameState = (props: {
   // Ensure 'this' is retained and correct
   queryCity = queryCity.bind({ cities });
 
-  const [otherCities, setOtherCities] = useState<{ [player: string]: CityPoint[]}>({});
-  const [tagline, setTagline] = useState(cities.current.name);
-  const [countDown, setCountDown] = useState<number>(3);
+  const [otherCities, setOtherCities] = useState<{
+    [player: string]: CityPoint[];
+  }>({});
+  const [tagline, setTagline] = useState('Other players loading in...');
+  const [started, setStarted] = useState(false);
+  const [winner, setWinner] = useState<Player>();
 
   useEffect(() => {
     setSearchRadius((mapData.searchRadius * difficulty) / 8);
   }, [difficulty, mapData.searchRadius]);
 
   useEffect(() => {
-    if (gameState === 'game') {
+    if (gameState === 'game' && cities.start !== nullPoint) {
       // On change to game state, trigger a count down and then start
-      setCountDown(3);
+      setTagline('Starting in 3');
 
       // My lazy solution instead of setInterval and some more state
-      setTimeout(() => setCountDown(2), 1000);
-      setTimeout(() => setCountDown(1), 2000);
-      setTimeout(() => setCountDown(0), 3000);
+      setTimeout(() => setTagline('Starting in 2'), 1000);
+      setTimeout(() => setTagline('Starting in 1'), 2000);
+      setTimeout(() => {
+        setTagline(cities.start.name);
+        setStarted(true);
+      }, 3000);
     }
-  }, [gameState]);
-
-  useEffect(() => {
-    setTagline(cities.start.name);
-  }, [cities.start.name])
+  }, [cities.start, gameState]);
 
   useEffect(() => {
     if (Object.values(otherCities).length === 0 && cities.start !== nullPoint) {
-      setOtherCities(Object.fromEntries(players.filter((player) => player.id !== server?.id).map((player) => [
-        player.id,
-        [cities.start]
-      ])))
+      setOtherCities(
+        Object.fromEntries(
+          players
+            .filter((player) => player.id !== server?.id)
+            .map((player) => [player.id, [cities.start]])
+        )
+      );
     }
   }, [cities.start, otherCities, players, server?.id]);
 
   useEffect(() => {
-    server?.on('prompt-cities', (msg) => {
-      const data = JSON.parse(msg);
-      setPromptData(data);
-      console.log(data);
-    });
-    server?.on('city-entered', (msg) => {
-      const { player: playerId, city } = JSON.parse(msg);
-      const playerCities = otherCities[playerId] ?? [];
-      const newPlayerCities = [ ...playerCities, city];
-      setOtherCities({...otherCities, [playerId]: newPlayerCities});
-    })
+    // other cities is the only volatile dependency, and this is expected to run once.
+    if (Object.values(otherCities).length === 0) {
+      server?.on('prompt-cities', (msg) => {
+        const data = JSON.parse(msg);
+        setPromptData(data);
+        console.log(data);
+      });
+      server?.on('city-entered', (msg) => {
+        const { player: playerId, city } = JSON.parse(msg);
+        const playerCities = otherCities[playerId] ?? [];
+        const newPlayerCities = [...playerCities, city];
+        setOtherCities({ ...otherCities, [playerId]: newPlayerCities });
+      });
+      server?.on('player-won', (playerId) => {
+        const winningPlayer = players.find((p) => p.id === playerId);
+        setWinner(winningPlayer);
+        setTagline(`${winningPlayer?.name} won!`);
+
+        // Tell everyone how close you got
+        const distance = calculateDistance(
+          cities.current.x,
+          cities.current.y,
+          cities.end.x,
+          cities.end.y
+        );
+        players.find((p) => p.id === server.id)!.distance = distance;
+        server?.emit('final-distance', distance);
+      });
+      server?.on('final-distance', (msg) => {
+        const { distance, player } = JSON.parse(msg);
+        players.find((p) => p.id === player)!.distance = +distance;
+
+        if (players.every((p) => p.distance != undefined)) {
+          server?.emit('state-ack', 'won');
+        }
+      });
+    }
 
     return () => {
       server?.off('prompt-cities');
       server?.off('city-entered');
-    }
-  }, [otherCities, server]);
+      server?.off('player-won');
+    };
+  }, [cities, otherCities, players, server]);
 
   // Pushing search to city hook and modifying ui based on result
   const handleSearch = async (search: string) => {
@@ -109,7 +151,7 @@ export const GameState = (props: {
     // Handling the ui changes from entering city
     switch (query.result) {
       case 'In':
-        server?.emit('city-entered', JSON.stringify(query.city))
+        server?.emit('city-entered', JSON.stringify(query.city));
         setTagline(format(query.city!.name, search));
         break;
       case 'Out':
@@ -122,15 +164,21 @@ export const GameState = (props: {
         setTagline(`${search} ???`);
         break;
       case 'Win':
-        server?.emit('city-entered', JSON.stringify(query.city))
+        server?.emit('city-entered', JSON.stringify(query.city));
+        server?.emit('player-won');
         setTagline('You win!');
+        setWinner(players.find((p) => p.id === server?.id));
         break;
     }
   };
 
   const onMapLoad = () => {
-    console.log('called acknowledgement')
+    console.log('called acknowledgement');
     server?.emit('state-ack', 'reveal');
+  };
+
+  const onContinue = () => {
+    server?.emit('see-results');
   };
 
   return (
@@ -146,19 +194,15 @@ export const GameState = (props: {
         onMapLoad={onMapLoad}
         otherCities={otherCities}
       />
-      {gameState === 'game' ? (
-        countDown === 0 ? (
-          <>
-            <p className={styles.tagline}>{tagline}</p>
-            <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
-          </>
-        ) : (
-          <p className={styles.tagline}>
-            <b>Starting in {countDown}</b>
-          </p>
+      <p className={styles.tagline}>{tagline}</p>
+      {!winner ? (
+        started && (
+          <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
         )
+      ) : isLeader ? (
+        <h3>Waiting for leader...</h3>
       ) : (
-        <p className={styles.tagline}>Other players loading in...</p>
+        <button onClick={onContinue}>Continue</button>
       )}
     </>
   );

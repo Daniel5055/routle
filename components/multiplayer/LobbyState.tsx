@@ -8,28 +8,30 @@ import { Settings } from '../../utils/types/multiplayer/Settings';
 
 export const LobbyState = (props: {
   gameState: 'lobby' | 'starting';
+  isLeader: boolean;
   players: Player[];
   settings: Settings;
   setSettings: (settings: Settings) => void;
   mapData: MapData[];
   server?: Socket;
 }) => {
-  const { gameState, players, settings, setSettings, mapData, server } = props;
+  const {
+    gameState,
+    isLeader,
+    players,
+    settings,
+    setSettings,
+    mapData,
+    server,
+  } = props;
 
   const player = players.find((player) => player.you);
 
-  const [isLeader, setIsLeader] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
+    // So far deprecated
     server?.emit('state-ack', 'lobby');
-    server?.on('new-leader', (id) => {
-      setIsLeader(server.id === id);
-    });
-
-    return () => {
-      server?.off('new-leader');
-    }
   }, [server]);
 
   function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {

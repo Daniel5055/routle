@@ -16,7 +16,9 @@ type GameState =
   | 'lobby'
   | 'starting'
   | 'reveal'
-  | 'game';
+  | 'game'
+  | 'won'
+  | 'results';
 
 // TODO: Move to separate file and integrate with current difficulty system
 export const difficulties = [
@@ -63,6 +65,8 @@ const Game: NextPage = () => {
     difficulty: 'Normal',
   });
 
+  const [isLeader, setIsLeader] = useState(false);
+
   // TODO: Add loading state
   const [gameState, setGameState] = useState<GameState>('loading');
 
@@ -97,14 +101,19 @@ const Game: NextPage = () => {
       console.log(state);
     });
 
+    server.on('new-leader', (id) => {
+      setIsLeader(server.id === id);
+    });
+
     setServer(server);
 
     return () => {
       server.off('players');
       server.off('settings');
       server.off('state');
-      server.disconnect()
-    }
+      server.off('new-leader');
+      server.disconnect();
+    };
   }, [gameId]);
 
   function renderGameState() {
@@ -118,6 +127,7 @@ const Game: NextPage = () => {
         return (
           <LobbyState
             gameState={gameState}
+            isLeader={isLeader}
             players={players}
             settings={settings}
             setSettings={setSettings}
@@ -127,10 +137,12 @@ const Game: NextPage = () => {
         );
       case 'reveal':
       case 'game':
+      case 'won':
         return (
           <GameState
             isMobile={isMobile}
             gameState={gameState}
+            isLeader={isLeader}
             server={server}
             players={players}
             mapData={mapData.find((map) => map.webPath === settings.map)!!}

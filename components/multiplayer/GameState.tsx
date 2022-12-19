@@ -15,7 +15,7 @@ export const GameState = (props: {
   isMobile: boolean;
   gameState: 'reveal' | 'game' | 'won';
   isLeader: boolean;
-  players: Player[];
+  players: { [id: string]: Player };
   difficulty: number;
   mapData: MapData;
   server?: Socket;
@@ -55,6 +55,7 @@ export const GameState = (props: {
   const [tagline, setTagline] = useState('Other players loading in...');
   const [started, setStarted] = useState(false);
   const [winner, setWinner] = useState<Player>();
+  const [seeResults, setSeeResults] = useState(false);
 
   useEffect(() => {
     setSearchRadius((mapData.searchRadius * difficulty) / 8);
@@ -199,10 +200,12 @@ export const GameState = (props: {
         started && (
           <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
         )
-      ) : isLeader ? (
+      ) : !isLeader ? (
         <h3>Waiting for leader...</h3>
-      ) : (
+      ) : seeResults ? (
         <button onClick={onContinue}>Continue</button>
+      ) : (
+        <h3>Loading...</h3>
       )}
     </>
   );

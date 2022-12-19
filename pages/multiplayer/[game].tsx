@@ -5,20 +5,12 @@ import { io, Socket } from 'socket.io-client';
 import Layout from '../../components/common/Layout';
 import { useMobile } from '../../components/hooks/MobileHook';
 import { GameState } from '../../components/multiplayer/GameState';
-import { LobbyState } from '../../components/multiplayer/LobbyState';
+import { LobbyScene } from '../../components/multiplayer/LobbyScene';
 import { MapData } from '../../utils/types/MapData';
 import { Player } from '../../utils/types/multiplayer/Player';
 import { Settings } from '../../utils/types/multiplayer/Settings';
 
-type GameState =
-  | 'invalid'
-  | 'loading'
-  | 'lobby'
-  | 'starting'
-  | 'reveal'
-  | 'game'
-  | 'won'
-  | 'results';
+type GameScene = 'invalid' | 'loading' | 'lobby' | 'game' | 'results';
 
 // TODO: Move to separate file and integrate with current difficulty system
 export const difficulties = [
@@ -59,16 +51,14 @@ const Game: NextPage = () => {
 
   const [server, setServer] = useState<Socket>();
 
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<{ [id: string]: Player }>({});
   const [settings, setSettings] = useState<Settings>({
     map: 'Europe',
     difficulty: 'Normal',
   });
 
-  const [isLeader, setIsLeader] = useState(false);
-
   // TODO: Add loading state
-  const [gameState, setGameState] = useState<GameState>('loading');
+  const [gameScene, setGameScene] = useState<GameScene>('loading');
 
   const [mapData, setMapData] = useState<MapData[]>([]);
 
@@ -79,55 +69,53 @@ const Game: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    const server = io(url);
-    gameId && server.emit('join-game', gameId);
-    server.on('players', (msg) => {
-      const parsedPlayers = (JSON.parse(msg) as Player[]).map((player, i) => {
-        player.you = player.id === server.id;
-        player.leader = i === 0;
+    if (!gameId) {
+      return;
+    }
 
-        return player;
-      });
-      setPlayers(parsedPlayers);
+    const server = io(`${url}/${gameId}`);
+
+    server.on('update', (msg) => {
+      if ('settings' in msg) {
+        setSettings(msg.settings);
+      }
+
+      if ('players' in msg) {
+        setPlayers(msg.players);
+      }
     });
 
-    server.on('settings', (msg) => {
-      const parsedSettings: Settings = JSON.parse(msg);
-      setSettings(parsedSettings);
+    server.on('scene', (scene) => {
+      console.log('new scene: ', scene);
+      setGameScene(scene);
     });
 
-    server.on('state', (state) => {
-      setGameState(state);
-      console.log(state);
-    });
-
-    server.on('new-leader', (id) => {
-      setIsLeader(server.id === id);
+    server.on('closed', () => {
+      // TODO: If closed
+      unmount();
     });
 
     setServer(server);
 
-    return () => {
-      server.off('players');
-      server.off('settings');
-      server.off('state');
-      server.off('new-leader');
+    const unmount = () => {
+      server.off('update');
+      server.off('scene');
+      server.off('closed');
       server.disconnect();
     };
+
+    return unmount;
   }, [gameId]);
 
-  function renderGameState() {
-    switch (gameState) {
+  function renderGameScene() {
+    switch (gameScene) {
       case 'invalid':
         return <h2>Game not found</h2>;
       case 'loading':
         return <h2>Loading...</h2>;
       case 'lobby':
-      case 'starting':
         return (
-          <LobbyState
-            gameState={gameState}
-            isLeader={isLeader}
+          <LobbyScene
             players={players}
             settings={settings}
             setSettings={setSettings}
@@ -135,14 +123,12 @@ const Game: NextPage = () => {
             server={server}
           />
         );
-      case 'reveal':
       case 'game':
-      case 'won':
         return (
           <GameState
             isMobile={isMobile}
-            gameState={gameState}
-            isLeader={isLeader}
+            gameState={gameScene}
+            isLeader={false}
             server={server}
             players={players}
             mapData={mapData.find((map) => map.webPath === settings.map)!!}
@@ -158,7 +144,7 @@ const Game: NextPage = () => {
     }
   }
 
-  return <Layout isMobile={isMobile}>{renderGameState()}</Layout>;
+  return <Layout isMobile={isMobile}>{renderGameScene()}</Layout>;
 };
 
 export default Game;

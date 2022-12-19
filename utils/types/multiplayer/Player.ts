@@ -1,7 +1,7 @@
 export interface Player {
   id: string;
   name: string;
-  leader?: boolean;
+  isLeader?: boolean;
   you?: boolean;
   distance?: number;
 }

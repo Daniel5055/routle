@@ -6,33 +6,27 @@ import { MapData } from '../../utils/types/MapData';
 import { Player } from '../../utils/types/multiplayer/Player';
 import { Settings } from '../../utils/types/multiplayer/Settings';
 
-export const LobbyState = (props: {
-  gameState: 'lobby' | 'starting';
-  isLeader: boolean;
-  players: Player[];
+export const LobbyScene = (props: {
+  players: { [id: string]: Player };
   settings: Settings;
   setSettings: (settings: Settings) => void;
   mapData: MapData[];
   server?: Socket;
 }) => {
-  const {
-    gameState,
-    isLeader,
-    players,
-    settings,
-    setSettings,
-    mapData,
-    server,
-  } = props;
+  const { players, settings, setSettings, mapData, server } = props;
 
-  const player = players.find((player) => player.you);
+  const player = server && players[server.id];
 
   const [editMode, setEditMode] = useState(false);
+  const [starting, setStarting] = useState(false);
 
   useEffect(() => {
-    // So far deprecated
-    server?.emit('state-ack', 'lobby');
-  }, [server]);
+    server?.on('start', () => setStarting(true));
+
+    return () => {
+      server?.off('start');
+    };
+  });
 
   function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
@@ -46,7 +40,7 @@ export const LobbyState = (props: {
   }
 
   function changeName(name: string) {
-    server?.emit('change-name', name);
+    server?.emit('update', { player: { name } });
     player && (player.name = name);
     setEditMode(false);
   }
@@ -56,7 +50,8 @@ export const LobbyState = (props: {
   }
 
   function startGame() {
-    server?.emit('start-game');
+    server?.emit('start');
+    setStarting(true);
   }
 
   return (
@@ -64,9 +59,9 @@ export const LobbyState = (props: {
       <div id={styles['players']} className={styles['container']}>
         <h2>Players</h2>
         <div id={styles['player-list']}>
-          {players.map((player) => (
-            <div className={styles['player']} key={player.id}>
-              {player.you ? (
+          {Object.entries(players).map(([id, player]) => (
+            <div className={styles['player']} key={id}>
+              {id === server?.id ? (
                 editMode ? (
                   // @ts-ignore
                   <input
@@ -94,13 +89,13 @@ export const LobbyState = (props: {
         <h2>Game Settings</h2>
         <hr />
         <h3>Game Map</h3>
-        {isLeader ? (
+        {player?.isLeader && !starting ? (
           <select
             name="map"
             onChange={(e) => {
               const newSettings = { ...settings, map: e.target.value };
               setSettings(newSettings);
-              server?.emit('change-settings', JSON.stringify(newSettings));
+              server?.emit('update', { settings: newSettings });
             }}
             required
             defaultValue={settings.map}
@@ -126,7 +121,7 @@ export const LobbyState = (props: {
         )}
         <hr />
         <h3>Difficulty</h3>
-        {isLeader ? (
+        {player?.isLeader && !starting ? (
           <select
             name="difficulty"
             onChange={(e) => {
@@ -135,7 +130,7 @@ export const LobbyState = (props: {
                 difficulty: e.target.value,
               };
               setSettings(newSettings);
-              server?.emit('change-settings', JSON.stringify(newSettings));
+              server?.emit('update', { settings: newSettings });
             }}
             required
           >
@@ -157,9 +152,9 @@ export const LobbyState = (props: {
         )}
         <hr />
       </div>
-      {gameState === 'starting' ? (
+      {starting ? (
         <h3>Starting...</h3>
-      ) : isLeader ? (
+      ) : player?.isLeader ? (
         <button onClick={startGame}>
           <h3>Start</h3>
         </button>

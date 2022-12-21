@@ -127,8 +127,6 @@ const Game: NextPage = () => {
         return (
           <GameState
             isMobile={isMobile}
-            gameState={gameScene}
-            isLeader={false}
             server={server}
             players={players}
             mapData={mapData.find((map) => map.webPath === settings.map)!!}

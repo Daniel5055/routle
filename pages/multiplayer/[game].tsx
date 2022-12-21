@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Layout from '../../components/common/Layout';
 import { useMobile } from '../../components/hooks/MobileHook';
-import { GameState } from '../../components/multiplayer/GameState';
+import { GameScene } from '../../components/multiplayer/GameScene';
 import { LobbyScene } from '../../components/multiplayer/LobbyScene';
 import { MapData } from '../../utils/types/MapData';
 import { Player } from '../../utils/types/multiplayer/Player';
@@ -125,7 +125,7 @@ const Game: NextPage = () => {
         );
       case 'game':
         return (
-          <GameState
+          <GameScene
             isMobile={isMobile}
             server={server}
             players={players}

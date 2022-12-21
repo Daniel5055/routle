@@ -10,7 +10,7 @@ import { CityInput } from '../map/CityInput';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { CityPoint, nullPoint } from '../../utils/types/CityPoint';
 
-export const GameState = (props: {
+export const GameScene = (props: {
   isMobile: boolean;
   players: { [id: string]: Player };
   difficulty: number;

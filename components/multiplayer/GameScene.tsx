@@ -9,28 +9,18 @@ import { MapDisplay } from '../map/MapDisplay';
 import { CityInput } from '../map/CityInput';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { CityPoint, nullPoint } from '../../utils/types/CityPoint';
-import { calculateDistance } from '../../utils/functions/coords';
 
 export const GameState = (props: {
   isMobile: boolean;
-  gameState: 'reveal' | 'game' | 'won';
-  isLeader: boolean;
   players: { [id: string]: Player };
   difficulty: number;
   mapData: MapData;
   server?: Socket;
 }) => {
-  const {
-    isMobile,
-    gameState,
-    isLeader,
-    players,
-    difficulty,
-    mapData,
-    server,
-  } = props;
+  const { isMobile, players, difficulty, mapData, server } = props;
 
   const [searchRadius, setSearchRadius] = useState<number | undefined>();
+
   const [promptData, setPromptData] = useState<{
     cities: CityResponse[];
     start: number;
@@ -51,57 +41,53 @@ export const GameState = (props: {
 
   const [otherCities, setOtherCities] = useState<{
     [player: string]: CityPoint[];
-  }>({});
+  } | null>(null);
+
   const [tagline, setTagline] = useState('Other players loading in...');
   const [started, setStarted] = useState(false);
   const [winner, setWinner] = useState<Player>();
-  const [seeResults, setSeeResults] = useState(false);
+
+  const player = server && players[server.id];
 
   useEffect(() => {
     setSearchRadius((mapData.searchRadius * difficulty) / 8);
   }, [difficulty, mapData.searchRadius]);
 
   useEffect(() => {
-    if (gameState === 'game' && cities.start !== nullPoint) {
-      // On change to game state, trigger a count down and then start
-      setTagline('Starting in 3');
-
-      // My lazy solution instead of setInterval and some more state
-      setTimeout(() => setTagline('Starting in 2'), 1000);
-      setTimeout(() => setTagline('Starting in 1'), 2000);
-      setTimeout(() => {
-        setTagline(cities.start.name);
-        setStarted(true);
-      }, 3000);
-    }
-  }, [cities.start, gameState]);
-
-  useEffect(() => {
-    if (Object.values(otherCities).length === 0 && cities.start !== nullPoint) {
+    if (cities.start !== nullPoint) {
       setOtherCities(
         Object.fromEntries(
-          players
-            .filter((player) => player.id !== server?.id)
-            .map((player) => [player.id, [cities.start]])
+          Object.keys(players)
+            .filter((id) => id !== server?.id)
+            .map((id) => [id, [cities.start]])
         )
       );
     }
-  }, [cities.start, otherCities, players, server?.id]);
+  }, [cities.start, players, server?.id]);
 
   useEffect(() => {
-    // other cities is the only volatile dependency, and this is expected to run once.
-    if (Object.values(otherCities).length === 0) {
-      server?.on('prompt-cities', (msg) => {
-        const data = JSON.parse(msg);
-        setPromptData(data);
-        console.log(data);
-      });
-      server?.on('city-entered', (msg) => {
-        const { player: playerId, city } = JSON.parse(msg);
-        const playerCities = otherCities[playerId] ?? [];
-        const newPlayerCities = [...playerCities, city];
-        setOtherCities({ ...otherCities, [playerId]: newPlayerCities });
-      });
+    server?.on('countdown', (value) => {
+      if (value > 0) {
+        setTagline(`Starting in ${value}...`);
+      } else {
+        setTagline(cities.start.name);
+        setStarted(true);
+      }
+    });
+
+    server?.on('prompt', (data) => {
+      setPromptData(data);
+    });
+
+    server?.on('city', (entry) => {
+      const { player: playerId, city } = entry;
+      setOtherCities((others) => ({
+        ...others,
+        [playerId]: [...(others?.[playerId] ?? []), city],
+      }));
+    });
+
+    /*
       server?.on('player-won', (playerId) => {
         const winningPlayer = players.find((p) => p.id === playerId);
         setWinner(winningPlayer);
@@ -125,14 +111,14 @@ export const GameState = (props: {
           server?.emit('state-ack', 'won');
         }
       });
-    }
+      */
 
     return () => {
-      server?.off('prompt-cities');
-      server?.off('city-entered');
-      server?.off('player-won');
+      server?.off('prompt');
+      server?.off('countdown');
+      server?.off('city');
     };
-  }, [cities, otherCities, players, server]);
+  }, [cities.start, server]);
 
   // Pushing search to city hook and modifying ui based on result
   const handleSearch = async (search: string) => {
@@ -152,7 +138,7 @@ export const GameState = (props: {
     // Handling the ui changes from entering city
     switch (query.result) {
       case 'In':
-        server?.emit('city-entered', JSON.stringify(query.city));
+        server?.emit('city', query.city);
         setTagline(format(query.city!.name, search));
         break;
       case 'Out':
@@ -165,17 +151,17 @@ export const GameState = (props: {
         setTagline(`${search} ???`);
         break;
       case 'Win':
-        server?.emit('city-entered', JSON.stringify(query.city));
+        server?.emit('city', query.city);
         server?.emit('player-won');
         setTagline('You win!');
-        setWinner(players.find((p) => p.id === server?.id));
+        //setWinner(players.find((p) => p.id === server?.id));
         break;
     }
   };
 
   const onMapLoad = () => {
     console.log('called acknowledgement');
-    server?.emit('state-ack', 'reveal');
+    server?.emit('ready');
   };
 
   const onContinue = () => {
@@ -193,16 +179,16 @@ export const GameState = (props: {
         cities={cities}
         isMobile={isMobile}
         onMapLoad={onMapLoad}
-        otherCities={otherCities}
+        otherCities={otherCities ?? {}}
       />
       <p className={styles.tagline}>{tagline}</p>
       {!winner ? (
         started && (
           <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
         )
-      ) : !isLeader ? (
+      ) : !player?.isLeader ? (
         <h3>Waiting for leader...</h3>
-      ) : seeResults ? (
+      ) : true ? (
         <button onClick={onContinue}>Continue</button>
       ) : (
         <h3>Loading...</h3>

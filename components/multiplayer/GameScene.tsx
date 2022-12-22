@@ -4,7 +4,8 @@ import { CityResponse } from '../../utils/types/GeoResponse';
 import { MapData } from '../../utils/types/MapData';
 import { Player } from '../../utils/types/multiplayer/Player';
 import { useCities } from '../hooks/CityHook';
-import styles from '../../styles/Singleplayer.module.scss';
+import singleplayerStyles from '../../styles/Singleplayer.module.scss';
+import multiplayerStyles from '../../styles/Multiplayer.module.scss';
 import { MapDisplay } from '../map/MapDisplay';
 import { CityInput } from '../map/CityInput';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
@@ -169,30 +170,42 @@ export const GameScene = (props: {
   };
 
   return (
-    <>
-      <h3
-        className={styles[isMobile ? 'prompt-small' : 'prompt']}
-      >{`Get from ${cities.start.name} to ${cities.end.name}`}</h3>
-      <MapDisplay
-        mapData={mapData}
-        searchRadiusMultiplier={searchRadius}
-        cities={cities}
-        isMobile={isMobile}
-        onMapLoad={onMapLoad}
-        otherCities={otherCities ?? {}}
-      />
-      <p className={styles.tagline}>{tagline}</p>
-      {!winner ? (
-        started && (
-          <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
-        )
-      ) : !player?.isLeader ? (
-        <h3>Waiting for leader...</h3>
-      ) : true ? (
-        <button onClick={onContinue}>Continue</button>
-      ) : (
-        <h3>Loading...</h3>
-      )}
-    </>
+    <div id={multiplayerStyles['multiplayer-view']}>
+      <div id={multiplayerStyles['multiplayer-left']} className={multiplayerStyles['container']}>
+        <h2>Players</h2>
+        <div id={multiplayerStyles['player-list']}>
+          {Object.entries(players).map(([id, player]) => (
+            <div className={multiplayerStyles['player']} key={id}>
+              <p>{player.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div id={multiplayerStyles['multiplayer-center']}>
+        <h3
+          className={singleplayerStyles[isMobile ? 'prompt-small' : 'prompt']}
+        >{`Get from ${cities.start.name} to ${cities.end.name}`}</h3>
+        <MapDisplay
+          mapData={mapData}
+          searchRadiusMultiplier={searchRadius}
+          cities={cities}
+          isMobile={isMobile}
+          onMapLoad={onMapLoad}
+          otherCities={otherCities ?? {}}
+        />
+        <p className={singleplayerStyles.tagline}>{tagline}</p>
+        {!winner ? (
+          started && (
+            <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
+          )
+        ) : !player?.isLeader ? (
+          <h3>Waiting for leader...</h3>
+        ) : true ? (
+          <button onClick={onContinue}>Continue</button>
+        ) : (
+          <h3>Loading...</h3>
+        )}
+      </div>
+    </div>
   );
 };

@@ -65,6 +65,7 @@ h4.header {
 .map-container {
   position: relative;
   width: 100%;
+  margin: 0 auto;
 }
 
 .map-container-child {
@@ -84,11 +85,12 @@ h4.header {
 .tagline {
   font-size: theme.$secondary-font;
   z-index: 99;
+  text-align: center;
 }
 
 .input-line {
   width: 20vw;
-  margin: 0;
+  margin: 0 auto;
 }
 
 @media screen and (max-width: 768px) {

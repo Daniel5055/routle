@@ -56,6 +56,10 @@ export const LobbyScene = (props: {
     setStarting(true);
   }
 
+  function changeColor() {
+    server?.emit('color');
+  }
+
   return (
     <div id={styles['start-container']}>
       <div id={styles['players']} className={styles['container']}>
@@ -65,7 +69,11 @@ export const LobbyScene = (props: {
             <div className={styles['player']} key={id}>
               {id === server?.id ? (
                 <>
-                  <button className={styles['lobby-player-color']} />
+                  <button
+                    onClick={changeColor}
+                    className={styles['lobby-player-color']}
+                    style={{ backgroundColor: player.color }}
+                  />
                   {editMode ? (
                     // @ts-ignore
                     <input
@@ -91,7 +99,10 @@ export const LobbyScene = (props: {
                 </>
               ) : (
                 <>
-                  <span className={styles['lobby-player-color']} />
+                  <span
+                    className={styles['lobby-player-color']}
+                    style={{ backgroundColor: player.color }}
+                  />
                   <p className={styles['lobby-player-name']}>{player.name}</p>
                 </>
               )}

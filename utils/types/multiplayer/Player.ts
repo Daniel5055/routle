@@ -3,4 +3,5 @@ export interface Player {
   name: string;
   isLeader?: boolean;
   state: string;
+  color: string;
 }

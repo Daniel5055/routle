@@ -70,10 +70,16 @@ export const GameScene = (props: {
 
     server?.on('city', (entry) => {
       const { player: playerId, city } = entry;
-      setOtherCities((others) => ({
-        ...others,
-        [playerId]: [...(others[playerId] ?? [cities.start]), city],
-      }));
+      setOtherCities((others) => {
+        if (others[playerId]?.at(-1)?.id === city.id) {
+          return others;
+        } else {
+          return {
+            ...others,
+            [playerId]: [...(others[playerId] ?? [cities.start]), city],
+          };
+        }
+      });
     });
 
     return () => {
@@ -150,7 +156,10 @@ export const GameScene = (props: {
                 )}
               </span>
               <p className={multiplayerStyles['player-name']}>{player.name}</p>
-              <span className={multiplayerStyles['player-color']}></span>
+              <span
+                className={multiplayerStyles['player-color']}
+                style={{ backgroundColor: player.color }}
+              />
             </div>
           ))}
         </div>
@@ -166,6 +175,12 @@ export const GameScene = (props: {
           isMobile={isMobile}
           onMapLoad={onMapLoad}
           otherCities={otherCities}
+          playerColors={Object.fromEntries(
+            Object.entries(players).map(([id, player]) => [
+              id === server?.id ? 'me' : id,
+              player.color,
+            ])
+          )}
         />
         <p className={singleplayerStyles.tagline}>{tagline}</p>
         {player?.state === 'winner' ? (

@@ -40,8 +40,10 @@ export const LobbyScene = (props: {
   }
 
   function changeName(name: string) {
-    server?.emit('update', { player: { name } });
-    player && (player.name = name);
+    if (name.trim() !== '') {
+      server?.emit('update', { player: { name } });
+      player && (player.name = name);
+    }
     setEditMode(false);
   }
 
@@ -62,24 +64,36 @@ export const LobbyScene = (props: {
           {Object.entries(players).map(([id, player]) => (
             <div className={styles['player']} key={id}>
               {id === server?.id ? (
-                editMode ? (
-                  // @ts-ignore
-                  <input
-                    type="text"
-                    onKeyUp={onKeyUp}
-                    onBlur={onBlur}
-                    autoFocus
-                  />
-                ) : (
-                  <>
-                    <b>
-                      <p>{player.name}</p>
-                    </b>
-                    <button onClick={onEdit}>Edit</button>
-                  </>
-                )
+                <>
+                  <button className={styles['lobby-player-color']} />
+                  {editMode ? (
+                    // @ts-ignore
+                    <input
+                      className={styles['lobby-player-input']}
+                      type="text"
+                      onKeyUp={onKeyUp}
+                      onBlur={onBlur}
+                      autoFocus
+                    />
+                  ) : (
+                    <>
+                      <p className={styles['lobby-player-name']}>
+                        <b>{player.name}</b>
+                      </p>
+                      <button
+                        onClick={onEdit}
+                        className={styles['lobby-player-edit']}
+                      >
+                        Edit
+                      </button>
+                    </>
+                  )}
+                </>
               ) : (
-                <p>{player.name}</p>
+                <>
+                  <span className={styles['lobby-player-color']} />
+                  <p className={styles['lobby-player-name']}>{player.name}</p>
+                </>
               )}
             </div>
           ))}

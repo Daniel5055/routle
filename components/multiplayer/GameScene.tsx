@@ -10,7 +10,7 @@ import { MapDisplay } from '../map/MapDisplay';
 import { CityInput } from '../map/CityInput';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { CityPoint } from '../../utils/types/CityPoint';
-import { CgSandClock, CgSmile, CgTrophy } from 'react-icons/cg';
+import { CgSandClock, CgSmile, CgSmileSad, CgTrophy } from 'react-icons/cg';
 import { getCities } from '../../utils/api/cities';
 import { Timer } from './Timer';
 
@@ -48,6 +48,7 @@ export const GameScene = (props: {
 
   const [tagline, setTagline] = useState('Other players loading in...');
   const [started, setStarted] = useState(false);
+  const [ended, setEnded] = useState(false);
   const player = server && players[server.id];
   const someWinner = Object.values(players).some(
     (player) => player.state === 'won'
@@ -85,10 +86,15 @@ export const GameScene = (props: {
       });
     });
 
+    server?.on('end', () => {
+      setEnded(true);
+    })
+
     return () => {
       server?.off('prompt');
       server?.off('countdown');
       server?.off('city');
+      server?.off('end');
     };
   }, [cities.start, server]);
 
@@ -155,8 +161,15 @@ export const GameScene = (props: {
                 {player.state === 'loading' ? (
                   <CgSandClock />
                 ) : player.state === 'won' ? (
-                  <CgTrophy />
+                  // FIXME: Quite inefficient
+                  ((place) => place === 0 ? <CgTrophy /> : <b>{place + 1}</b>)(Object.entries(players)
+                    .filter(([id, p]) => p.result !== null)
+                    .sort((a, b) => a[1].result - b[1].result)
+                    .findIndex(([pid, p]) => pid === id)) 
                 ) : (
+                  ended ? 
+                  <CgSmileSad />
+                  :
                   <CgSmile />
                 )}
               </span>
@@ -174,7 +187,7 @@ export const GameScene = (props: {
         className={multiplayerStyles['container']}
       >
         <Timer
-          state={started ? (someWinner ? 'countdown' : 'start') : 'idle'}
+          state={started ? (someWinner ? (ended ? 'done' : 'countdown') : 'start') : 'idle'}
         />
       </div>
       <div id={multiplayerStyles['multiplayer-center']}>
@@ -196,14 +209,16 @@ export const GameScene = (props: {
           )}
         />
         <p className={singleplayerStyles.tagline}>{tagline}</p>
-        {player?.state === 'winner' ? (
+        {ended ? (
           player?.isLeader ? (
-            <button onClick={onContinue}>Continue</button>
+            <div><button onClick={onContinue}><h3>Continue</h3></button></div>
           ) : (
             <h3>Waiting for leader...</h3>
           )
         ) : (
-          started && (
+          player?.state === 'won' ?
+            <h3>Waiting for others...</h3>
+          : started && (
             <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
           )
         )}

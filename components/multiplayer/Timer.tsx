@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-export const Timer = (props: { state: 'idle' | 'start' | 'countdown' }) => {
+export const Timer = (props: { state: 'idle' | 'start' | 'countdown' | 'done' }) => {
   const [time, setTime] = useState(0);
   const [countdownTime, setCountdownTime] = useState(30 + 1);
 
   useEffect(() => {
-    if (props.state !== 'idle') {
+    if (props.state === 'start' || props.state === 'countdown') {
       const id = setInterval(() => {
         setTime((t) => t + 1);
       }, 1000);
@@ -32,7 +32,7 @@ export const Timer = (props: { state: 'idle' | 'start' | 'countdown' }) => {
           ? `You have ${countdownTime} seconds left`
           : props.state === 'start'
           ? 'Get there first!'
-          : '???'}
+          : 'Game is over!'}
       </p>
     </>
   );

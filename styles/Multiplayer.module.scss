@@ -19,6 +19,14 @@
   grid-row: 1;
 }
 
+#multiplayer-center * {
+  text-align: center;
+}
+
+#multiplayer-center button > h3 {
+  margin: 0;
+}
+
 #multiplayer-left {
   grid-column: 1;
   width: 200px;

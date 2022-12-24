@@ -26,7 +26,7 @@ export const LobbyScene = (props: {
     return () => {
       server?.off('start');
     };
-  });
+  }, [server]);
 
   function onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {

@@ -9,8 +9,9 @@ import multiplayerStyles from '../../styles/Multiplayer.module.scss';
 import { MapDisplay } from '../map/MapDisplay';
 import { CityInput } from '../map/CityInput';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
-import { CityPoint, nullPoint } from '../../utils/types/CityPoint';
+import { CityPoint } from '../../utils/types/CityPoint';
 import { CgSandClock, CgSmile, CgTrophy } from 'react-icons/cg';
+import { getCities } from '../../utils/api/cities';
 
 export const GameScene = (props: {
   isMobile: boolean;
@@ -22,7 +23,6 @@ export const GameScene = (props: {
   const { isMobile, players, difficulty, mapData, server } = props;
 
   const [searchRadius, setSearchRadius] = useState<number | undefined>();
-
   const [promptData, setPromptData] = useState<{
     cities: CityResponse[];
     start: number;
@@ -47,7 +47,6 @@ export const GameScene = (props: {
 
   const [tagline, setTagline] = useState('Other players loading in...');
   const [started, setStarted] = useState(false);
-
   const player = server && players[server.id];
 
   useEffect(() => {
@@ -127,7 +126,9 @@ export const GameScene = (props: {
     }
   };
 
-  const onMapLoad = () => {
+  const onMapLoad = async () => {
+    // Preliminary city fetch
+    await getCities(mapData, 'zzzzzz');
     console.log('called acknowledgement');
     server?.emit('ready');
   };

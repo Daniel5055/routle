@@ -112,30 +112,43 @@
   scrollbar-width: thin;
 }
 
+/* TODO: combine the styles of the lobby and game class */
 .player {
-  margin: 5px;
+  margin: 10px 5px;
   display: grid;
-  grid-template-columns: 1fr 2rem;
+  grid-template-columns: 1rem 1fr 2rem;
+  gap: 5px;
 }
 
 .player > * {
   display: inline-block;
-}
-
-.player p {
   margin: 0;
-  grid-column: 1;
-  width: 150px;
+  align-self: center;
 }
 
-.player button {
+.lobby-player-color {
+  grid-column: 1;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  background-color: violet;
+  border-radius: 50%;
+}
+
+.lobby-player-name {
   grid-column: 2;
+  width: 150px;
+  overflow-wrap: break-word;
+}
+
+.lobby-player-edit {
+  grid-column: 3;
   padding: 0;
 }
 
-.player input {
+.lobby-player-input {
   margin: 0;
-  grid-column: 1;
+  grid-column: 2;
   font-size: 1rem;
   text-align: left;
   max-width: 150px;
@@ -165,6 +178,7 @@
 .player-name {
   grid-column: 2;
   height: fit-content;
+  overflow-wrap: break-word;
 }
 .player-color {
   grid-column: 3;

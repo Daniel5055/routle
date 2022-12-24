@@ -12,6 +12,7 @@ import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { CityPoint } from '../../utils/types/CityPoint';
 import { CgSandClock, CgSmile, CgTrophy } from 'react-icons/cg';
 import { getCities } from '../../utils/api/cities';
+import { Timer } from './Timer';
 
 export const GameScene = (props: {
   isMobile: boolean;
@@ -48,6 +49,9 @@ export const GameScene = (props: {
   const [tagline, setTagline] = useState('Other players loading in...');
   const [started, setStarted] = useState(false);
   const player = server && players[server.id];
+  const someWinner = Object.values(players).some(
+    (player) => player.state === 'won'
+  );
 
   useEffect(() => {
     setSearchRadius((mapData.searchRadius * difficulty) / 8);
@@ -164,6 +168,14 @@ export const GameScene = (props: {
             </div>
           ))}
         </div>
+      </div>
+      <div
+        id={multiplayerStyles['multiplayer-right']}
+        className={multiplayerStyles['container']}
+      >
+        <Timer
+          state={started ? (someWinner ? 'countdown' : 'start') : 'idle'}
+        />
       </div>
       <div id={multiplayerStyles['multiplayer-center']}>
         <h3

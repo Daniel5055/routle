@@ -82,6 +82,7 @@ const Game: NextPage = () => {
 
       if ('players' in msg) {
         setPlayers(msg.players);
+        console.log('player:', msg.players);
       }
     });
 

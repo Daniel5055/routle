@@ -15,13 +15,16 @@
 }
 
 #multiplayer-center {
-  grid-column:2;
+  grid-column: 2;
 }
 
 #multiplayer-left {
   grid-column: 1;
   width: 200px;
   margin: 2rem 0;
+}
+
+#multiplayer-left > h2 {
   text-align: center;
 }
 
@@ -103,7 +106,6 @@
 }
 
 #player-list {
-  margin: 20px;
   max-height: 60vh;
   overflow-y: scroll;
   scrollbar-color: theme.$foreground-color transparent;
@@ -139,4 +141,36 @@
   max-width: 150px;
   padding: 0;
   font-weight: bold;
+}
+
+.game-player {
+  display: grid;
+  margin: 20px 5px;
+  grid-template-columns: 1.2rem auto 1rem;
+  gap: 5px;
+}
+
+.game-player > * {
+  display: inline-block;
+  margin: 0;
+  align-self: center;
+}
+
+.player-state {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.player-name {
+  grid-column: 2;
+  height: fit-content;
+}
+.player-color {
+  grid-column: 3;
+  background-color: violet;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  justify-self: center;
 }

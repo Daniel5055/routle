@@ -10,6 +10,7 @@ import { MapDisplay } from '../map/MapDisplay';
 import { CityInput } from '../map/CityInput';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { CityPoint, nullPoint } from '../../utils/types/CityPoint';
+import { CgSandClock, CgSmile, CgTrophy } from 'react-icons/cg';
 
 export const GameScene = (props: {
   isMobile: boolean;
@@ -42,29 +43,16 @@ export const GameScene = (props: {
 
   const [otherCities, setOtherCities] = useState<{
     [player: string]: CityPoint[];
-  } | null>(null);
+  }>({});
 
   const [tagline, setTagline] = useState('Other players loading in...');
   const [started, setStarted] = useState(false);
-  const [winner, setWinner] = useState<Player>();
 
   const player = server && players[server.id];
 
   useEffect(() => {
     setSearchRadius((mapData.searchRadius * difficulty) / 8);
   }, [difficulty, mapData.searchRadius]);
-
-  useEffect(() => {
-    if (cities.start !== nullPoint) {
-      setOtherCities(
-        Object.fromEntries(
-          Object.keys(players)
-            .filter((id) => id !== server?.id)
-            .map((id) => [id, [cities.start]])
-        )
-      );
-    }
-  }, [cities.start, players, server?.id]);
 
   useEffect(() => {
     server?.on('countdown', (value) => {
@@ -84,35 +72,9 @@ export const GameScene = (props: {
       const { player: playerId, city } = entry;
       setOtherCities((others) => ({
         ...others,
-        [playerId]: [...(others?.[playerId] ?? []), city],
+        [playerId]: [...(others[playerId] ?? [cities.start]), city],
       }));
     });
-
-    /*
-      server?.on('player-won', (playerId) => {
-        const winningPlayer = players.find((p) => p.id === playerId);
-        setWinner(winningPlayer);
-        setTagline(`${winningPlayer?.name} won!`);
-
-        // Tell everyone how close you got
-        const distance = calculateDistance(
-          cities.current.x,
-          cities.current.y,
-          cities.end.x,
-          cities.end.y
-        );
-        players.find((p) => p.id === server.id)!.distance = distance;
-        server?.emit('final-distance', distance);
-      });
-      server?.on('final-distance', (msg) => {
-        const { distance, player } = JSON.parse(msg);
-        players.find((p) => p.id === player)!.distance = +distance;
-
-        if (players.every((p) => p.distance != undefined)) {
-          server?.emit('state-ack', 'won');
-        }
-      });
-      */
 
     return () => {
       server?.off('prompt');
@@ -153,9 +115,8 @@ export const GameScene = (props: {
         break;
       case 'Win':
         server?.emit('city', query.city);
-        server?.emit('player-won');
-        setTagline('You win!');
-        //setWinner(players.find((p) => p.id === server?.id));
+        server?.emit('win');
+        setTagline('You Finished!');
         break;
     }
   };
@@ -171,12 +132,25 @@ export const GameScene = (props: {
 
   return (
     <div id={multiplayerStyles['multiplayer-view']}>
-      <div id={multiplayerStyles['multiplayer-left']} className={multiplayerStyles['container']}>
+      <div
+        id={multiplayerStyles['multiplayer-left']}
+        className={multiplayerStyles['container']}
+      >
         <h2>Players</h2>
         <div id={multiplayerStyles['player-list']}>
           {Object.entries(players).map(([id, player]) => (
-            <div className={multiplayerStyles['player']} key={id}>
-              <p>{player.name}</p>
+            <div className={multiplayerStyles['game-player']} key={id}>
+              <span className={multiplayerStyles['player-state']}>
+                {player.state === 'loading' ? (
+                  <CgSandClock />
+                ) : player.state === 'won' ? (
+                  <CgTrophy />
+                ) : (
+                  <CgSmile />
+                )}
+              </span>
+              <p className={multiplayerStyles['player-name']}>{player.name}</p>
+              <span className={multiplayerStyles['player-color']}></span>
             </div>
           ))}
         </div>
@@ -191,19 +165,19 @@ export const GameScene = (props: {
           cities={cities}
           isMobile={isMobile}
           onMapLoad={onMapLoad}
-          otherCities={otherCities ?? {}}
+          otherCities={otherCities}
         />
         <p className={singleplayerStyles.tagline}>{tagline}</p>
-        {!winner ? (
+        {player?.state === 'winner' ? (
+          player?.isLeader ? (
+            <button onClick={onContinue}>Continue</button>
+          ) : (
+            <h3>Waiting for leader...</h3>
+          )
+        ) : (
           started && (
             <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
           )
-        ) : !player?.isLeader ? (
-          <h3>Waiting for leader...</h3>
-        ) : true ? (
-          <button onClick={onContinue}>Continue</button>
-        ) : (
-          <h3>Loading...</h3>
         )}
       </div>
     </div>

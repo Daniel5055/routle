@@ -1,10 +1,11 @@
+import { map } from 'cypress/types/bluebird';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { difficulties } from '../../pages/multiplayer/[game]';
-import styles from '../../styles/Multiplayer.module.scss';
-import { MapData } from '../../utils/types/MapData';
-import { Player } from '../../utils/types/multiplayer/Player';
-import { Settings } from '../../utils/types/multiplayer/Settings';
+import { difficulties } from '../../../pages/multiplayer/[game]';
+import styles from '../../../styles/Multiplayer.module.scss';
+import { MapData } from '../../../utils/types/MapData';
+import { Player } from '../../../utils/types/multiplayer/Player';
+import { Settings } from '../../../utils/types/multiplayer/Settings';
 
 export const LobbyScene = (props: {
   players: { [id: string]: Player };
@@ -123,18 +124,14 @@ export const LobbyScene = (props: {
               server?.emit('update', { settings: newSettings });
             }}
             required
-            defaultValue={settings.map}
+            value={settings.map}
           >
             {mapData
               .sort((a: MapData, b: MapData) => {
                 return a.name.localeCompare(b.name);
               })
               .map((map: MapData) => (
-                <option
-                  key={map.webPath}
-                  value={map.webPath}
-                  selected={map.webPath === settings.map}
-                >
+                <option key={map.webPath} value={map.webPath}>
                   {map.name}
                 </option>
               ))}
@@ -158,13 +155,10 @@ export const LobbyScene = (props: {
               server?.emit('update', { settings: newSettings });
             }}
             required
+            value={settings.difficulty}
           >
             {difficulties.map((difficulty) => (
-              <option
-                key={difficulty.value}
-                value={difficulty.value}
-                selected={difficulty.value === settings.difficulty}
-              >
+              <option key={difficulty.value} value={difficulty.value}>
                 {difficulty.name}
               </option>
             ))}

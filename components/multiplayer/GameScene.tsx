@@ -88,7 +88,7 @@ export const GameScene = (props: {
 
     server?.on('end', () => {
       setEnded(true);
-    })
+    });
 
     return () => {
       server?.off('prompt');
@@ -144,7 +144,7 @@ export const GameScene = (props: {
   };
 
   const onContinue = () => {
-    server?.emit('see-results');
+    server?.emit('continue');
   };
 
   return (
@@ -162,18 +162,22 @@ export const GameScene = (props: {
                   <CgSandClock />
                 ) : player.state === 'won' ? (
                   // FIXME: Quite inefficient
-                  ((place) => place === 0 ? <CgTrophy /> : <b>{place + 1}</b>)(Object.entries(players)
-                    .filter(([id, p]) => p.result !== null)
-                    .sort((a, b) => a[1].result - b[1].result)
-                    .findIndex(([pid, p]) => pid === id)) 
-                ) : (
-                  ended ? 
+                  ((place) =>
+                    place === 0 ? <CgTrophy /> : <b>{place + 1}</b>)(
+                    Object.entries(players)
+                      .filter(([id, p]) => p.result !== null)
+                      .sort((a, b) => a[1].result - b[1].result)
+                      .findIndex(([pid, p]) => pid === id)
+                  )
+                ) : ended ? (
                   <CgSmileSad />
-                  :
+                ) : (
                   <CgSmile />
                 )}
               </span>
-              <p className={multiplayerStyles['player-name']}>{player.name}</p>
+              <p className={multiplayerStyles['player-name']}>
+                {id === server?.id ? <b>{player.name}</b> : player.name}
+              </p>
               <span
                 className={multiplayerStyles['player-color']}
                 style={{ backgroundColor: player.color }}
@@ -187,7 +191,15 @@ export const GameScene = (props: {
         className={multiplayerStyles['container']}
       >
         <Timer
-          state={started ? (someWinner ? (ended ? 'done' : 'countdown') : 'start') : 'idle'}
+          state={
+            started
+              ? someWinner
+                ? ended
+                  ? 'done'
+                  : 'countdown'
+                : 'start'
+              : 'idle'
+          }
         />
       </div>
       <div id={multiplayerStyles['multiplayer-center']}>
@@ -211,14 +223,18 @@ export const GameScene = (props: {
         <p className={singleplayerStyles.tagline}>{tagline}</p>
         {ended ? (
           player?.isLeader ? (
-            <div><button onClick={onContinue}><h3>Continue</h3></button></div>
+            <div>
+              <button onClick={onContinue}>
+                <h3>Continue</h3>
+              </button>
+            </div>
           ) : (
             <h3>Waiting for leader...</h3>
           )
+        ) : player?.state === 'won' ? (
+          <h3>Waiting for others...</h3>
         ) : (
-          player?.state === 'won' ?
-            <h3>Waiting for others...</h3>
-          : started && (
+          started && (
             <CityInput handleEntry={handleSearch} placeholder="Enter a city" />
           )
         )}

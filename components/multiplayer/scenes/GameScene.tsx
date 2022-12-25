@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { CityResponse } from '../../utils/types/GeoResponse';
-import { MapData } from '../../utils/types/MapData';
-import { Player } from '../../utils/types/multiplayer/Player';
-import { useCities } from '../hooks/CityHook';
-import singleplayerStyles from '../../styles/Singleplayer.module.scss';
-import multiplayerStyles from '../../styles/Multiplayer.module.scss';
-import { MapDisplay } from '../map/MapDisplay';
-import { CityInput } from '../map/CityInput';
-import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
-import { CityPoint } from '../../utils/types/CityPoint';
+import { CityResponse } from '../../../utils/types/GeoResponse';
+import { MapData } from '../../../utils/types/MapData';
+import { Player } from '../../../utils/types/multiplayer/Player';
+import { useCities } from '../../hooks/CityHook';
+import singleplayerStyles from '../../../styles/Singleplayer.module.scss';
+import multiplayerStyles from '../../../styles/Multiplayer.module.scss';
+import { MapDisplay } from '../../map/MapDisplay';
+import { CityInput } from '../../map/CityInput';
+import { areNamesEqual, formatName } from '../../../utils/functions/cityNames';
+import { CityPoint } from '../../../utils/types/CityPoint';
 import { CgSandClock, CgSmile, CgSmileSad, CgTrophy } from 'react-icons/cg';
-import { getCities } from '../../utils/api/cities';
-import { Timer } from './Timer';
+import { getCities } from '../../../utils/api/cities';
+import { Timer } from '../Timer';
 
 export const GameScene = (props: {
   isMobile: boolean;

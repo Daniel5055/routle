@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Layout from '../../components/common/Layout';
 import { useMobile } from '../../components/hooks/MobileHook';
-import { GameScene } from '../../components/multiplayer/GameScene';
-import { LobbyScene } from '../../components/multiplayer/LobbyScene';
+import { GameScene } from '../../components/multiplayer/scenes/GameScene';
+import { LobbyScene } from '../../components/multiplayer/scenes/LobbyScene';
+import { multiplayerURL } from '../../utils/api/multiplayer';
 import { MapData } from '../../utils/types/MapData';
 import { Player } from '../../utils/types/multiplayer/Player';
 import { Settings } from '../../utils/types/multiplayer/Settings';
 
-type GameScene = 'invalid' | 'loading' | 'lobby' | 'game' | 'results';
+type GameScene = 'invalid' | 'full' | 'loading' | 'lobby' | 'game';
 
 // TODO: Move to separate file and integrate with current difficulty system
 export const difficulties = [
@@ -45,8 +46,6 @@ const Game: NextPage = () => {
   const isMobile = useMobile();
   const router = useRouter();
 
-  const url = 'localhost:23177';
-
   const { game: gameId } = router.query;
 
   const [server, setServer] = useState<Socket>();
@@ -57,9 +56,7 @@ const Game: NextPage = () => {
     difficulty: 'Normal',
   });
 
-  // TODO: Add loading state
   const [gameScene, setGameScene] = useState<GameScene>('loading');
-
   const [mapData, setMapData] = useState<MapData[]>([]);
 
   useEffect(() => {
@@ -73,7 +70,7 @@ const Game: NextPage = () => {
       return;
     }
 
-    const server = io(`${url}/${gameId}`);
+    const server = io(`${multiplayerURL}/${gameId}`);
 
     server.on('update', (msg) => {
       if ('settings' in msg) {
@@ -92,7 +89,11 @@ const Game: NextPage = () => {
     });
 
     server.on('closed', () => {
-      // TODO: If closed
+      setGameScene('invalid');
+      unmount();
+    });
+    server.on('full', () => {
+      setGameScene('full');
       unmount();
     });
 
@@ -112,6 +113,8 @@ const Game: NextPage = () => {
     switch (gameScene) {
       case 'invalid':
         return <h2>Game not found</h2>;
+      case 'full':
+        return <h2>Game is full</h2>;
       case 'loading':
         return <h2>Loading...</h2>;
       case 'lobby':

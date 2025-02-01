@@ -13,6 +13,7 @@ import priority, {
   cityPriorities,
   CityPriority,
 } from '../utils/functions/settings/priority';
+import holes from '../utils/functions/settings/holes';
 
 const Settings: NextPage = ({}: InferGetStaticPropsType<
   typeof getStaticProps
@@ -20,6 +21,7 @@ const Settings: NextPage = ({}: InferGetStaticPropsType<
   const isMobile = useMobile();
 
   const difficultyValue = useRef(difficulty.getValue());
+  const holesValue = useRef(holes.getValue());
   const [priorityValue, setPriorityValue] = useState(priority.getValue());
   return (
     <Layout description="Singleplayer Routle" isMobile={isMobile}>
@@ -73,6 +75,22 @@ const Settings: NextPage = ({}: InferGetStaticPropsType<
             </option>
           ))}
         </select>
+      </div>
+      <div
+        className={styles.setting}
+        title="Holes are inaccessible areas on the map, how many do you want?"
+      >
+        <h3 className={styles.header}>Holes</h3>
+        <Slider
+          min={0}
+          max={5}
+          initialValue={holesValue.current}
+          initialText={holesValue.current.toString()}
+          onValueChange={(v) => {
+            holes.setValue(v);
+            return v.toString();
+          }}
+        />
       </div>
       <hr className={styles.underline} />
       <LoadingLink src={`/singleplayer/`} className={styles.option}>

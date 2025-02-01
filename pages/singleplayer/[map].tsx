@@ -101,6 +101,9 @@ const Map: NextPage = ({
         setTagline('You win!');
         setHasWon(true);
         break;
+      case 'Hole':
+        setTagline(`${search} is inaccessible`);
+        break;
     }
   };
 

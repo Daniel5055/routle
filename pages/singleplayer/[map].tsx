@@ -15,7 +15,6 @@ import styles from '../../styles/Singleplayer.module.scss';
 import { useCities } from '../../components/hooks/CityHook';
 import { areNamesEqual, formatName } from '../../utils/functions/cityNames';
 import { readFile } from 'fs/promises';
-import { fetchDifficulty } from '../../utils/functions/difficulty';
 import { CityInput } from '../../components/map/CityInput';
 import { useMobile } from '../../components/hooks/MobileHook';
 import {
@@ -23,6 +22,9 @@ import {
   addMapFinished,
   addMapPlay,
 } from '../../utils/api/database';
+import difficulty, {
+  difficultyMultiplier,
+} from '../../utils/functions/settings/difficulty';
 
 const Map: NextPage = ({
   mapData,
@@ -56,8 +58,10 @@ const Map: NextPage = ({
   // On page load
   useEffect(() => {
     addMapPlay(mapData.webPath);
-    setSearchRadius((mapData.searchRadius * fetchDifficulty(true)) / 8);
-  }, []);
+    setSearchRadius(
+      (mapData.searchRadius * difficultyMultiplier(difficulty.getValue())) / 8
+    );
+  }, [mapData.searchRadius, mapData.webPath]);
 
   useEffect(() => {
     setTagline(cities.start.name);
@@ -121,7 +125,7 @@ const Map: NextPage = ({
         removeEventListener('keydown', enterHotKey);
       };
     }
-  }, [loadNewGame, hasWon]);
+  }, [loadNewGame, hasWon, mapData.webPath]);
 
   return (
     <Layout description="Singleplayer Routle" isMobile={isMobile}>

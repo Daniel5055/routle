@@ -3,6 +3,7 @@ export interface CityPoint {
   id: number;
   x: number;
   y: number;
+  population: number;
 }
 
 export enum PointType {

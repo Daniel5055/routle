@@ -72,3 +72,23 @@
     width: 50vw;
   }
 }
+
+.setting {
+  text-align: center;
+  margin: 10px 0;
+  outline: 2px solid theme.$foreground-color;
+  border-radius: 25px;
+  width: 12.5rem;
+}
+
+.setting-select {
+  background: none;
+  color: theme.$foreground-color;
+  border: none;
+  margin: 8px;
+  text-align: center;
+}
+
+.setting-option {
+  background: theme.$background-color;
+}

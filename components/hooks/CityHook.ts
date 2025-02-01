@@ -11,6 +11,8 @@ import {
 import { CityPoint } from '../../utils/types/CityPoint';
 import { CityResponse } from '../../utils/types/GeoResponse';
 import { MapData } from '../../utils/types/MapData';
+import priority from '../../utils/functions/settings/priority';
+import { minBy, maxBy, sortBy, orderBy, find } from 'lodash-es';
 
 export function useCities(
   mapData: MapData,
@@ -71,6 +73,7 @@ export function useCities(
         ),
         name: startCityResponse.name,
         id: startCityResponse.geonameId,
+        population: startCityResponse.population,
       },
     ]);
     setEndPoint({
@@ -81,6 +84,7 @@ export function useCities(
       ),
       name: endCityResponse.name,
       id: endCityResponse.geonameId,
+      population: endCityResponse.population,
     });
   }, [cities, mapData, city1, city2]);
 
@@ -92,9 +96,21 @@ export function useCities(
     setSearchRadius(
       searchRadiusMultiplier! * (flattenedMin.lat - flattenedMax.lat)
     );
-  }, [searchRadiusMultiplier]);
+  }, [
+    mapData.latMax,
+    mapData.latMin,
+    mapData.longMax,
+    mapData.longMin,
+    searchRadiusMultiplier,
+  ]);
 
-  const nullPoint: CityPoint = { x: 10000, y: 10000, name: '???', id: 0 };
+  const nullPoint: CityPoint = {
+    x: 10000,
+    y: 10000,
+    name: '???',
+    id: 0,
+    population: 0,
+  };
   const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);
   const [routePoints, setRoutePoints] = useState<CityPoint[]>([]);
   const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
@@ -138,6 +154,7 @@ export function useCities(
             id: city.geonameId,
             x: long,
             y: lat,
+            population: city.population,
           };
         })
         .filter((city) => city.id !== this.cities.current.id);
@@ -160,26 +177,6 @@ export function useCities(
         x: revertRelX(mapData, this.cities.current.x),
         y: revertRelY(mapData, this.cities.current.y),
       };
-
-      // Getting the closest city
-      const closestCity = cities.reduce<{ city: CityPoint; distance: number }>(
-        (closest, city) => {
-          const distance = calculateDistance(
-            revertedCurrent.y,
-            revertedCurrent.x,
-            city.y,
-            city.x
-          );
-
-          if (distance < closest.distance) {
-            closest.distance = distance;
-            closest.city = city;
-          }
-
-          return closest;
-        },
-        { city: nullPoint, distance: 1000000 }
-      ).city;
 
       // If entered end point city name and is close enough
       if (endPointIncluded) {
@@ -204,22 +201,47 @@ export function useCities(
         }
       }
 
+      const prio = priority.getValue();
+
+      let targetCity: CityPoint;
+
+      const closestCity = minBy(cities, (c) =>
+        calculateDistance(revertedCurrent.y, revertedCurrent.x, c.y, c.x)
+      )!;
+
+      if (prio === 'Proximity') {
+        targetCity = closestCity;
+      } else if (prio === 'Population') {
+        targetCity = maxBy(cities, (c) => c.population)!;
+      } else {
+        // Prioritise cities by population size
+        const citiesByPopulation = orderBy(cities, (c) => c.population, 'desc');
+
+        // Return the largest population city within the circle
+        //  otherwise return the closest city outside the circle
+        targetCity =
+          find(citiesByPopulation, (c) =>
+            withinRange(
+              c.y,
+              c.x,
+              revertedCurrent.y,
+              revertedCurrent.x,
+              searchRadius
+            )
+          ) ?? closestCity;
+      }
+
       // Convert closest city to relative coords
-      const convertedClosest = {
-        ...closestCity,
-        ...convertToRelScreenCoords(
-          mapData,
-          closestCity.y,
-          closestCity.x,
-          true
-        ),
+      const convertedTarget = {
+        ...targetCity,
+        ...convertToRelScreenCoords(mapData, targetCity.y, targetCity.x, true),
       };
 
       // Is within circle?
       if (
         withinRange(
-          closestCity.y,
-          closestCity.x,
+          targetCity.y,
+          targetCity.x,
           revertedCurrent.y,
           revertedCurrent.x,
           searchRadius
@@ -228,18 +250,18 @@ export function useCities(
         // Within circle
 
         // Add to route
-        setRoutePoints(routePoints.concat(convertedClosest));
+        setRoutePoints(routePoints.concat(convertedTarget));
 
         // Clear far cities
         setFarPoints([]);
 
-        return { result: 'In', city: convertedClosest };
+        return { result: 'In', city: convertedTarget };
       }
 
       // Else too far
-      setFarPoints(farPoints.concat(convertedClosest));
+      setFarPoints(farPoints.concat(convertedTarget));
 
-      return { result: 'Out', city: convertedClosest };
+      return { result: 'Out', city: convertedTarget };
     },
   };
 }

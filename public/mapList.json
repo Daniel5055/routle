@@ -443,5 +443,19 @@
     },
     "searchRadius": 1.0,
     "pointRadius": 0.8
+  },
+  {
+    "name": "USSR",
+    "webPath": "ussr",
+    "imagePath": "/maps/ussr.png",
+    "longMax": 179.8767,
+    "longMin": 18.91265,
+    "latMax": 77.80733,
+    "latMin": 35.02185,
+    "countryCodes": {
+      "whole": ["AM","AZ","BY","EE","GE","KZ","KG","LV","LT","MD","RU","TJ","TM","UA","UZ"]
+    },
+    "searchRadius": 0.9,
+    "pointRadius": 0.6
   }
 ]

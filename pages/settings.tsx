@@ -14,6 +14,9 @@ import priority, {
   CityPriority,
 } from '../utils/functions/settings/priority';
 import holes from '../utils/functions/settings/holes';
+import holeRadius, {
+  holeRadiusMultiplier,
+} from '../utils/functions/settings/holeRadius';
 
 const Settings: NextPage = ({}: InferGetStaticPropsType<
   typeof getStaticProps
@@ -22,6 +25,7 @@ const Settings: NextPage = ({}: InferGetStaticPropsType<
 
   const difficultyValue = useRef(difficulty.getValue());
   const holesValue = useRef(holes.getValue());
+  const holeRadiusValue = useRef(holeRadius.getValue());
   const [priorityValue, setPriorityValue] = useState(priority.getValue());
   return (
     <Layout description="Singleplayer Routle" isMobile={isMobile}>
@@ -32,6 +36,7 @@ const Settings: NextPage = ({}: InferGetStaticPropsType<
         title="How big the radius of the circle is"
       >
         <h3 className={styles.header}>Difficulty</h3>
+        <hr className={styles.underline} />
         <Slider
           min={1}
           max={5}
@@ -48,6 +53,7 @@ const Settings: NextPage = ({}: InferGetStaticPropsType<
         title="How to pick cities with the same name"
       >
         <h3 className={styles.header}>City Priority</h3>
+        <hr className={styles.underline} />
         <select
           value={priorityValue}
           onChange={(e) => {
@@ -78,9 +84,11 @@ const Settings: NextPage = ({}: InferGetStaticPropsType<
       </div>
       <div
         className={styles.setting}
-        title="Holes are inaccessible areas on the map, how many do you want?"
+        title="Holes are inaccessible areas on the map, how many and how big do you want them?"
       >
         <h3 className={styles.header}>Holes</h3>
+        <hr className={styles.underline} />
+        <h4 className={styles.header}>Count</h4>
         <Slider
           min={0}
           max={5}
@@ -91,9 +99,20 @@ const Settings: NextPage = ({}: InferGetStaticPropsType<
             return v.toString();
           }}
         />
+        <h4 className={styles.header}>Size Multiplier</h4>
+        <Slider
+          min={1}
+          max={5}
+          initialValue={holeRadiusValue.current}
+          initialText={holeRadiusMultiplier(holeRadiusValue.current).toString()}
+          onValueChange={(v) => {
+            holeRadius.setValue(v);
+            return holeRadiusMultiplier(v).toString();
+          }}
+        />
       </div>
       <hr className={styles.underline} />
-      <LoadingLink src={`/singleplayer/`} className={styles.option}>
+      <LoadingLink src={`/singleplayer/`} className={styles['setting-button']}>
         Back
       </LoadingLink>
     </Layout>

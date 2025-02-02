@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getCities } from '../../utils/api/cities';
 import {
   calculateDistance,
@@ -12,17 +12,53 @@ import { CityPoint, Point } from '../../utils/types/CityPoint';
 import { CityResponse } from '../../utils/types/GeoResponse';
 import { MapData } from '../../utils/types/MapData';
 import priority from '../../utils/functions/settings/priority';
-import { minBy, maxBy, sortBy, orderBy, find } from 'lodash-es';
+import { minBy, maxBy, orderBy, find } from 'lodash-es';
 import holes from '../../utils/functions/settings/holes';
 
 export function useCities(
   mapData: MapData,
   cities: CityResponse[],
   searchRadiusMultiplier?: number,
+  holeRadiusMultiplier?: number,
   city1?: number,
   city2?: number
 ) {
   type queryResult = 'Win' | 'In' | 'Out' | 'Same' | 'None' | 'Hole';
+
+  const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
+  const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
+
+  const nullPoint = useMemo<CityPoint>(
+    () => ({
+      x: 10000,
+      y: 10000,
+      name: '???',
+      id: 0,
+      population: 0,
+    }),
+    []
+  );
+
+  const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);
+  const [routePoints, setRoutePoints] = useState<CityPoint[]>([]);
+  const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
+  const [holePoints, setHolePoints] = useState<Point[]>([]);
+
+  const searchRadius = useMemo<number | undefined>(() => {
+    if (searchRadiusMultiplier != undefined) {
+      return searchRadiusMultiplier * (flattenedMin.lat - flattenedMax.lat);
+    } else {
+      return undefined;
+    }
+  }, [flattenedMax.lat, flattenedMin.lat, searchRadiusMultiplier]);
+
+  const holeRadius = useMemo<number | undefined>(() => {
+    if (holeRadiusMultiplier != undefined) {
+      return holeRadiusMultiplier * (flattenedMin.lat - flattenedMax.lat);
+    } else {
+      return undefined;
+    }
+  }, [flattenedMax.lat, flattenedMin.lat, holeRadiusMultiplier]);
 
   // Random is not deterministic, so must assign randomness from within hook.
   // This is because both 'server' and client side evaluate random, which leads to weird stuff.
@@ -91,114 +127,101 @@ export function useCities(
       id: endCityResponse.geonameId,
       population: endCityResponse.population,
     });
+  }, [cities, mapData, city1, city2, holeRadius]);
+
+  useEffect(() => {
+    // Wait until start and end points generated and hole radius determined
+    if (
+      endPoint === nullPoint ||
+      holeRadius === undefined ||
+      routePoints.length === 0 ||
+      routePoints.length > 1
+    ) {
+      return;
+    }
 
     // Deciding on holes
     const holeCount = holes.getValue();
     const newHoles = [];
 
-    const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
-    const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
-    const holeRadius =
-      (mapData.searchRadius / 8) * (flattenedMin.lat - flattenedMax.lat);
+    // For determing if holes are within range to the start and end
+    const startPoint = routePoints[0];
+    const startMapCoords = {
+      lat: revertRelY(mapData, startPoint.y),
+      long: revertRelX(mapData, startPoint.x),
+    };
+    const endMapCoords = {
+      lat: revertRelY(mapData, endPoint.y),
+      long: revertRelX(mapData, endPoint.x),
+    };
 
-    const flattenedStart = flattenCoords(
-      startCityResponse.lat,
-      startCityResponse.lng
-    );
-    const flattenedEnd = flattenCoords(
-      endCityResponse.lat,
-      endCityResponse.lng
-    );
-
+    const MAX_TRIES = 100;
+    let holeX = 0;
+    let holeY = 0;
     for (let i = 0; i < holeCount; i++) {
-      let holeX = 0;
-      let holeY = 0;
-      let try1 = 0;
+      let tries = 0;
       do {
-        holeX = 0;
-        holeY = 0;
-        try1++;
-        if (try1 > 100) {
+        tries++;
+        if (tries > MAX_TRIES) {
           break;
         }
 
+        holeX = 0;
+        holeY = 0;
+
+        // The random variables
         const percentage = Math.random();
-        const variance = Math.random() - 0.5;
+        const variance = (Math.random() - 0.5) * 2;
 
         // Gradient perpendicular to gradient between start and end
         const invGradient =
-          (endCoords.x - startCoords.x) / (startCoords.y - endCoords.y);
+          (endPoint.x - startPoint.x) / (startPoint.y - endPoint.y);
 
         // Distance from start to end
-        const distance =
-          Math.sqrt(
-            Math.pow(endCoords.x - startCoords.x, 2) +
-              Math.pow(endCoords.y - startCoords.y, 2)
-          ) / 2;
+        const distance = Math.sqrt(
+          Math.pow(endPoint.x - startPoint.x, 2) +
+            Math.pow(endPoint.y - startPoint.y, 2)
+        );
 
         const angle = Math.atan(invGradient);
 
         // Hole location is some percentage of the journey from start to end
-        holeX = startCoords.x + (endCoords.x - startCoords.x) * percentage;
-        holeY = startCoords.y + (endCoords.y - startCoords.y) * percentage;
+        holeX = startPoint.x + (endPoint.x - startPoint.x) * percentage;
+        holeY = startPoint.y + (endPoint.y - startPoint.y) * percentage;
 
-        holeX += Math.cos(angle) * distance * variance * 3;
-        holeY += Math.sin(angle) * distance * variance * 3;
+        // And then deviated from the journey by some amount
+        holeX += Math.cos(angle) * variance * distance;
+        holeY += Math.sin(angle) * variance * distance;
       } while (
+        // Make sure holes are within bounds and not within range of start or end
         withinRange(
-          flattenedStart.lat,
-          flattenedStart.long,
+          startMapCoords.lat,
+          startMapCoords.long,
           revertRelY(mapData, holeY),
           revertRelX(mapData, holeX),
-          holeRadius * 1.1
+          holeRadius * 1.05
         ) ||
         withinRange(
-          flattenedEnd.lat,
-          flattenedEnd.long,
+          endMapCoords.lat,
+          endMapCoords.long,
           revertRelY(mapData, holeY),
           revertRelX(mapData, holeX),
-          holeRadius * 1.1
+          holeRadius * 1.05
         ) ||
         holeY > 1 ||
         holeY < 0 ||
         holeX > 1 ||
         holeX < 0
       );
-      newHoles.push({ x: holeX, y: holeY });
+
+      // Only add holes if managed to generate within given attempts
+      if (tries <= MAX_TRIES) {
+        newHoles.push({ x: holeX, y: holeY });
+      }
     }
 
     setHolePoints(newHoles);
-  }, [cities, mapData, city1, city2]);
-
-  const [searchRadius, setSearchRadius] = useState(0);
-
-  // Setting the search radius
-  useEffect(() => {
-    const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
-    const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
-    setSearchRadius(
-      searchRadiusMultiplier! * (flattenedMin.lat - flattenedMax.lat)
-    );
-  }, [
-    mapData.latMax,
-    mapData.latMin,
-    mapData.longMax,
-    mapData.longMin,
-    searchRadiusMultiplier,
-  ]);
-
-  const nullPoint: CityPoint = {
-    x: 10000,
-    y: 10000,
-    name: '???',
-    id: 0,
-    population: 0,
-  };
-
-  const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);
-  const [routePoints, setRoutePoints] = useState<CityPoint[]>([]);
-  const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
-  const [holePoints, setHolePoints] = useState<Point[]>([]);
+  }, [endPoint, holeRadius, mapData, nullPoint, routePoints]);
 
   return {
     cities: {
@@ -223,6 +246,10 @@ export function useCities(
       result: queryResult;
       city?: CityPoint;
     }> {
+      if (searchRadius === undefined || holeRadius === undefined) {
+        return { result: 'None' };
+      }
+
       // Fetch cities from search
       const rawCities = await getCities(mapData, search);
 
@@ -232,7 +259,7 @@ export function useCities(
       }
 
       // Converting to easier type and removing current city
-      let cities = rawCities
+      const cities1 = rawCities
         .map((city): CityPoint => {
           const { lat, long } = flattenCoords(city.lat, city.lng);
           return {
@@ -247,29 +274,35 @@ export function useCities(
 
       // Only possible if there existed only a single city in array previously,
       // which was the current city
-      if (cities.length === 0) {
+      if (cities1.length === 0) {
         return { result: 'Same', city: this.cities.current };
       }
 
-      const excuseCity = cities[0];
-
-      cities = cities.filter(
+      const cities = cities1.filter(
         (c) =>
-          !holePoints.some((h) => {
-            const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
-            const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
-            return withinRange(
+          !holePoints.some((h) =>
+            withinRange(
               c.y,
               c.x,
               revertRelY(mapData, h.y),
               revertRelX(mapData, h.x),
-              (mapData.searchRadius / 8) * (flattenedMin.lat - flattenedMax.lat)
-            );
-          })
+              holeRadius
+            )
+          )
       );
 
       if (cities.length === 0) {
-        return { result: 'Hole', city: excuseCity };
+        const converted = {
+          ...cities1[0],
+          ...convertToRelScreenCoords(
+            mapData,
+            cities1[0].y,
+            cities1[0].x,
+            true
+          ),
+        };
+        setFarPoints(farPoints.concat(converted));
+        return { result: 'Hole', city: converted };
       }
 
       // If the endpoint was included in queried cities

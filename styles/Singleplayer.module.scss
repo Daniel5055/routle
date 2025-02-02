@@ -17,14 +17,37 @@
   display: block;
 }
 
-.header {
+.setting-button {
+  font-size: theme.$header-font;
+  margin: 2px;
+  margin-top: 24px;
+  display: block;
+}
+
+h2.header {
   font-weight: normal;
   margin-top: 20px;
   margin-bottom: 0px;
+  text-align: center;
+}
+
+h3.header {
+  font-weight: normal;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+h4.header {
+  font-weight: normal;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  width: 100%;
+  text-align: center;
 }
 
 .underline {
-  width: 15rem;
+  width: min(15rem, 100%);
   margin-top: 0px;
   margin-bottom: 0px;
 }
@@ -79,14 +102,17 @@
   margin: 10px 0;
   outline: 2px solid theme.$foreground-color;
   border-radius: 25px;
-  width: 12.5rem;
+  width: 14rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .setting-select {
   background: none;
   color: theme.$foreground-color;
   border: none;
-  margin: 8px;
+  margin: 16px 0;
   text-align: center;
 }
 

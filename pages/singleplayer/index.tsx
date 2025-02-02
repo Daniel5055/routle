@@ -33,7 +33,7 @@ const Singleplayer: NextPage = ({
           })}
       </div>
       <hr className={styles.underline} />
-      <LoadingLink src={`/settings`} className={styles.option}>
+      <LoadingLink src={`/settings`} className={styles['setting-button']}>
         Settings
       </LoadingLink>
     </Layout>

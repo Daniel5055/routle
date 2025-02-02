@@ -9,11 +9,13 @@ import { flattenCoords } from '../../utils/functions/coords';
 export const MapDisplay = ({
   mapData,
   searchRadiusMultiplier,
+  holeRadiusMultiplier,
   cities,
   isMobile,
 }: {
   mapData: MapData;
   searchRadiusMultiplier?: number;
+  holeRadiusMultiplier?: number;
   cities: {
     far: CityPoint[];
     past: CityPoint[];
@@ -103,16 +105,17 @@ export const MapDisplay = ({
             className={cleanName(p.name)}
           />
         ))}
-        {cities.holes.map((h, i) => (
-          <circle
-            key={i + '_hole'}
-            cx={`${h.x * 100}%`}
-            cy={`${h.y * 100}%`}
-            r={mapRatio ? `${(height * mapData.searchRadius) / 8}vh` : 0}
-            fill={PointType.hole}
-            className={styles.hole}
-          />
-        ))}
+        {holeRadiusMultiplier &&
+          cities.holes.map((h, i) => (
+            <circle
+              key={i + '_hole'}
+              cx={`${h.x * 100}%`}
+              cy={`${h.y * 100}%`}
+              r={mapRatio ? `${holeRadiusMultiplier * height}vh` : 0}
+              fill={PointType.hole}
+              className={styles.hole}
+            />
+          ))}
         {searchRadiusMultiplier && (
           <circle
             cx={`${cities.current.x * 100}%`}

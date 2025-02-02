@@ -25,6 +25,9 @@ import {
 import difficulty, {
   difficultyMultiplier,
 } from '../../utils/functions/settings/difficulty';
+import holeRadius, {
+  holeRadiusMultiplier,
+} from '../../utils/functions/settings/holeRadius';
 
 const Map: NextPage = ({
   mapData,
@@ -36,6 +39,9 @@ const Map: NextPage = ({
   const [searchRadius, setSearchRadius] = useState<number | undefined>(
     undefined
   );
+  const [holeRadiusValue, setHoleRadiusValue] = useState<number | undefined>(
+    undefined
+  );
 
   const city1 = parseInt(router.query.c1 as string);
   const city2 = parseInt(router.query.c2 as string);
@@ -44,6 +50,7 @@ const Map: NextPage = ({
     mapData,
     map100Cities,
     searchRadius,
+    holeRadiusValue,
     isNaN(city1) ? undefined : city1,
     isNaN(city2) ? undefined : city2
   );
@@ -60,6 +67,9 @@ const Map: NextPage = ({
     addMapPlay(mapData.webPath);
     setSearchRadius(
       (mapData.searchRadius * difficultyMultiplier(difficulty.getValue())) / 8
+    );
+    setHoleRadiusValue(
+      (mapData.searchRadius * holeRadiusMultiplier(holeRadius.getValue())) / 8
     );
   }, [mapData.searchRadius, mapData.webPath]);
 
@@ -102,7 +112,7 @@ const Map: NextPage = ({
         setHasWon(true);
         break;
       case 'Hole':
-        setTagline(`${search} is inaccessible`);
+        setTagline(`${query.city!.name} is inaccessible`);
         break;
     }
   };
@@ -138,6 +148,7 @@ const Map: NextPage = ({
       <MapDisplay
         mapData={mapData}
         searchRadiusMultiplier={searchRadius}
+        holeRadiusMultiplier={holeRadiusValue}
         cities={cities}
         isMobile={isMobile}
       />

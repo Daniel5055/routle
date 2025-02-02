@@ -4,6 +4,8 @@
   position: relative;
   width: 12rem;
   text-align: center;
+  display: block;
+  height: 4rem;
 }
 
 .child {
@@ -26,6 +28,7 @@
   outline: none;
   height: 11px;
   margin: 10px 0;
+  display: block;
   &::-moz-range-thumb {
     appearance: none;
     width: 11px;

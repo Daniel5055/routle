@@ -1,7 +1,7 @@
 import styles from '../../styles/Singleplayer.module.scss';
 import { useState } from 'react';
 import { MapData } from '../../utils/types/MapData';
-import { CityPoint, PointType } from '../../utils/types/CityPoint';
+import { CityPoint, Point, PointType } from '../../utils/types/CityPoint';
 import Image from 'next/image';
 import { flattenCoords } from '../../utils/functions/coords';
 
@@ -9,17 +9,20 @@ import { flattenCoords } from '../../utils/functions/coords';
 export const MapDisplay = ({
   mapData,
   searchRadiusMultiplier,
+  holeRadiusMultiplier,
   cities,
   isMobile,
 }: {
   mapData: MapData;
   searchRadiusMultiplier?: number;
+  holeRadiusMultiplier?: number;
   cities: {
     far: CityPoint[];
     past: CityPoint[];
     start: CityPoint;
     end: CityPoint;
     current: CityPoint;
+    holes: Point[];
   };
   isMobile: boolean;
 }) => {
@@ -102,6 +105,17 @@ export const MapDisplay = ({
             className={cleanName(p.name)}
           />
         ))}
+        {holeRadiusMultiplier &&
+          cities.holes.map((h, i) => (
+            <circle
+              key={i + '_hole'}
+              cx={`${h.x * 100}%`}
+              cy={`${h.y * 100}%`}
+              r={mapRatio ? `${holeRadiusMultiplier * height}vh` : 0}
+              fill={PointType.hole}
+              className={styles.hole}
+            />
+          ))}
         {searchRadiusMultiplier && (
           <circle
             cx={`${cities.current.x * 100}%`}

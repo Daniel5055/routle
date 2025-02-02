@@ -453,7 +453,23 @@
     "latMax": 77.80733,
     "latMin": 35.02185,
     "countryCodes": {
-      "whole": ["AM","AZ","BY","EE","GE","KZ","KG","LV","LT","MD","RU","TJ","TM","UA","UZ"]
+      "whole": [
+        "AM",
+        "AZ",
+        "BY",
+        "EE",
+        "GE",
+        "KZ",
+        "KG",
+        "LV",
+        "LT",
+        "MD",
+        "RU",
+        "TJ",
+        "TM",
+        "UA",
+        "UZ"
+      ]
     },
     "searchRadius": 0.9,
     "pointRadius": 0.6

@@ -5,7 +5,7 @@ import type {
   NextPage,
 } from 'next';
 import { getMapPaths } from '../../utils/functions/getMapPaths';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Layout from '../../components/common/Layout';
 import { getRandomCities } from '../../utils/api/cities';
 import { MapData } from '../../utils/types/MapData';
@@ -46,13 +46,36 @@ const Map: NextPage = ({
   const city1 = parseInt(router.query.c1 as string);
   const city2 = parseInt(router.query.c2 as string);
 
+  // Extract variable number of hole params
+  const holeParams: [number, number][] = useMemo(
+    () =>
+      Array.from(Array(5).keys())
+        .map((i) => {
+          let q = router.query[`h${i}`];
+          if (!Array.isArray(q)) {
+            q = q?.split(',');
+
+            if (q === undefined) {
+              return [NaN, NaN];
+            }
+          }
+          return q.map((arg) => parseFloat(arg));
+        })
+        .filter((q) => q.length == 2 && q.every((arg) => !isNaN(arg))) as [
+        number,
+        number
+      ][],
+    [router.query]
+  );
+
   let { cities, queryCity } = useCities(
     mapData,
     map100Cities,
     searchRadius,
     holeRadiusValue,
     isNaN(city1) ? undefined : city1,
-    isNaN(city2) ? undefined : city2
+    isNaN(city2) ? undefined : city2,
+    holeParams
   );
 
   // Ensure 'this' is retained and correct

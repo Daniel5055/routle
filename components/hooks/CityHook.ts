@@ -21,7 +21,8 @@ export function useCities(
   searchRadiusMultiplier?: number,
   holeRadiusMultiplier?: number,
   city1?: number,
-  city2?: number
+  city2?: number,
+  holeParams?: [number, number][]
 ) {
   type queryResult = 'Win' | 'In' | 'Out' | 'Same' | 'None' | 'Hole';
 
@@ -99,7 +100,7 @@ export function useCities(
     }
 
     // Debugging purposes
-    console.log('c1:', startIndex, ', c2:', endIndex);
+    console.log(`c1=${startIndex}&c2=${endIndex}`);
 
     const startCoords = convertToRelScreenCoords(
       mapData,
@@ -140,9 +141,12 @@ export function useCities(
       return;
     }
 
+    const useArgs = holeParams !== undefined && holeParams.length > 0;
+
     // Deciding on holes
-    const holeCount = holes.getValue();
-    const newHoles = [];
+    const holeCount = useArgs ? holeParams.length : holes.getValue();
+    const newHoles: Point[] = [];
+    const params: [number, number][] = [];
 
     // For determing if holes are within range to the start and end
     const startPoint = routePoints[0];
@@ -158,6 +162,8 @@ export function useCities(
     const MAX_TRIES = 100;
     let holeX = 0;
     let holeY = 0;
+    let percentage = 0;
+    let variance = 0;
     for (let i = 0; i < holeCount; i++) {
       let tries = 0;
       do {
@@ -170,8 +176,8 @@ export function useCities(
         holeY = 0;
 
         // The random variables
-        const percentage = Math.random();
-        const variance = (Math.random() - 0.5) * 2;
+        percentage = useArgs ? holeParams[i][0] : Math.random();
+        variance = useArgs ? holeParams[i][1] : (Math.random() - 0.5) * 2;
 
         // Gradient perpendicular to gradient between start and end
         const invGradient =
@@ -217,11 +223,17 @@ export function useCities(
       // Only add holes if managed to generate within given attempts
       if (tries <= MAX_TRIES) {
         newHoles.push({ x: holeX, y: holeY });
+        params.push([percentage, variance]);
       }
     }
 
     setHolePoints(newHoles);
-  }, [endPoint, holeRadius, mapData, nullPoint, routePoints]);
+
+    // For debugging purposes
+    if (newHoles.length > 0) {
+      console.log(params.map((vals, i) => `h${i}=${vals.join(',')}`).join('&'));
+    }
+  }, [endPoint, holeParams, holeRadius, mapData, nullPoint, routePoints]);
 
   return {
     cities: {

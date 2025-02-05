@@ -77,7 +77,11 @@ export const GameScene = (props: {
     });
 
     server?.on('prompt', (data) => {
-      setPromptData(data);
+      if (data === null) {
+        setTagline('Picking start and end cities...');
+      } else {
+        setPromptData(data);
+      }
     });
 
     server?.on('city', (entry) => {

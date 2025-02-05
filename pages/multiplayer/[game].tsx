@@ -10,10 +10,7 @@ import { multiplayerURL } from '../../utils/api/multiplayer';
 import { MapData } from '../../utils/types/MapData';
 import { Player } from '../../utils/types/multiplayer/Player';
 import Settings from '../../utils/types/multiplayer/Settings';
-import {
-  DIFFICULTY_DEFAULT,
-  difficultyMultiplier,
-} from '../../utils/functions/settings/difficulty';
+import { DIFFICULTY_DEFAULT } from '../../utils/functions/settings/difficulty';
 import { PRIORITY_DEFAULT } from '../../utils/functions/settings/priority';
 
 type GameScene = 'invalid' | 'full' | 'loading' | 'lobby' | 'game';
@@ -28,7 +25,7 @@ const Game: NextPage = () => {
 
   const [players, setPlayers] = useState<{ [id: string]: Player }>({});
   const [settings, setRawSettings] = useState<Settings>({
-    map: 'Europe',
+    map: 'europe',
     difficulty: DIFFICULTY_DEFAULT,
     priority: PRIORITY_DEFAULT,
     holes: 0,

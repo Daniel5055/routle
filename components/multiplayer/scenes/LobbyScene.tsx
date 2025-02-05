@@ -1,4 +1,3 @@
-import { map } from 'cypress/types/bluebird';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import styles from '../../../styles/Multiplayer.module.scss';
@@ -10,6 +9,7 @@ import {
   cityPriorities,
   CityPriority,
 } from '../../../utils/functions/settings/priority';
+import Image from 'next/image';
 
 export const LobbyScene = (props: {
   players: { [id: string]: Player };
@@ -66,154 +66,167 @@ export const LobbyScene = (props: {
   }
 
   return (
-    <div id={styles['start-container']}>
-      <div id={styles['players']} className={styles['container']}>
-        <h2>Players</h2>
-        <div id={styles['player-list']}>
-          {Object.entries(players).map(([id, player]) => (
-            <div className={styles['player']} key={id}>
-              {id === server?.id ? (
-                <>
-                  <button
-                    onClick={changeColor}
-                    className={styles['lobby-player-color']}
-                    style={{ backgroundColor: player.color }}
-                  />
-                  {editMode ? (
-                    // @ts-ignore
-                    <input
-                      className={styles['lobby-player-input']}
-                      type="text"
-                      onKeyUp={onKeyUp}
-                      onBlur={onBlur}
-                      autoFocus
-                    />
-                  ) : (
-                    <>
-                      <p className={styles['lobby-player-name']}>
-                        <b>{player.name}</b>
-                      </p>
-                      <button
-                        onClick={onEdit}
-                        className={styles['lobby-player-edit']}
-                      >
-                        Edit
-                      </button>
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  <span
-                    className={styles['lobby-player-color']}
-                    style={{ backgroundColor: player.color }}
-                  />
-                  <p className={styles['lobby-player-name']}>{player.name}</p>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
+    <>
+      <div className={styles['map-container']}>
+        <Image
+          src={mapData.find((map) => map.webPath === settings.map)!.imagePath}
+          alt="Map"
+          layout="fill"
+          objectFit="contain"
+        />
       </div>
-      <div id={styles['settings']} className={styles['container']}>
-        <h2>Game Settings</h2>
-        <hr />
-        <h3>Game Map</h3>
-        {player?.isLeader && !starting ? (
-          <select
-            name="map"
-            onChange={(e) => {
-              const newSettings = { ...settings, map: e.target.value };
-              setSettings(newSettings);
-              server?.emit('update', { settings: newSettings });
-            }}
-            required
-            value={settings.map}
-          >
-            {mapData
-              .sort((a: MapData, b: MapData) => {
-                return a.name.localeCompare(b.name);
-              })
-              .map((map: MapData) => (
-                <option key={map.webPath} value={map.webPath}>
-                  {map.name}
+      <div id={styles['start-container']}>
+        <div id={styles['players']} className={styles['container']}>
+          <h2>Players</h2>
+          <div id={styles['player-list']}>
+            {Object.entries(players).map(([id, player]) => (
+              <div className={styles['player']} key={id}>
+                {id === server?.id ? (
+                  <>
+                    <button
+                      onClick={changeColor}
+                      className={styles['lobby-player-color']}
+                      style={{ backgroundColor: player.color }}
+                    />
+                    {editMode ? (
+                      // @ts-ignore
+                      <input
+                        className={styles['lobby-player-input']}
+                        type="text"
+                        onKeyUp={onKeyUp}
+                        onBlur={onBlur}
+                        autoFocus
+                      />
+                    ) : (
+                      <>
+                        <p className={styles['lobby-player-name']}>
+                          <b>{player.name}</b>
+                        </p>
+                        <button
+                          onClick={onEdit}
+                          className={styles['lobby-player-edit']}
+                        >
+                          Edit
+                        </button>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <span
+                      className={styles['lobby-player-color']}
+                      style={{ backgroundColor: player.color }}
+                    />
+                    <p className={styles['lobby-player-name']}>{player.name}</p>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div id={styles['settings']} className={styles['container']}>
+          <h2>Game Settings</h2>
+          <hr />
+          <h3>Game Map</h3>
+          {player?.isLeader && !starting ? (
+            <select
+              name="map"
+              onChange={(e) => {
+                const newSettings = { ...settings, map: e.target.value };
+                setSettings(newSettings);
+                server?.emit('update', { settings: newSettings });
+              }}
+              required
+              value={settings.map}
+            >
+              {mapData
+                .sort((a: MapData, b: MapData) => {
+                  return a.name.localeCompare(b.name);
+                })
+                .map((map: MapData) => (
+                  <option key={map.webPath} value={map.webPath}>
+                    {map.name}
+                  </option>
+                ))}
+            </select>
+          ) : (
+            <p>
+              {mapData.find((map) => map.webPath === settings.map)?.name ??
+                '???'}
+            </p>
+          )}
+          <hr />
+          <h3>Difficulty</h3>
+          {player?.isLeader && !starting ? (
+            <select
+              name="difficulty"
+              onChange={(e) => {
+                const newSettings = {
+                  ...settings,
+                  difficulty: parseInt(e.target.value),
+                };
+                setSettings(newSettings);
+              }}
+              required
+              value={settings.difficulty}
+            >
+              {[1, 2, 3, 4, 5].map((d) => (
+                <option key={d} value={d}>
+                  {difficultyName(d)}
                 </option>
               ))}
-          </select>
-        ) : (
-          <p>
-            {mapData.find((map) => map.webPath === settings.map)?.name ?? '???'}
-          </p>
-        )}
-        <hr />
-        <h3>Difficulty</h3>
-        {player?.isLeader && !starting ? (
-          <select
-            name="difficulty"
-            onChange={(e) => {
-              const newSettings = {
-                ...settings,
-                difficulty: parseInt(e.target.value),
-              };
-              setSettings(newSettings);
-            }}
-            required
-            value={settings.difficulty}
-          >
-            {[1, 2, 3, 4, 5].map((d) => (
-              <option key={d} value={d}>
-                {difficultyName(d)}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <p>{difficultyName(settings.difficulty)}</p>
-        )}
-        <hr />
-        <h3>Priority</h3>
-        {player?.isLeader && !starting ? (
-          <select
-            value={settings.priority}
-            onChange={(e) => {
-              const newSettings = {
-                ...settings,
-                priority: e.target.value as CityPriority,
-              };
-              setSettings(newSettings);
-            }}
-          >
-            {cityPriorities.map((p) => (
-              <option
-                value={p}
-                key={p}
-                title={
-                  p === 'Hybrid'
-                    ? 'Pick the largest city within range, and the closest out of range'
-                    : p === 'Proximity'
-                    ? 'Pick the closest city always'
-                    : p === 'Population'
-                    ? 'Pick the largest city always'
-                    : ''
-                }
-              >
-                {p}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <p>{settings.priority}</p>
-        )}
-        <hr />
+            </select>
+          ) : (
+            <p>{difficultyName(settings.difficulty)}</p>
+          )}
+          <hr />
+          <h3>Priority</h3>
+          {player?.isLeader && !starting ? (
+            <select
+              value={settings.priority}
+              onChange={(e) => {
+                const newSettings = {
+                  ...settings,
+                  priority: e.target.value as CityPriority,
+                };
+                setSettings(newSettings);
+              }}
+            >
+              {cityPriorities.map((p) => (
+                <option
+                  value={p}
+                  key={p}
+                  title={
+                    p === 'Hybrid'
+                      ? 'Pick the largest city within range, and the closest out of range'
+                      : p === 'Proximity'
+                      ? 'Pick the closest city always'
+                      : p === 'Population'
+                      ? 'Pick the largest city always'
+                      : ''
+                  }
+                >
+                  {p}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <p>{settings.priority}</p>
+          )}
+          <hr />
+        </div>
+        <div id={styles['start-button']}>
+          {starting ? (
+            <h3 className={styles['container']}>Starting...</h3>
+          ) : player?.isLeader ? (
+            <button className={styles['container']} onClick={startGame}>
+              <h3>Start</h3>
+            </button>
+          ) : (
+            <h3 className={styles['container']}>Waiting for Leader...</h3>
+          )}
+        </div>
       </div>
-      {starting ? (
-        <h3>Starting...</h3>
-      ) : player?.isLeader ? (
-        <button onClick={startGame}>
-          <h3>Start</h3>
-        </button>
-      ) : (
-        <h3>Waiting for Leader...</h3>
-      )}
-    </div>
+    </>
   );
 };

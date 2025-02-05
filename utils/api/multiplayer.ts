@@ -1,1 +1,1 @@
-export const multiplayerURL = 'https://routle-server.onrender.com';
+export const multiplayerURL = 'http://localhost:23177';

@@ -1,6 +1,5 @@
+import { CityPriority } from '../../types/Settings';
 import { Property } from './property';
-
-type CityPriority = 'Proximity' | 'Population' | 'Hybrid';
 
 const cityPriorities: CityPriority[] = ['Proximity', 'Population', 'Hybrid'];
 
@@ -14,6 +13,6 @@ const priority = new Property<CityPriority>(
   (s) => s as CityPriority
 );
 
-export { cityPriorities, type CityPriority };
+export { cityPriorities, type CityPriority, PRIORITY_DEFAULT };
 
 export default priority;

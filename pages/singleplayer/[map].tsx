@@ -28,6 +28,9 @@ import difficulty, {
 import holeRadius, {
   holeRadiusMultiplier,
 } from '../../utils/functions/settings/holeRadius';
+import Settings from '../../utils/types/Settings';
+import priority from '../../utils/functions/settings/priority';
+import holes from '../../utils/functions/settings/holes';
 
 const Map: NextPage = ({
   mapData,
@@ -68,8 +71,15 @@ const Map: NextPage = ({
     [router.query]
   );
 
+  const settings: Settings = {
+    difficulty: difficulty.getValue(),
+    priority: priority.getValue(),
+    holes: holes.getValue(),
+  };
+
   let { cities, queryCity } = useCities(
     mapData,
+    settings,
     map100Cities,
     searchRadius,
     holeRadiusValue,

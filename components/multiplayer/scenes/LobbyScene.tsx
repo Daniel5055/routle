@@ -1,11 +1,15 @@
 import { map } from 'cypress/types/bluebird';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { difficulties } from '../../../pages/multiplayer/[game]';
 import styles from '../../../styles/Multiplayer.module.scss';
 import { MapData } from '../../../utils/types/MapData';
 import { Player } from '../../../utils/types/multiplayer/Player';
-import { Settings } from '../../../utils/types/multiplayer/Settings';
+import Settings from '../../../utils/types/multiplayer/Settings';
+import { difficultyName } from '../../../utils/functions/settings/difficulty';
+import {
+  cityPriorities,
+  CityPriority,
+} from '../../../utils/functions/settings/priority';
 
 export const LobbyScene = (props: {
   players: { [id: string]: Player };
@@ -149,25 +153,55 @@ export const LobbyScene = (props: {
             onChange={(e) => {
               const newSettings = {
                 ...settings,
-                difficulty: e.target.value,
+                difficulty: parseInt(e.target.value),
               };
               setSettings(newSettings);
-              server?.emit('update', { settings: newSettings });
             }}
             required
             value={settings.difficulty}
           >
-            {difficulties.map((difficulty) => (
-              <option key={difficulty.value} value={difficulty.value}>
-                {difficulty.name}
+            {[1, 2, 3, 4, 5].map((d) => (
+              <option key={d} value={d}>
+                {difficultyName(d)}
               </option>
             ))}
           </select>
         ) : (
-          <p>
-            {difficulties.find((d) => d.value === settings.difficulty)?.name ??
-              '???'}
-          </p>
+          <p>{difficultyName(settings.difficulty)}</p>
+        )}
+        <hr />
+        <h3>Priority</h3>
+        {player?.isLeader && !starting ? (
+          <select
+            value={settings.priority}
+            onChange={(e) => {
+              const newSettings = {
+                ...settings,
+                priority: e.target.value as CityPriority,
+              };
+              setSettings(newSettings);
+            }}
+          >
+            {cityPriorities.map((p) => (
+              <option
+                value={p}
+                key={p}
+                title={
+                  p === 'Hybrid'
+                    ? 'Pick the largest city within range, and the closest out of range'
+                    : p === 'Proximity'
+                    ? 'Pick the closest city always'
+                    : p === 'Population'
+                    ? 'Pick the largest city always'
+                    : ''
+                }
+              >
+                {p}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <p>{settings.priority}</p>
         )}
         <hr />
       </div>

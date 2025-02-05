@@ -1,4 +1,7 @@
-export interface Settings {
+import SingleplayerSettings from '../Settings';
+
+interface Settings extends SingleplayerSettings {
   map: string;
-  difficulty: string;
 }
+
+export default Settings;

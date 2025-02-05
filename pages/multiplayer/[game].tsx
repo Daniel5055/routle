@@ -9,38 +9,14 @@ import { LobbyScene } from '../../components/multiplayer/scenes/LobbyScene';
 import { multiplayerURL } from '../../utils/api/multiplayer';
 import { MapData } from '../../utils/types/MapData';
 import { Player } from '../../utils/types/multiplayer/Player';
-import { Settings } from '../../utils/types/multiplayer/Settings';
+import Settings from '../../utils/types/multiplayer/Settings';
+import {
+  DIFFICULTY_DEFAULT,
+  difficultyMultiplier,
+} from '../../utils/functions/settings/difficulty';
+import { PRIORITY_DEFAULT } from '../../utils/functions/settings/priority';
 
 type GameScene = 'invalid' | 'full' | 'loading' | 'lobby' | 'game';
-
-// TODO: Move to separate file and integrate with current difficulty system
-export const difficulties = [
-  {
-    value: 'easiest',
-    multiplier: 4.0,
-    name: 'Baby Mode',
-  },
-  {
-    value: 'easy',
-    multiplier: 2.0,
-    name: 'Easy',
-  },
-  {
-    value: 'normal',
-    multiplier: 1.0,
-    name: 'Normal',
-  },
-  {
-    value: 'hard',
-    multiplier: 0.8,
-    name: 'Hard',
-  },
-  {
-    value: 'hardest',
-    multiplier: 0.6,
-    name: 'Fredrik Mode',
-  },
-];
 
 const Game: NextPage = () => {
   const isMobile = useMobile();
@@ -51,13 +27,20 @@ const Game: NextPage = () => {
   const [server, setServer] = useState<Socket>();
 
   const [players, setPlayers] = useState<{ [id: string]: Player }>({});
-  const [settings, setSettings] = useState<Settings>({
+  const [settings, setRawSettings] = useState<Settings>({
     map: 'Europe',
-    difficulty: 'Normal',
+    difficulty: DIFFICULTY_DEFAULT,
+    priority: PRIORITY_DEFAULT,
+    holes: 0,
   });
 
   const [gameScene, setGameScene] = useState<GameScene>('loading');
   const [mapData, setMapData] = useState<MapData[]>([]);
+
+  function setSettings(settings: Settings) {
+    setRawSettings(settings);
+    server?.emit('update', { settings });
+  }
 
   useEffect(() => {
     fetch('/mapList.json')
@@ -74,7 +57,7 @@ const Game: NextPage = () => {
 
     server.on('update', (msg) => {
       if ('settings' in msg) {
-        setSettings(msg.settings);
+        setRawSettings(msg.settings);
       }
 
       if ('players' in msg) {
@@ -134,11 +117,7 @@ const Game: NextPage = () => {
             server={server}
             players={players}
             mapData={mapData.find((map) => map.webPath === settings.map)!!}
-            difficulty={
-              difficulties.find(
-                (difficulty) => difficulty.value === settings.difficulty
-              )!!.multiplier
-            }
+            settings={settings}
           />
         );
       default:

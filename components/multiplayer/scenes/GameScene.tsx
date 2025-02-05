@@ -13,17 +13,20 @@ import { CityPoint } from '../../../utils/types/CityPoint';
 import { CgSandClock, CgSmile, CgSmileSad, CgTrophy } from 'react-icons/cg';
 import { getCities } from '../../../utils/api/cities';
 import { Timer } from '../Timer';
+import Settings from '../../../utils/types/Settings';
+import { difficultyMultiplier } from '../../../utils/functions/settings/difficulty';
 
 export const GameScene = (props: {
   isMobile: boolean;
   players: { [id: string]: Player };
-  difficulty: number;
+  settings: Settings;
   mapData: MapData;
   server?: Socket;
 }) => {
-  const { isMobile, players, difficulty, mapData, server } = props;
+  const { isMobile, players, settings, mapData, server } = props;
 
   const [searchRadius, setSearchRadius] = useState<number | undefined>();
+  const [holeRadiusValue, setHoleRadiusValue] = useState<number | undefined>();
   const [promptData, setPromptData] = useState<{
     cities: CityResponse[];
     start: number;
@@ -33,8 +36,10 @@ export const GameScene = (props: {
   // Initialising your own cities
   let { cities, queryCity } = useCities(
     mapData,
+    settings,
     promptData?.cities ?? [],
     searchRadius,
+    holeRadiusValue,
     promptData?.start,
     promptData?.end
   );
@@ -55,8 +60,11 @@ export const GameScene = (props: {
   );
 
   useEffect(() => {
-    setSearchRadius((mapData.searchRadius * difficulty) / 8);
-  }, [difficulty, mapData.searchRadius]);
+    setSearchRadius(
+      (mapData.searchRadius * difficultyMultiplier(settings.difficulty)) / 8
+    );
+    setHoleRadiusValue(mapData.searchRadius / 8);
+  }, [settings.difficulty, mapData.searchRadius]);
 
   useEffect(() => {
     server?.on('countdown', (value) => {
@@ -209,6 +217,7 @@ export const GameScene = (props: {
         <MapDisplay
           mapData={mapData}
           searchRadiusMultiplier={searchRadius}
+          holeRadiusMultiplier={holeRadiusValue}
           cities={cities}
           isMobile={isMobile}
           onMapLoad={onMapLoad}

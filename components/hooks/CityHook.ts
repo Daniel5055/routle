@@ -11,12 +11,12 @@ import {
 import { CityPoint, nullPoint, Point } from '../../utils/types/CityPoint';
 import { CityResponse } from '../../utils/types/GeoResponse';
 import { MapData } from '../../utils/types/MapData';
-import priority from '../../utils/functions/settings/priority';
 import { minBy, maxBy, orderBy, find } from 'lodash-es';
-import holes from '../../utils/functions/settings/holes';
+import Settings from '../../utils/types/Settings';
 
 export function useCities(
   mapData: MapData,
+  settings: Settings,
   cities: CityResponse[],
   searchRadiusMultiplier?: number,
   holeRadiusMultiplier?: number,
@@ -137,7 +137,7 @@ export function useCities(
     const useArgs = holeParams !== undefined && holeParams.length > 0;
 
     // Deciding on holes
-    const holeCount = useArgs ? holeParams.length : holes.getValue();
+    const holeCount = useArgs ? holeParams.length : settings.holes;
     const newHoles: Point[] = [];
     const params: [number, number][] = [];
 
@@ -226,7 +226,7 @@ export function useCities(
     if (newHoles.length > 0) {
       console.log(params.map((vals, i) => `h${i}=${vals.join(',')}`).join('&'));
     }
-  }, [endPoint, holeParams, holeRadius, mapData, routePoints]);
+  }, [endPoint, holeParams, holeRadius, mapData, routePoints, settings.holes]);
 
   return {
     cities: {
@@ -346,17 +346,15 @@ export function useCities(
         }
       }
 
-      const prio = priority.getValue();
-
       let targetCity: CityPoint;
 
       const closestCity = minBy(cities, (c) =>
         calculateDistance(revertedCurrent.y, revertedCurrent.x, c.y, c.x)
       )!;
 
-      if (prio === 'Proximity') {
+      if (settings.priority === 'Proximity') {
         targetCity = closestCity;
-      } else if (prio === 'Population') {
+      } else if (settings.priority === 'Population') {
         targetCity = maxBy(cities, (c) => c.population)!;
       } else {
         // Prioritise cities by population size

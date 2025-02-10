@@ -120,6 +120,11 @@
   text-align: center;
 }
 
+#settings button {
+  width: 100%;
+  text-align: center;
+}
+
 #settings > p {
   text-align: center;
   margin: 0;
@@ -151,9 +156,6 @@
   overflow-y: scroll;
   scrollbar-color: theme.$foreground-color transparent;
   scrollbar-width: thin;
-}
-
-#start-button {
 }
 
 /* TODO: combine the styles of the lobby and game class */
@@ -233,11 +235,38 @@
 
 // Game stuff
 .map-container {
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+  margin-top: 5vh;
+}
+
+.map-container-blurred {
+  filter: blur(0.2rem);
   position: absolute;
   width: 100%;
   margin: 0 auto;
   z-index: 0;
-  height: 80vh;
   margin-top: 5vh;
-  filter: blur(0.2rem);
+}
+
+.map-container > svg {
+  position: relative;
+  z-index: 10;
+}
+
+.map-container-blurred > svg {
+  position: relative;
+  z-index: 10;
+}
+
+.hole-pick-container {
+  display: flex;
+  justify-content: -between;
+  flex-flow: row;
+  gap: 20px;
+}
+
+.hole-pick-container > button {
+  font-size: theme.$default-font;
 }

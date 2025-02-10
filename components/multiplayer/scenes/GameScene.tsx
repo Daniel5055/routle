@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { CityResponse } from '../../../utils/types/GeoResponse';
 import { MapData } from '../../../utils/types/MapData';
@@ -13,8 +13,8 @@ import { CityPoint } from '../../../utils/types/CityPoint';
 import { CgSandClock, CgSmile, CgSmileSad, CgTrophy } from 'react-icons/cg';
 import { getCities } from '../../../utils/api/cities';
 import { Timer } from '../Timer';
-import Settings from '../../../utils/types/Settings';
-import { difficultyMultiplier } from '../../../utils/functions/settings/difficulty';
+import Settings from '../../../utils/types/multiplayer/Settings';
+import { mapDifficulty } from '../../../utils/functions/settings/difficulty';
 
 export const GameScene = (props: {
   isMobile: boolean;
@@ -25,8 +25,11 @@ export const GameScene = (props: {
 }) => {
   const { isMobile, players, settings, mapData, server } = props;
 
-  const [searchRadius, setSearchRadius] = useState<number | undefined>();
-  const [holeRadiusValue, setHoleRadiusValue] = useState<number | undefined>();
+  const searchRadius = useMemo(
+    () => mapDifficulty(mapData, settings.difficulty),
+    [mapData, settings.difficulty]
+  );
+
   const [promptData, setPromptData] = useState<{
     cities: CityResponse[];
     start: number;
@@ -38,10 +41,11 @@ export const GameScene = (props: {
     mapData,
     settings,
     promptData?.cities ?? [],
-    searchRadius,
-    holeRadiusValue,
-    promptData?.start,
-    promptData?.end
+    {
+      start: promptData?.start,
+      end: promptData?.end,
+      holes: settings.holeDefs,
+    }
   );
 
   // Ensure 'this' is retained and correct
@@ -58,13 +62,6 @@ export const GameScene = (props: {
   const someWinner = Object.values(players).some(
     (player) => player.state === 'won'
   );
-
-  useEffect(() => {
-    setSearchRadius(
-      (mapData.searchRadius * difficultyMultiplier(settings.difficulty)) / 8
-    );
-    setHoleRadiusValue(mapData.searchRadius / 8);
-  }, [settings.difficulty, mapData.searchRadius]);
 
   useEffect(() => {
     server?.on('countdown', (value) => {
@@ -221,7 +218,6 @@ export const GameScene = (props: {
         <MapDisplay
           mapData={mapData}
           searchRadiusMultiplier={searchRadius}
-          holeRadiusMultiplier={holeRadiusValue}
           cities={cities}
           isMobile={isMobile}
           onMapLoad={onMapLoad}

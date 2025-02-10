@@ -4,6 +4,10 @@ export interface CityPoint extends Point {
   population: number;
 }
 
+export interface HolePoint extends Point {
+  radius: number;
+}
+
 export enum PointType {
   start = '#939F9B',
   end = '#A6F2A5',
@@ -11,6 +15,7 @@ export enum PointType {
   far = '#E0A1A1',
   current = '#939F9B',
   hole = '#6b231e66',
+  holePick = '#7b3fa666',
   other = '#939F9B80',
 }
 

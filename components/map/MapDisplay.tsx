@@ -1,7 +1,12 @@
 import styles from '../../styles/Singleplayer.module.scss';
 import { useState } from 'react';
 import { MapData } from '../../utils/types/MapData';
-import { CityPoint, Point, PointType } from '../../utils/types/CityPoint';
+import {
+  CityPoint,
+  HolePoint,
+  Point,
+  PointType,
+} from '../../utils/types/CityPoint';
 import Image from 'next/image';
 import { flattenCoords } from '../../utils/functions/coords';
 
@@ -9,7 +14,6 @@ import { flattenCoords } from '../../utils/functions/coords';
 export const MapDisplay = ({
   mapData,
   searchRadiusMultiplier,
-  holeRadiusMultiplier,
   cities,
   isMobile,
   onMapLoad,
@@ -18,14 +22,13 @@ export const MapDisplay = ({
 }: {
   mapData: MapData;
   searchRadiusMultiplier?: number;
-  holeRadiusMultiplier?: number;
   cities: {
     far: CityPoint[];
     past: CityPoint[];
     start: CityPoint;
     end: CityPoint;
     current: CityPoint;
-    holes: Point[];
+    holes: HolePoint[];
   };
   isMobile: boolean;
   onMapLoad?: () => void;
@@ -37,7 +40,7 @@ export const MapDisplay = ({
     const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
 
     return (
-      -(flattenedMax.long - flattenedMin.long) /
+      -(flattenedMax.lng - flattenedMin.lng) /
       (flattenedMax.lat - flattenedMin.lat)
     );
   });
@@ -149,17 +152,16 @@ export const MapDisplay = ({
             className={cleanName(p.name)}
           />
         ))}
-        {holeRadiusMultiplier &&
-          cities.holes.map((h, i) => (
-            <circle
-              key={i + '_hole'}
-              cx={`${h.x * 100}%`}
-              cy={`${h.y * 100}%`}
-              r={mapRatio ? `${holeRadiusMultiplier * height}vh` : 0}
-              fill={PointType.hole}
-              className={styles.hole}
-            />
-          ))}
+        {cities.holes.map((h, i) => (
+          <circle
+            key={i + '_hole'}
+            cx={`${h.x * 100}%`}
+            cy={`${h.y * 100}%`}
+            r={mapRatio ? `${h.radius * height}vh` : 0}
+            fill={PointType.hole}
+            className={styles.hole}
+          />
+        ))}
         {searchRadiusMultiplier && (
           <circle
             cx={`${cities.current.x * 100}%`}

@@ -37,6 +37,7 @@ button {
   &:active {
     filter: brightness(80%);
   }
+  cursor: pointer;
 }
 
 input {

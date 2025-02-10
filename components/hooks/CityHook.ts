@@ -8,169 +8,167 @@ import {
   revertRelX,
   withinRange,
 } from '../../utils/functions/coords';
-import { CityPoint, nullPoint, Point } from '../../utils/types/CityPoint';
+import {
+  CityPoint,
+  HolePoint,
+  nullPoint,
+  Point,
+} from '../../utils/types/CityPoint';
 import { CityResponse } from '../../utils/types/GeoResponse';
 import { MapData } from '../../utils/types/MapData';
 import { minBy, maxBy, orderBy, find } from 'lodash-es';
 import Settings from '../../utils/types/Settings';
+import { mapDifficulty } from '../../utils/functions/settings/difficulty';
+import { mapHoleRadius } from '../../utils/functions/settings/holeRadius';
 
 export function useCities(
   mapData: MapData,
   settings: Settings,
   cities: CityResponse[],
-  searchRadiusMultiplier?: number,
-  holeRadiusMultiplier?: number,
-  city1?: number,
-  city2?: number,
-  holeParams?: [number, number][]
+  params: {
+    start?: number;
+    end?: number;
+    holes?: HolePoint[];
+  }
 ) {
   type queryResult = 'Win' | 'In' | 'Out' | 'Same' | 'None' | 'Hole';
 
   const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
   const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
 
+  const searchRadius = useMemo<number>(
+    () =>
+      mapDifficulty(mapData, settings.difficulty) *
+      (flattenedMin.lat - flattenedMax.lat),
+    [flattenedMax.lat, flattenedMin.lat, mapData, settings.difficulty]
+  );
+
+  const holeRadius = useMemo<number>(
+    () =>
+      mapHoleRadius(mapData, settings.holeRadius) *
+      (flattenedMin.lat - flattenedMax.lat),
+    [flattenedMax.lat, flattenedMin.lat, mapData, settings.holeRadius]
+  );
+
+  const validCities = useMemo(
+    () =>
+      cities.filter(
+        (c) =>
+          !params.holes?.some((h) =>
+            withinRange(
+              c.lat,
+              c.lng,
+              revertRelY(mapData, h.y),
+              revertRelX(mapData, h.x),
+              h.radius * (flattenedMin.lat - flattenedMax.lat)
+            )
+          )
+      ),
+    [cities, flattenedMax.lat, flattenedMin.lat, mapData, params.holes]
+  );
+
+  const [startPoint, setStartPoint] = useState<CityPoint>(nullPoint);
   const [endPoint, setEndPoint] = useState<CityPoint>(nullPoint);
-  const [routePoints, setRoutePoints] = useState<CityPoint[]>([]);
-  const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
-  const [holePoints, setHolePoints] = useState<Point[]>([]);
+  const [holes, setHoles] = useState<HolePoint[]>([]);
 
-  const searchRadius = useMemo<number | undefined>(() => {
-    if (searchRadiusMultiplier != undefined) {
-      return searchRadiusMultiplier * (flattenedMin.lat - flattenedMax.lat);
-    } else {
-      return undefined;
-    }
-  }, [flattenedMax.lat, flattenedMin.lat, searchRadiusMultiplier]);
-
-  const holeRadius = useMemo<number | undefined>(() => {
-    if (holeRadiusMultiplier != undefined) {
-      return holeRadiusMultiplier * (flattenedMin.lat - flattenedMax.lat);
-    } else {
-      return undefined;
-    }
-  }, [flattenedMax.lat, flattenedMin.lat, holeRadiusMultiplier]);
-
-  // Random is not deterministic, so must assign randomness from within hook.
-  // This is because both 'server' and client side evaluate random, which leads to weird stuff.
   useEffect(() => {
-    if (cities.length === 0) {
+    if (validCities.length === 0) {
       return;
     }
 
-    let startIndex;
-    let endIndex;
-    if (city1 !== undefined && city1 >= 0 && city1 <= cities.length) {
-      startIndex = city1;
-    } else {
-      startIndex = Math.floor(Math.random() * cities.length);
-    }
+    const startCityResponse =
+      params.start !== undefined
+        ? cities[params.start]
+        : validCities[Math.floor(Math.random() * validCities.length)];
 
-    if (city2 !== undefined && city2 >= 0 && city2 <= cities.length) {
-      endIndex = city2;
-    } else {
-      endIndex = Math.floor(Math.random() * cities.length);
-    }
-
-    const startCityResponse = cities[startIndex];
-    let endCityResponse = cities[endIndex];
-
-    if (city1 === undefined && city2 === undefined) {
-      // Iterate until end city is far enough ( a bit shoddy yes I know)
-      // Only do so for truly random cities
-      const minDist = (mapData.latMax - mapData.latMin) / 4;
-      while (
-        withinRange(
+    // Identifying cities far enough from
+    const minDist = searchRadius * 2; //(mapData.latMax - mapData.latMin) / 4;
+    const farEnoughCities = validCities.filter(
+      (c) =>
+        !withinRange(
           startCityResponse.lat,
           startCityResponse.lng,
-          endCityResponse.lat,
-          endCityResponse.lng,
+          c.lat,
+          c.lng,
           minDist
         )
-      ) {
-        endIndex = Math.floor(Math.random() * cities.length);
-        endCityResponse = cities[endIndex];
-      }
-    }
-
-    // Debugging purposes
-    console.log(`c1=${startIndex}&c2=${endIndex}`);
-
-    const startCoords = convertToRelScreenCoords(
-      mapData,
-      startCityResponse.lat,
-      startCityResponse.lng
     );
 
-    const endCoords = convertToRelScreenCoords(
-      mapData,
-      endCityResponse.lat,
-      endCityResponse.lng
+    const endCityResponse =
+      params.end !== undefined
+        ? cities[params.end]
+        : farEnoughCities[Math.floor(Math.random() * farEnoughCities.length)];
+
+    // Finding absolute index of selected cities
+    console.log(
+      `c1=${
+        params.start ??
+        cities.findIndex((c) => c.geonameId === startCityResponse.geonameId)
+      }&c2=${
+        params.end ??
+        cities.findIndex((c) => c.geonameId === endCityResponse.geonameId)
+      }`
     );
 
-    setRoutePoints([
-      {
-        ...startCoords,
-        name: startCityResponse.name,
-        id: startCityResponse.geonameId,
-        population: startCityResponse.population,
-      },
-    ]);
+    setStartPoint({
+      ...convertToRelScreenCoords(
+        mapData,
+        startCityResponse.lat,
+        startCityResponse.lng
+      ),
+      name: startCityResponse.name,
+      id: startCityResponse.geonameId,
+      population: startCityResponse.population,
+    });
+
     setEndPoint({
-      ...endCoords,
+      ...convertToRelScreenCoords(
+        mapData,
+        endCityResponse.lat,
+        endCityResponse.lng
+      ),
       name: endCityResponse.name,
       id: endCityResponse.geonameId,
       population: endCityResponse.population,
     });
-  }, [cities, mapData, city1, city2, holeRadius]);
+  }, [cities, mapData, params.end, params.start, searchRadius, validCities]);
+
+  console.log(startPoint, endPoint);
 
   useEffect(() => {
-    // Wait until start and end points generated and hole radius determined
-    if (
-      endPoint === nullPoint ||
-      holeRadius === undefined ||
-      routePoints.length === 0 ||
-      routePoints.length > 1
-    ) {
+    if (endPoint === nullPoint || startPoint === nullPoint) {
       return;
     }
 
-    const useArgs = holeParams !== undefined && holeParams.length > 0;
+    if (params.holes !== undefined && params.holes.length > 0) {
+      setHoles(params.holes);
 
-    // Deciding on holes
-    const holeCount = useArgs ? holeParams.length : settings.holes;
-    const newHoles: Point[] = [];
-    const params: [number, number][] = [];
+      return;
+    }
+
+    const newHoles: HolePoint[] = [];
 
     // For determing if holes are within range to the start and end
-    const startPoint = routePoints[0];
     const startMapCoords = {
       lat: revertRelY(mapData, startPoint.y),
-      long: revertRelX(mapData, startPoint.x),
+      lng: revertRelX(mapData, startPoint.x),
     };
     const endMapCoords = {
       lat: revertRelY(mapData, endPoint.y),
-      long: revertRelX(mapData, endPoint.x),
+      lng: revertRelX(mapData, endPoint.x),
     };
 
-    const MAX_TRIES = 100;
     let holeX = 0;
     let holeY = 0;
     let percentage = 0;
     let variance = 0;
-    for (let i = 0; i < holeCount; i++) {
-      let tries = 0;
+    for (let i = 0; i < settings.holes; i++) {
+      const ATTEMPTS = 100;
+      let attempts = 0;
       do {
-        tries++;
-        if (tries > MAX_TRIES) {
-          break;
-        }
-
-        holeX = 0;
-        holeY = 0;
-
         // The random variables
-        percentage = useArgs ? holeParams[i][0] : Math.random();
-        variance = useArgs ? holeParams[i][1] : (Math.random() - 0.5) * 2;
+        percentage = Math.random();
+        variance = (Math.random() - 0.5) * 2;
 
         // Gradient perpendicular to gradient between start and end
         const invGradient =
@@ -185,76 +183,97 @@ export function useCities(
         const angle = Math.atan(invGradient);
 
         // Hole location is some percentage of the journey from start to end
-        holeX = startPoint.x + (endPoint.x - startPoint.x) * percentage;
-        holeY = startPoint.y + (endPoint.y - startPoint.y) * percentage;
-
         // And then deviated from the journey by some amount
-        holeX += Math.cos(angle) * variance * distance;
-        holeY += Math.sin(angle) * variance * distance;
+        holeX =
+          startPoint.x +
+          (endPoint.x - startPoint.x) * percentage +
+          Math.cos(angle) * variance * distance;
+        holeY =
+          startPoint.y +
+          (endPoint.y - startPoint.y) * percentage +
+          Math.sin(angle) * variance * distance;
       } while (
+        attempts++ < ATTEMPTS &&
         // Make sure holes are within bounds and not within range of start or end
-        withinRange(
+        (withinRange(
           startMapCoords.lat,
-          startMapCoords.long,
+          startMapCoords.lng,
           revertRelY(mapData, holeY),
           revertRelX(mapData, holeX),
           holeRadius * 1.05
         ) ||
-        withinRange(
-          endMapCoords.lat,
-          endMapCoords.long,
-          revertRelY(mapData, holeY),
-          revertRelX(mapData, holeX),
-          holeRadius * 1.05
-        ) ||
-        holeY > 1 ||
-        holeY < 0 ||
-        holeX > 1 ||
-        holeX < 0
+          withinRange(
+            endMapCoords.lat,
+            endMapCoords.lng,
+            revertRelY(mapData, holeY),
+            revertRelX(mapData, holeX),
+            holeRadius * 1.05
+          ) ||
+          holeY > 1 ||
+          holeY < 0 ||
+          holeX > 1 ||
+          holeX < 0)
       );
 
       // Only add holes if managed to generate within given attempts
-      if (tries <= MAX_TRIES) {
-        newHoles.push({ x: holeX, y: holeY });
-        params.push([percentage, variance]);
+      if (attempts <= ATTEMPTS) {
+        newHoles.push({
+          x: holeX,
+          y: holeY,
+          radius: mapHoleRadius(mapData, settings.holeRadius),
+        });
+      } else {
+        console.error("Couldn't add hole");
       }
     }
 
-    setHolePoints(newHoles);
-
     // For debugging purposes
     if (newHoles.length > 0) {
-      console.log(params.map((vals, i) => `h${i}=${vals.join(',')}`).join('&'));
+      console.log(
+        newHoles
+          .map(({ x, y, radius }, i) => `h${i}=${[x, y, radius].join(',')}`)
+          .join('&')
+      );
     }
-  }, [endPoint, holeParams, holeRadius, mapData, routePoints, settings.holes]);
+
+    setHoles(newHoles);
+  }, [
+    endPoint,
+    startPoint,
+    params.holes,
+    mapData,
+    settings.holes,
+    settings.holeRadius,
+    holeRadius,
+  ]);
+
+  const [routePoints, setRoutePoints] = useState<CityPoint[]>([]);
+  const [farPoints, setFarPoints] = useState<CityPoint[]>([]);
 
   return {
+    searchRadius,
     cities: {
-      get start(): CityPoint {
-        return routePoints[0] ?? nullPoint;
-      },
       get current(): CityPoint {
-        return routePoints[routePoints.length - 1] ?? nullPoint;
+        return routePoints.length === 0
+          ? startPoint
+          : routePoints.at(-1) ?? nullPoint;
       },
       get past(): CityPoint[] {
         if (routePoints.length < 1) {
           return [];
         } else {
-          return routePoints.slice(0, -1);
+          return [startPoint].concat(routePoints.slice(0, -1));
         }
       },
+      start: startPoint,
       far: farPoints,
       end: endPoint,
-      holes: holePoints,
+      holes,
     },
     queryCity: async function (search: string): Promise<{
       result: queryResult;
       city?: CityPoint;
     }> {
-      if (searchRadius === undefined || holeRadius === undefined) {
-        return { result: 'None' };
-      }
-
       // Fetch cities from search
       const rawCities = await getCities(mapData, search);
 
@@ -264,18 +283,9 @@ export function useCities(
       }
 
       // Converting to easier type and removing current city
-      const cities1 = rawCities
-        .map((city): CityPoint => {
-          const { lat, long } = flattenCoords(city.lat, city.lng);
-          return {
-            name: city.name,
-            id: city.geonameId,
-            x: long,
-            y: lat,
-            population: city.population,
-          };
-        })
-        .filter((city) => city.id !== this.cities.current.id);
+      const cities1 = rawCities.filter(
+        (city) => city.geonameId !== this.cities.current.id
+      );
 
       // Only possible if there existed only a single city in array previously,
       // which was the current city
@@ -283,44 +293,45 @@ export function useCities(
         return { result: 'Same', city: this.cities.current };
       }
 
+      // Remove cities within holes
       const cities = cities1.filter(
         (c) =>
-          !holePoints.some((h) =>
+          !holes.some((h) =>
             withinRange(
-              c.y,
-              c.x,
+              c.lat,
+              c.lng,
               revertRelY(mapData, h.y),
               revertRelX(mapData, h.x),
-              holeRadius
+              h.radius * (flattenedMin.lat - flattenedMax.lat)
             )
           )
       );
 
       if (cities.length === 0) {
         const converted = {
-          ...cities1[0],
-          ...convertToRelScreenCoords(
-            mapData,
-            cities1[0].y,
-            cities1[0].x,
-            true
-          ),
+          ...convertToRelScreenCoords(mapData, cities1[0].lat, cities1[0].lng),
+          id: cities1[0].geonameId,
+          population: cities1[0].population,
+          name: cities1[0].name,
         };
         setFarPoints(farPoints.concat(converted));
+
         return { result: 'Hole', city: converted };
       }
 
       // If the endpoint was included in queried cities
       const endPointIncluded = cities.some(
-        (city) => city.id === this.cities.end.id
+        (city) => city.geonameId === this.cities.end.id
       );
 
       // Will be comparing points with current point, so need to revert current
       // point coordinates from relative
       const revertedCurrent = {
-        ...this.cities.current,
-        x: revertRelX(mapData, this.cities.current.x),
-        y: revertRelY(mapData, this.cities.current.y),
+        lng: revertRelX(mapData, this.cities.current.x),
+        lat: revertRelY(mapData, this.cities.current.y),
+        name: this.cities.current.name,
+        population: this.cities.current.population,
+        id: this.cities.current.id,
       };
 
       // If entered end point city name and is close enough
@@ -329,8 +340,8 @@ export function useCities(
           withinRange(
             revertRelY(mapData, this.cities.end.y),
             revertRelX(mapData, this.cities.end.x),
-            revertedCurrent.y,
-            revertedCurrent.x,
+            revertedCurrent.lat,
+            revertedCurrent.lng,
             searchRadius
           )
         ) {
@@ -346,10 +357,15 @@ export function useCities(
         }
       }
 
-      let targetCity: CityPoint;
+      let targetCity: CityResponse;
 
       const closestCity = minBy(cities, (c) =>
-        calculateDistance(revertedCurrent.y, revertedCurrent.x, c.y, c.x)
+        calculateDistance(
+          revertedCurrent.lat,
+          revertedCurrent.lng,
+          c.lat,
+          c.lng
+        )
       )!;
 
       if (settings.priority === 'Proximity') {
@@ -365,28 +381,30 @@ export function useCities(
         targetCity =
           find(citiesByPopulation, (c) =>
             withinRange(
-              c.y,
-              c.x,
-              revertedCurrent.y,
-              revertedCurrent.x,
+              c.lat,
+              c.lng,
+              revertedCurrent.lat,
+              revertedCurrent.lng,
               searchRadius
             )
           ) ?? closestCity;
       }
 
       // Convert closest city to relative coords
-      const convertedTarget = {
-        ...targetCity,
-        ...convertToRelScreenCoords(mapData, targetCity.y, targetCity.x, true),
+      const convertedTarget: CityPoint = {
+        ...convertToRelScreenCoords(mapData, targetCity.lat, targetCity.lng),
+        population: targetCity.population,
+        name: targetCity.name,
+        id: targetCity.geonameId,
       };
 
       // Is within circle?
       if (
         withinRange(
-          targetCity.y,
-          targetCity.x,
-          revertedCurrent.y,
-          revertedCurrent.x,
+          targetCity.lat,
+          targetCity.lng,
+          revertedCurrent.lat,
+          revertedCurrent.lng,
           searchRadius
         )
       ) {

@@ -1,3 +1,4 @@
+import { MapData } from '../../types/MapData';
 import { Property } from './property';
 
 const HOLE_RADIUS_COOKIE = 'HoleRadius';
@@ -17,6 +18,14 @@ function holeRadiusMultiplier(value: number) {
   );
 }
 
+function mapHoleRadius(mapData: MapData | undefined, value: number) {
+  return ((mapData?.searchRadius ?? 1) * holeRadiusMultiplier(value)) / 8;
+}
+
+function rangeHoleRadius(mapData: MapData | undefined, value: number) {
+  return ((mapData?.searchRadius ?? 1) * value) / 8;
+}
+
 const holeRadius = new Property<number>(
   HOLE_RADIUS_COOKIE,
   HOLE_RADIUS_DEFAULT,
@@ -24,6 +33,6 @@ const holeRadius = new Property<number>(
   (s) => parseInt(s)
 );
 
-export { holeRadiusMultiplier };
+export { mapHoleRadius, holeRadiusMultiplier, rangeHoleRadius };
 
 export default holeRadius;

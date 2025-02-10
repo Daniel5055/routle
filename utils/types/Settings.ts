@@ -5,6 +5,7 @@ interface Settings {
   difficulty: Difficulty;
   priority: CityPriority;
   holes: number;
+  holeRadius: number;
 }
 
 export type { Difficulty, CityPriority };

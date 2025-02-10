@@ -23,14 +23,13 @@ import {
   addMapPlay,
 } from '../../utils/api/database';
 import difficulty, {
-  difficultyMultiplier,
+  mapDifficulty,
 } from '../../utils/functions/settings/difficulty';
-import holeRadius, {
-  holeRadiusMultiplier,
-} from '../../utils/functions/settings/holeRadius';
+import holeRadiusSetting from '../../utils/functions/settings/holeRadius';
 import Settings from '../../utils/types/Settings';
 import priority from '../../utils/functions/settings/priority';
 import holes from '../../utils/functions/settings/holes';
+import { HolePoint } from '../../utils/types/CityPoint';
 
 const Map: NextPage = ({
   mapData,
@@ -39,18 +38,33 @@ const Map: NextPage = ({
   const isMobile = useMobile();
   const router = useRouter();
 
-  const [searchRadius, setSearchRadius] = useState<number | undefined>(
-    undefined
-  );
-  const [holeRadiusValue, setHoleRadiusValue] = useState<number | undefined>(
-    undefined
-  );
+  const settings: Settings = {
+    difficulty: difficulty.getValue(),
+    priority: priority.getValue(),
+    holes: holes.getValue(),
+    holeRadius: holeRadiusSetting.getValue(),
+  };
 
-  const city1 = parseInt(router.query.c1 as string);
-  const city2 = parseInt(router.query.c2 as string);
+  const city1: number | undefined = useMemo(() => {
+    const val = parseInt(router.query.c1 as string);
+    if (val < 0 || val > 100) {
+      return undefined;
+    }
+
+    return isNaN(val) ? undefined : val;
+  }, [router.query.c1]);
+
+  const city2: number | undefined = useMemo(() => {
+    const val = parseInt(router.query.c2 as string);
+    if (val < 0 || val > 100) {
+      return undefined;
+    }
+
+    return isNaN(val) ? undefined : val;
+  }, [router.query.c2]);
 
   // Extract variable number of hole params
-  const holeParams: [number, number][] = useMemo(
+  const holeParams: HolePoint[] = useMemo(
     () =>
       Array.from(Array(5).keys())
         .map((i) => {
@@ -64,29 +78,23 @@ const Map: NextPage = ({
           }
           return q.map((arg) => parseFloat(arg));
         })
-        .filter((q) => q.length == 2 && q.every((arg) => !isNaN(arg))) as [
-        number,
-        number
-      ][],
-    [router.query]
+        .map((q) => (q.length === 2 ? [...q, settings.holeRadius] : q))
+        .filter((q) => q.length == 3 && q.every((arg) => !isNaN(arg)))
+        .map(([x, y, radius]) => ({ x, y, radius })),
+    [router.query, settings.holeRadius]
   );
 
-  const settings: Settings = {
-    difficulty: difficulty.getValue(),
-    priority: priority.getValue(),
-    holes: holes.getValue(),
-  };
-
-  let { cities, queryCity } = useCities(
-    mapData,
-    settings,
-    map100Cities,
-    searchRadius,
-    holeRadiusValue,
-    isNaN(city1) ? undefined : city1,
-    isNaN(city2) ? undefined : city2,
-    holeParams
+  const searchRadiusMultiplier = useMemo(
+    () => mapDifficulty(mapData, settings.difficulty),
+    [mapData, settings.difficulty]
   );
+
+  let { cities, queryCity } = useCities(mapData, settings, map100Cities, {
+    start: city1,
+    end: city2,
+    holes: holeParams,
+  });
+  console.log(map100Cities);
 
   // Ensure 'this' is retained and correct
   queryCity = queryCity.bind({ cities });
@@ -98,12 +106,6 @@ const Map: NextPage = ({
   // On page load
   useEffect(() => {
     addMapPlay(mapData.webPath);
-    setSearchRadius(
-      (mapData.searchRadius * difficultyMultiplier(difficulty.getValue())) / 8
-    );
-    setHoleRadiusValue(
-      (mapData.searchRadius * holeRadiusMultiplier(holeRadius.getValue())) / 8
-    );
   }, [mapData.searchRadius, mapData.webPath]);
 
   useEffect(() => {
@@ -180,8 +182,7 @@ const Map: NextPage = ({
       >{`Get from ${cities.start.name} to ${cities.end.name}`}</h3>
       <MapDisplay
         mapData={mapData}
-        searchRadiusMultiplier={searchRadius}
-        holeRadiusMultiplier={holeRadiusValue}
+        searchRadiusMultiplier={searchRadiusMultiplier}
         cities={cities}
         isMobile={isMobile}
       />

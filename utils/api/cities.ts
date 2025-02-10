@@ -1,9 +1,10 @@
 import { CityResponse, GeoResponse } from '../types/GeoResponse';
 import { MapData } from '../types/MapData';
+import { flattenCoords } from '../functions/coords';
 
-export const getRandomCities = async (
+export async function getRandomCities(
   mapData: MapData
-): Promise<CityResponse[]> => {
+): Promise<CityResponse[]> {
   const path = `http://api.geonames.org/searchJSON?&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055&orderby=population`;
   let pathWhole = path;
   let pathPart = path;
@@ -29,16 +30,25 @@ export const getRandomCities = async (
     : { totalResultsCount: 0, geonames: [] };
   const responses = await Promise.all([wholeResponse, partResponse]);
 
-  return responses
-    .flatMap((response) => response.geonames)
-    .sort((a, b) => b.population - a.population)
-    .slice(0, 100);
-};
+  return (
+    responses
+      .flatMap((response) => response.geonames)
+      // Only filter these fields
+      .map((v) => ({
+        ...flattenCoords(+v.lat, +v.lng),
+        name: v.name,
+        population: v.population,
+        geonameId: v.geonameId,
+      }))
+      .sort((a, b) => b.population - a.population)
+      .slice(0, 100)
+  );
+}
 
-export const getCities = async (
+export async function getCities(
   mapData: MapData,
   name: string
-): Promise<CityResponse[]> => {
+): Promise<CityResponse[]> {
   let path = `/api/geonames?name_equals=${name}&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055`;
   let pathWhole = path;
   let pathPart = path;
@@ -63,5 +73,12 @@ export const getCities = async (
     : { totalResultsCount: 0, geonames: [] };
 
   const responses = await Promise.all([wholeResponse, partResponse]);
-  return responses.flatMap((response: GeoResponse) => response.geonames);
-};
+  return responses
+    .flatMap((response: GeoResponse) => response.geonames)
+    .map((v) => ({
+      ...flattenCoords(+v.lat, +v.lng),
+      name: v.name,
+      population: v.population,
+      geonameId: v.geonameId,
+    }));
+}

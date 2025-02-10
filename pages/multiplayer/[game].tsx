@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Layout from '../../components/common/Layout';
 import { useMobile } from '../../components/hooks/MobileHook';
@@ -29,10 +29,17 @@ const Game: NextPage = () => {
     difficulty: DIFFICULTY_DEFAULT,
     priority: PRIORITY_DEFAULT,
     holes: 0,
+    holeRadius: 1,
+    holeDefs: [],
   });
 
   const [gameScene, setGameScene] = useState<GameScene>('loading');
   const [mapData, setMapData] = useState<MapData[]>([]);
+
+  const selectedMapData = useMemo(
+    () => mapData.find((map) => map.webPath === settings.map)!!,
+    [mapData, settings.map]
+  );
 
   function setSettings(settings: Settings) {
     setRawSettings(settings);
@@ -113,7 +120,7 @@ const Game: NextPage = () => {
             isMobile={isMobile}
             server={server}
             players={players}
-            mapData={mapData.find((map) => map.webPath === settings.map)!!}
+            mapData={selectedMapData}
             settings={settings}
           />
         );

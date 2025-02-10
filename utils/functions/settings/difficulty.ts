@@ -1,3 +1,4 @@
+import { MapData } from '../../types/MapData';
 import { Difficulty } from '../../types/Settings';
 import { Property } from './property';
 
@@ -25,19 +26,18 @@ const difficulty = new Property<Difficulty>(
   parseInt
 );
 
-function difficultyName(difficulty: Difficulty): string {
-  return DIFFICULTY_NAMES[difficulty] ?? `Unknown territory: ${difficulty}`;
+function difficultyName(value: Difficulty): string {
+  return DIFFICULTY_NAMES[value] ?? `Unknown territory: ${value}`;
 }
 
-function difficultyMultiplier(difficulty: Difficulty): number {
-  return DIFFICULTY_MULTIPLIER[difficulty] ?? DIFFICULTY_MULTIPLIER[3];
+function difficultyMultiplier(value: Difficulty): number {
+  return DIFFICULTY_MULTIPLIER[value] ?? DIFFICULTY_MULTIPLIER[3];
 }
 
-export {
-  difficultyName,
-  difficultyMultiplier,
-  type Difficulty,
-  DIFFICULTY_DEFAULT,
-};
+function mapDifficulty(mapData: MapData | undefined, value: number) {
+  return ((mapData?.searchRadius ?? 1) * difficultyMultiplier(value)) / 8;
+}
+
+export { difficultyName, mapDifficulty, type Difficulty, DIFFICULTY_DEFAULT };
 
 export default difficulty;

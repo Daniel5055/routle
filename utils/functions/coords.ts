@@ -7,18 +7,18 @@ import { MapData } from '../types/MapData';
  * Web Mercator Projection.
  *
  * @param lat the latitude in degrees
- * @param long the longitude in degrees
+ * @param lng the longitude in degrees
  * @returns an object containing latitude and longitude for a 2D plane
  */
 export const flattenCoords = (
   lat: number,
-  long: number
+  lng: number
 ): {
   lat: number;
-  long: number;
+  lng: number;
 } => {
   return {
-    long: (long / 180) * Math.PI,
+    lng: (lng / 180) * Math.PI,
     lat: Math.PI - Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360)),
   };
 };
@@ -67,34 +67,25 @@ export const withinRange = (
 };
 
 /**
- * Converts spherical coordinates to flattened coordinates relative to a bounds.
+ * Converts map coordinates to screen coordinates relative to a bounds.
  *
  * @param mapData data containing information on the bounds of the coordinates
  * @param lat the latitude of the coordinate
  * @param long the longitude of the coordinate
- * @param alreadyFlattened whether the passed coordinates are already flattened
  * @returns an object containing the relative flattened coordinates, should be
  * between 0 and 1 in theory
  */
 export const convertToRelScreenCoords = (
   mapData: MapData,
   lat: number,
-  long: number,
-  alreadyFlattened: boolean = false
+  lng: number
 ): { x: number; y: number } => {
   // First flatten the coordinates to 2d plane
-  const flattenedCoords = alreadyFlattened
-    ? { lat, long }
-    : flattenCoords(lat, long);
   const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
   const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
 
-  const x =
-    (flattenedCoords.long - flattenedMin.long) /
-    (flattenedMax.long - flattenedMin.long);
-  const y =
-    (flattenedMax.lat - flattenedCoords.lat) /
-    (flattenedMax.lat - flattenedMin.lat);
+  const x = (lng - flattenedMin.lng) / (flattenedMax.lng - flattenedMin.lng);
+  const y = (flattenedMax.lat - lat) / (flattenedMax.lat - flattenedMin.lat);
 
   return { x, y };
 };
@@ -110,7 +101,7 @@ export const revertRelX = (mapData: MapData, x: number) => {
   const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
   const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
 
-  const long = (flattenedMax.long - flattenedMin.long) * x + flattenedMin.long;
+  const long = (flattenedMax.lng - flattenedMin.lng) * x + flattenedMin.lng;
 
   return long;
 };

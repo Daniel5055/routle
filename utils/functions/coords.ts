@@ -1,3 +1,5 @@
+import { CityMapPoint, CityPoint } from '../types/CityPoint';
+import { CityResponse } from '../types/GeoResponse';
 import { MapData } from '../types/MapData';
 
 // FIXME Remove the excessive number of flatten calls to flatten mapData coords
@@ -67,30 +69,6 @@ export const withinRange = (
 };
 
 /**
- * Converts map coordinates to screen coordinates relative to a bounds.
- *
- * @param mapData data containing information on the bounds of the coordinates
- * @param lat the latitude of the coordinate
- * @param long the longitude of the coordinate
- * @returns an object containing the relative flattened coordinates, should be
- * between 0 and 1 in theory
- */
-export const convertToRelScreenCoords = (
-  mapData: MapData,
-  lat: number,
-  lng: number
-): { x: number; y: number } => {
-  // First flatten the coordinates to 2d plane
-  const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
-  const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
-
-  const x = (lng - flattenedMin.lng) / (flattenedMax.lng - flattenedMin.lng);
-  const y = (flattenedMax.lat - lat) / (flattenedMax.lat - flattenedMin.lat);
-
-  return { x, y };
-};
-
-/**
  * Reverts relative x coordinate back to longitude
  *
  * @param mapData data containing information on the bounds of the map
@@ -120,3 +98,47 @@ export const revertRelY = (mapData: MapData, y: number) => {
   const lat = flattenedMax.lat - (flattenedMax.lat - flattenedMin.lat) * y;
   return lat;
 };
+
+export function mapToScreenPoint(
+  mapData: MapData,
+  point: CityMapPoint
+): CityPoint {
+  // First flatten the coordinates to 2d plane
+  const flattenedMax = flattenCoords(mapData.latMax, mapData.longMax);
+  const flattenedMin = flattenCoords(mapData.latMin, mapData.longMin);
+
+  const x =
+    (point.lng - flattenedMin.lng) / (flattenedMax.lng - flattenedMin.lng);
+  const y =
+    (flattenedMax.lat - point.lat) / (flattenedMax.lat - flattenedMin.lat);
+
+  return {
+    x,
+    y,
+    name: point.name,
+    population: point.population,
+    id: point.id,
+  };
+}
+
+export function screenToMapPoint(
+  mapData: MapData,
+  point: CityPoint
+): CityMapPoint {
+  return {
+    lng: revertRelX(mapData, point.x),
+    lat: revertRelY(mapData, point.y),
+    name: point.name,
+    population: point.population,
+    id: point.id,
+  };
+}
+
+export function refineCityMapPoint(city: CityResponse): CityMapPoint {
+  return {
+    id: city.geonameId,
+    ...flattenCoords(+city.lat, +city.lng),
+    name: city.name,
+    population: city.population,
+  };
+}

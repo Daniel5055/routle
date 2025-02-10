@@ -3,8 +3,8 @@ export interface GeoResponse {
   geonames: CityResponse[];
 }
 export interface CityResponse {
-  lng: number;
-  lat: number;
+  lng: string;
+  lat: string;
   name: string;
   population: number;
   geonameId: number;

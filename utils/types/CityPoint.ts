@@ -1,8 +1,15 @@
-export interface CityPoint extends Point {
+export interface Point {
+  x: number;
+  y: number;
+}
+
+export interface CityInfo {
   name: string;
   id: number;
   population: number;
 }
+
+export interface CityPoint extends Point, CityInfo {}
 
 export interface HolePoint extends Point {
   radius: number;
@@ -19,11 +26,6 @@ export enum PointType {
   other = '#939F9B80',
 }
 
-export interface Point {
-  x: number;
-  y: number;
-}
-
 export const nullPoint: CityPoint = {
   x: 10000,
   y: 10000,
@@ -31,3 +33,10 @@ export const nullPoint: CityPoint = {
   id: 0,
   population: 0,
 };
+
+export interface MapPoint {
+  lng: number;
+  lat: number;
+}
+
+export interface CityMapPoint extends MapPoint, CityInfo {}

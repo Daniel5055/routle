@@ -9,7 +9,7 @@ import multiplayerStyles from '../../../styles/Multiplayer.module.scss';
 import { MapDisplay } from '../../map/MapDisplay';
 import { CityInput } from '../../map/CityInput';
 import { areNamesEqual, formatName } from '../../../utils/functions/cityNames';
-import { CityPoint } from '../../../utils/types/CityPoint';
+import { CityMapPoint, CityPoint } from '../../../utils/types/CityPoint';
 import { CgSandClock, CgSmile, CgSmileSad, CgTrophy } from 'react-icons/cg';
 import { getCities } from '../../../utils/api/cities';
 import { Timer } from '../Timer';
@@ -31,7 +31,7 @@ export const GameScene = (props: {
   );
 
   const [promptData, setPromptData] = useState<{
-    cities: CityResponse[];
+    cities: CityMapPoint[];
     start: number;
     end: number;
   }>();
@@ -141,6 +141,9 @@ export const GameScene = (props: {
         server?.emit('city', query.city);
         server?.emit('win');
         setTagline('You Finished!');
+        break;
+      case 'Hole':
+        setTagline(`${query.city!.name} is inaccessible`);
         break;
     }
   };

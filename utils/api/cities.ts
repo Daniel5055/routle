@@ -1,10 +1,11 @@
 import { CityResponse, GeoResponse } from '../types/GeoResponse';
 import { MapData } from '../types/MapData';
-import { flattenCoords } from '../functions/coords';
+import { flattenCoords, refineCityMapPoint } from '../functions/coords';
+import { CityMapPoint } from '../types/CityPoint';
 
 export async function getRandomCities(
   mapData: MapData
-): Promise<CityResponse[]> {
+): Promise<CityMapPoint[]> {
   const path = `http://api.geonames.org/searchJSON?&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055&orderby=population`;
   let pathWhole = path;
   let pathPart = path;
@@ -32,14 +33,9 @@ export async function getRandomCities(
 
   return (
     responses
-      .flatMap((response) => response.geonames)
+      .flatMap((response) => response.geonames as CityResponse[])
       // Only filter these fields
-      .map((v) => ({
-        ...flattenCoords(+v.lat, +v.lng),
-        name: v.name,
-        population: v.population,
-        geonameId: v.geonameId,
-      }))
+      .map(refineCityMapPoint)
       .sort((a, b) => b.population - a.population)
       .slice(0, 100)
   );
@@ -48,7 +44,7 @@ export async function getRandomCities(
 export async function getCities(
   mapData: MapData,
   name: string
-): Promise<CityResponse[]> {
+): Promise<CityMapPoint[]> {
   let path = `/api/geonames?name_equals=${name}&featureClass=P&north=${mapData.latMax}&east=${mapData.longMax}&south=${mapData.latMin}&west=${mapData.longMin}&username=Daniel5055`;
   let pathWhole = path;
   let pathPart = path;
@@ -75,10 +71,5 @@ export async function getCities(
   const responses = await Promise.all([wholeResponse, partResponse]);
   return responses
     .flatMap((response: GeoResponse) => response.geonames)
-    .map((v) => ({
-      ...flattenCoords(+v.lat, +v.lng),
-      name: v.name,
-      population: v.population,
-      geonameId: v.geonameId,
-    }));
+    .map(refineCityMapPoint);
 }

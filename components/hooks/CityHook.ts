@@ -2,13 +2,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { getCities } from '../../utils/api/cities';
 import {
   calculateDistance,
-  convertToRelScreenCoords,
   flattenCoords,
   revertRelY,
   revertRelX,
   withinRange,
+  mapToScreenPoint,
+  screenToMapPoint,
 } from '../../utils/functions/coords';
 import {
+  CityMapPoint,
   CityPoint,
   HolePoint,
   nullPoint,
@@ -24,7 +26,7 @@ import { mapHoleRadius } from '../../utils/functions/settings/holeRadius';
 export function useCities(
   mapData: MapData,
   settings: Settings,
-  cities: CityResponse[],
+  cities: CityMapPoint[],
   params: {
     start?: number;
     end?: number;
@@ -102,35 +104,14 @@ export function useCities(
     // Finding absolute index of selected cities
     console.log(
       `c1=${
-        params.start ??
-        cities.findIndex((c) => c.geonameId === startCityResponse.geonameId)
+        params.start ?? cities.findIndex((c) => c.id === startCityResponse.id)
       }&c2=${
-        params.end ??
-        cities.findIndex((c) => c.geonameId === endCityResponse.geonameId)
+        params.end ?? cities.findIndex((c) => c.id === endCityResponse.id)
       }`
     );
 
-    setStartPoint({
-      ...convertToRelScreenCoords(
-        mapData,
-        startCityResponse.lat,
-        startCityResponse.lng
-      ),
-      name: startCityResponse.name,
-      id: startCityResponse.geonameId,
-      population: startCityResponse.population,
-    });
-
-    setEndPoint({
-      ...convertToRelScreenCoords(
-        mapData,
-        endCityResponse.lat,
-        endCityResponse.lng
-      ),
-      name: endCityResponse.name,
-      id: endCityResponse.geonameId,
-      population: endCityResponse.population,
-    });
+    setStartPoint(mapToScreenPoint(mapData, startCityResponse));
+    setEndPoint(mapToScreenPoint(mapData, endCityResponse));
   }, [cities, mapData, params.end, params.start, searchRadius, validCities]);
 
   console.log(startPoint, endPoint);
@@ -149,14 +130,8 @@ export function useCities(
     const newHoles: HolePoint[] = [];
 
     // For determing if holes are within range to the start and end
-    const startMapCoords = {
-      lat: revertRelY(mapData, startPoint.y),
-      lng: revertRelX(mapData, startPoint.x),
-    };
-    const endMapCoords = {
-      lat: revertRelY(mapData, endPoint.y),
-      lng: revertRelX(mapData, endPoint.x),
-    };
+    const startMapCoords = screenToMapPoint(mapData, startPoint);
+    const endMapCoords = screenToMapPoint(mapData, endPoint);
 
     let holeX = 0;
     let holeY = 0;
@@ -284,7 +259,7 @@ export function useCities(
 
       // Converting to easier type and removing current city
       const cities1 = rawCities.filter(
-        (city) => city.geonameId !== this.cities.current.id
+        (city) => city.id !== this.cities.current.id
       );
 
       // Only possible if there existed only a single city in array previously,
@@ -308,12 +283,7 @@ export function useCities(
       );
 
       if (cities.length === 0) {
-        const converted = {
-          ...convertToRelScreenCoords(mapData, cities1[0].lat, cities1[0].lng),
-          id: cities1[0].geonameId,
-          population: cities1[0].population,
-          name: cities1[0].name,
-        };
+        const converted = mapToScreenPoint(mapData, cities1[0]);
         setFarPoints(farPoints.concat(converted));
 
         return { result: 'Hole', city: converted };
@@ -321,18 +291,12 @@ export function useCities(
 
       // If the endpoint was included in queried cities
       const endPointIncluded = cities.some(
-        (city) => city.geonameId === this.cities.end.id
+        (city) => city.id === this.cities.end.id
       );
 
       // Will be comparing points with current point, so need to revert current
       // point coordinates from relative
-      const revertedCurrent = {
-        lng: revertRelX(mapData, this.cities.current.x),
-        lat: revertRelY(mapData, this.cities.current.y),
-        name: this.cities.current.name,
-        population: this.cities.current.population,
-        id: this.cities.current.id,
-      };
+      const revertedCurrent = screenToMapPoint(mapData, this.cities.current);
 
       // If entered end point city name and is close enough
       if (endPointIncluded) {
@@ -357,7 +321,7 @@ export function useCities(
         }
       }
 
-      let targetCity: CityResponse;
+      let targetCity: CityMapPoint;
 
       const closestCity = minBy(cities, (c) =>
         calculateDistance(
@@ -391,12 +355,7 @@ export function useCities(
       }
 
       // Convert closest city to relative coords
-      const convertedTarget: CityPoint = {
-        ...convertToRelScreenCoords(mapData, targetCity.lat, targetCity.lng),
-        population: targetCity.population,
-        name: targetCity.name,
-        id: targetCity.geonameId,
-      };
+      const convertedTarget = mapToScreenPoint(mapData, targetCity);
 
       // Is within circle?
       if (
